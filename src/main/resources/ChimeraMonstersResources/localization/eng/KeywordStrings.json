@@ -1,0 +1,26 @@
+[
+  {
+    "ID": "echo",
+    "PROPER_NAME": "Echo",
+    "NAMES": [
+      "echo"
+    ],
+    "DESCRIPTION": "Play an additional copy of this card."
+  },
+  {
+    "ID": "reshuffle",
+    "PROPER_NAME": "Reshuffle",
+    "NAMES": [
+      "reshuffle"
+    ],
+    "DESCRIPTION": "Shuffle this card into your draw pile when it is played."
+  },
+  {
+    "ID": "unrestricted",
+    "PROPER_NAME": "Unrestricted",
+    "NAMES": [
+      "unrestricted"
+    ],
+    "DESCRIPTION": "This card ignores playability restrictions."
+  }
+]

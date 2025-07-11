@@ -1,0 +1,15 @@
+{
+  "${ModID}:ExampleMod": {
+    "TEXT": ["Prefix name", "Suffix name", "Modifier description"],
+    "EXTRA_TEXT": ["Anything else needed"]
+  },
+  "${ModID}:AugerMod": {
+    "TEXT": ["Drill ", "", "Reduces health by #b20%. NL Applies #yVulnerable when breaking #yBlock."]
+  },
+  "${ModID}:BulkyMod": {
+    "TEXT": ["Bulky ", "", "Increase #yBlock gained by #b33%. NL Reduces damage dealt by #b20%."]
+  },
+  "${ModID}:AggressiveMod": {
+    "TEXT": ["Aggressive ", "", "Starts with #b1 #yStrength and #b-1 #yDexterity."]
+  }
+}
