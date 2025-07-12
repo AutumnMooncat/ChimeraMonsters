@@ -2,6 +2,7 @@ package ChimeraMonsters.modifiers.common;
 
 import ChimeraMonsters.ChimeraMonstersMod;
 import ChimeraMonsters.modifiers.AbstractMonsterModifier;
+import ChimeraMonsters.modifiers.GroupModifierInterface;
 import ChimeraMonsters.powers.MonsterDexterityPower;
 import ChimeraMonsters.util.Wiz;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
@@ -9,7 +10,7 @@ import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
 import com.megacrit.cardcrawl.powers.StrengthPower;
 
-public class AggressiveMod extends AbstractMonsterModifier {
+public class AggressiveMod extends AbstractMonsterModifier implements GroupModifierInterface {
     public static final String ID = ChimeraMonstersMod.makeID(AggressiveMod.class.getSimpleName());
     public static final String[] TEXT = CardCrawlGame.languagePack.getUIString(ID).TEXT;
     public static final int AMOUNT = 1;
@@ -53,5 +54,20 @@ public class AggressiveMod extends AbstractMonsterModifier {
     @Override
     public AbstractMonsterModifier makeCopy() {
         return new AggressiveMod();
+    }
+
+    @Override
+    public boolean isMonsterGroupValid(MonsterGroup monsterGroup){
+        for(AbstractMonster m : monsterGroup.monsters){
+            if(!validMonster(m, monsterGroup)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public String fightName(MonsterGroup context){
+        return getPrefix() + context.monsters.get(0).name + getSuffix();
     }
 }
