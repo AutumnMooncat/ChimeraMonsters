@@ -1,11 +1,12 @@
 package ChimeraMonsters.powers;
 
 import ChimeraMonsters.ChimeraMonstersMod;
+import ChimeraMonsters.powers.interfaces.MonsterBlockChangingPower;
 import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.localization.PowerStrings;
 
-public class MonsterDexterityPower extends AbstractModifierPower {
+public class MonsterDexterityPower extends AbstractEasyPower implements MonsterBlockChangingPower {
     public static final String POWER_ID = ChimeraMonstersMod.makeID(MonsterDexterityPower.class.getSimpleName());
     private static final PowerStrings powerStrings = CardCrawlGame.languagePack.getPowerStrings(POWER_ID);
     public static final String NAME = powerStrings.NAME;

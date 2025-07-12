@@ -12,7 +12,7 @@ import com.megacrit.cardcrawl.localization.PowerStrings;
 import java.util.Collections;
 import java.util.List;
 
-public class AugerPower extends AbstractModifierPower implements DamageModApplyingPower {
+public class AugerPower extends AbstractEasyPower implements DamageModApplyingPower {
     public static final String POWER_ID = ChimeraMonstersMod.makeID(AugerPower.class.getSimpleName());
     private static final PowerStrings powerStrings = CardCrawlGame.languagePack.getPowerStrings(POWER_ID);
     public static final String NAME = powerStrings.NAME;

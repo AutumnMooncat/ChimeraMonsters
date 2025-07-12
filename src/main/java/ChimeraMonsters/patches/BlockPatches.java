@@ -1,6 +1,6 @@
 package ChimeraMonsters.patches;
 
-import ChimeraMonsters.powers.AbstractModifierPower;
+import ChimeraMonsters.powers.interfaces.MonsterBlockChangingPower;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch2;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePostfixPatch;
@@ -18,8 +18,8 @@ public class BlockPatches {
             if (__instance.target instanceof AbstractMonster) {
                 float temp = __instance.amount;
                 for (AbstractPower power : __instance.target.powers) {
-                    if (power instanceof AbstractModifierPower) {
-                        temp = ((AbstractModifierPower) power).modifyMonsterBlock(temp);
+                    if (power instanceof MonsterBlockChangingPower) {
+                        temp = ((MonsterBlockChangingPower) power).modifyMonsterBlock(temp);
                     }
                 }
                 temp *= MonsterModifierFieldPatches.ModifierFields.blockMulti.get(__instance.target);

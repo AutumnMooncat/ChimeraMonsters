@@ -1,6 +1,6 @@
 package ChimeraMonsters.patches;
 
-import ChimeraMonsters.powers.AbstractModifierPower;
+import ChimeraMonsters.powers.interfaces.MonsterPreventPlayingCardsPower;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpireReturn;
 import com.megacrit.cardcrawl.cards.AbstractCard;
@@ -14,8 +14,8 @@ public class CanPlayPatches {
         public static SpireReturn<Boolean> Prefix(AbstractCard __instance) {
             for (AbstractMonster monster : AbstractDungeon.getMonsters().monsters) {
                 for (AbstractPower power : monster.powers) {
-                    if (power instanceof AbstractModifierPower) {
-                        if (((AbstractModifierPower) power).preventPlaying(__instance)) {
+                    if (power instanceof MonsterPreventPlayingCardsPower) {
+                        if (((MonsterPreventPlayingCardsPower) power).preventPlaying(__instance)) {
                             return SpireReturn.Return(false);
                         }
                     }

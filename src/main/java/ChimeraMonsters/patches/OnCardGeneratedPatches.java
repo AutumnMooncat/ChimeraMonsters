@@ -1,6 +1,6 @@
 package ChimeraMonsters.patches;
 
-import ChimeraMonsters.powers.AbstractModifierPower;
+import ChimeraMonsters.powers.interfaces.MonsterModifyGeneratedCardsPower;
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
@@ -18,8 +18,8 @@ public class OnCardGeneratedPatches {
     public static AbstractCard onGenerateInCombatCard(AbstractCard card) {
         for (AbstractMonster monster : AbstractDungeon.getMonsters().monsters) {
             for (AbstractPower power : monster.powers) {
-                if (power instanceof AbstractModifierPower) {
-                    card = ((AbstractModifierPower) power).modifyGeneratedCard(card);
+                if (power instanceof MonsterModifyGeneratedCardsPower) {
+                    card = ((MonsterModifyGeneratedCardsPower) power).modifyGeneratedCard(card);
                 }
             }
         }
