@@ -18,5 +18,9 @@
   "${ModID}:AugerPower": {
     "NAME": "Auger",
     "DESCRIPTIONS": ["Applies #b"," #yVulnerable when breaking your #yBlock."]
+  },
+  "${ModID}:BerserkerPower": {
+    "NAME": "Berserker",
+    "DESCRIPTIONS": ["Upon reaching half health, gains #b"," #yStrength and begins attacking its allies as well."]
   }
 }
