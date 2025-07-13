@@ -36,7 +36,8 @@ public abstract class AbstractMonsterModifier {
     public static final float DEBUFF_TINY = 9/10f;
     public static final Predicate<MonsterGroup> singleCombat = (group) -> group.monsters.size() == 1;
     public static final Predicate<MonsterGroup> multiCombat = (group) -> group.monsters.size() > 1;
-    public static final BiPredicate<AbstractMonster, MonsterGroup> lastMonster = (mon, group) -> group.monsters.get(group.monsters.size() - 1) == mon;
+    public static final BiPredicate<MonsterGroup, AbstractMonsterModifier> onePerFight = (group, toCheck) -> group.monsters.stream().noneMatch(mon -> MonsterModifierFieldPatches.ModifierFields.receivedModifiers.get(mon).stream().anyMatch(mod -> mod.identifier().equals(toCheck.identifier())));
+    public static final BiPredicate<MonsterGroup, AbstractMonster> lastMonster = (group, mon) -> group.monsters.get(group.monsters.size() - 1) == mon;
 
     private static final ArrayList<AbstractCard> cardsToCheck = new ArrayList<>();
 
@@ -82,8 +83,12 @@ public abstract class AbstractMonsterModifier {
         return context == null || check.test(context);
     }
 
-    public boolean checkContext(AbstractMonster monster, MonsterGroup context, BiPredicate<AbstractMonster, MonsterGroup> check) {
-        return context == null || check.test(monster, context);
+    public boolean checkContext(MonsterGroup context, AbstractMonster monster, BiPredicate<MonsterGroup, AbstractMonster> check) {
+        return context == null || check.test(context, monster);
+    }
+
+    public boolean checkContext(MonsterGroup context, BiPredicate<MonsterGroup, AbstractMonsterModifier> check) {
+        return context == null || check.test(context, this);
     }
 
     public void manipulateHealth(AbstractMonster monster, float factor) {
