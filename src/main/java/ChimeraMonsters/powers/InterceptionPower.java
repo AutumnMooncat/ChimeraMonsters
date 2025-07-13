@@ -7,6 +7,7 @@ import com.evacipated.cardcrawl.mod.stslib.patches.NeutralPowertypePatch;
 import com.evacipated.cardcrawl.mod.stslib.powers.interfaces.InvisiblePower;
 import com.megacrit.cardcrawl.actions.common.GainBlockAction;
 import com.megacrit.cardcrawl.core.AbstractCreature;
+import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.EnemyMoveInfo;
 
@@ -20,7 +21,7 @@ public class InterceptionPower extends AbstractEasyPower implements IntentInterc
     }
 
     @Override
-    public void atEndOfRound() {
+    public void otherIntentPicked(EnemyMoveInfo nextMove) {
         if (cooldown > 0) {
             cooldown--;
         }
@@ -28,6 +29,9 @@ public class InterceptionPower extends AbstractEasyPower implements IntentInterc
 
     @Override
     public float interceptRate(EnemyMoveInfo intendedMove) {
+        if (AbstractDungeon.getMonsters().monsters.stream().noneMatch(mon -> mon != owner && !mon.isDeadOrEscaped())) {
+            return 0f;
+        }
         return cooldown == 0 ? 1f : 0f;
     }
 
