@@ -11,6 +11,10 @@
     "NAME": "Dexterity",
     "DESCRIPTIONS": ["Increases #yBlock gained by #b", "Decreases #yBlock gained by #b", "."]
   },
+  "${ModID}:MonsterFrailPower": {
+    "NAME": "Frail",
+    "DESCRIPTIONS": ["Gain #b25% less #yBlock for #b", " turn.", " turns."]
+  },
   "${ModID}:AugerPower": {
     "NAME": "Auger",
     "DESCRIPTIONS": ["Applies #b"," #yVulnerable when breaking your #yBlock."]
