@@ -13,6 +13,7 @@ public class MonsterModifierFieldPatches {
     public static class ModifierFields {
         public static SpireField<Boolean> rolled = new SpireField<>(() -> false);
         public static SpireField<List<AbstractMonsterModifier>> receivedModifiers = new SpireField<>(ArrayList::new);
+        public static SpireField<String> originalName = new SpireField<>(() -> null);
         public static SpireField<Float> blockMulti = new SpireField<>(() -> 1f);
     }
 }

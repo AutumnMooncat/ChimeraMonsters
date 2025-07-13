@@ -714,6 +714,7 @@ public class ChimeraMonstersMod implements
                 AbstractDungeon.actionManager.addToBottom(new ApplyPowerAction(monster, monster, new ModifierExplainerPower(monster, copy.getModifierName(), copy.getModifierDescription())));
             }
         }
+        MonsterModifierFieldPatches.ModifierFields.originalName.set(monster, monster.name);
         monster.name = copy.modifyName(monster);
         MonsterModifierFieldPatches.ModifierFields.receivedModifiers.get(monster).add(copy);
     }
