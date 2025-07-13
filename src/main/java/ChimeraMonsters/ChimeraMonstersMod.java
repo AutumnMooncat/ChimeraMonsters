@@ -2,7 +2,6 @@ package ChimeraMonsters;
 
 import ChimeraMonsters.commands.Monster;
 import ChimeraMonsters.modifiers.AbstractMonsterModifier;
-import ChimeraMonsters.patches.ActionCapturePatch;
 import ChimeraMonsters.patches.MonsterModifierFieldPatches;
 import ChimeraMonsters.powers.ModifierExplainerPower;
 import ChimeraMonsters.ui.BiggerModButton;
@@ -275,6 +274,26 @@ public class ChimeraMonstersMod implements
         logger.info("========================= Initializing Chimera Monsters. =========================");
         ChimeraMonstersMod chimeraMonstersMod = new ChimeraMonstersMod();
         logger.info("========================= /Chimera Monsters Initialized/ =========================");
+    }
+
+    public static String makePath(String resourcePath) {
+        return modID + "Resources/" + resourcePath;
+    }
+
+    public static String makeImagePath(String resourcePath) {
+        return modID + "Resources/images/" + resourcePath;
+    }
+
+    public static String makeRelicPath(String resourcePath) {
+        return modID + "Resources/images/relics/" + resourcePath;
+    }
+
+    public static String makePowerPath(String resourcePath) {
+        return modID + "Resources/images/powers/" + resourcePath;
+    }
+
+    public static String makeCardPath(String resourcePath) {
+        return modID + "Resources/images/cards/" + resourcePath;
     }
     
     // =============== POST-INITIALIZE =================
