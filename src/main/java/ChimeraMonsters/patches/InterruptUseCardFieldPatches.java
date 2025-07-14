@@ -9,7 +9,7 @@ import javassist.expr.ExprEditor;
 import javassist.expr.MethodCall;
 
 public class InterruptUseCardFieldPatches {
-    public static boolean interceptCheck(AbstractCard card) {
+    public static boolean doIntercept(AbstractCard card) {
         return false;
     }
 
@@ -21,7 +21,7 @@ public class InterruptUseCardFieldPatches {
                 @Override
                 public void edit(MethodCall m) throws CannotCompileException {
                     if (m.getClassName().equals(AbstractCard.class.getName()) && m.getMethodName().equals("use")) {
-                        m.replace("if ("+InterruptUseCardFieldPatches.class.getName()+".interceptCheck($0)) {$proceed($$);}");
+                        m.replace(String.format("if (!%s.doIntercept($0)) {$proceed($$);}", InterruptUseCardFieldPatches.class.getName()));
                     }
                 }
             };

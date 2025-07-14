@@ -11,5 +11,11 @@
   },
   "${ModID}:AggressiveMod": {
     "TEXT": ["Aggressive ", "", "Starts with #b1 #yStrength and #b-1 #yDexterity."]
+  },
+  "${ModID}:InterceptingMod": {
+    "TEXT": ["", " the Tank", "Can Block and intercept attacks."]
+  },
+  "${ModID}:BerserkerMod": {
+    "TEXT": ["Raging ", "", "Upon reaching half health, gains #yStrength and also attacks its allies."]
   }
 }

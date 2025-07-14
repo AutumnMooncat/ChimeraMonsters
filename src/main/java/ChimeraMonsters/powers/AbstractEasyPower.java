@@ -2,12 +2,22 @@ package ChimeraMonsters.powers;
 
 import ChimeraMonsters.ChimeraMonstersMod;
 import ChimeraMonsters.util.TextureLoader;
+import basemod.ReflectionHacks;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.powers.AbstractPower;
+import com.megacrit.cardcrawl.vfx.AbstractGameEffect;
+import com.megacrit.cardcrawl.vfx.combat.SilentGainPowerEffect;
+
+import java.util.ArrayList;
 
 public abstract class AbstractEasyPower extends AbstractPower {
+    private final ArrayList<AbstractGameEffect> array;
+    private float flashTimer;
+    private boolean flashing;
+
     public AbstractEasyPower(String ID, String name, PowerType powerType, boolean isTurnBased, AbstractCreature owner, int amount) {
         this.ID = ID;
         this.name = name;
@@ -35,5 +45,27 @@ public abstract class AbstractEasyPower extends AbstractPower {
         }
 
         this.updateDescription();
+        array = ReflectionHacks.getPrivateInherited(this, AbstractEasyPower.class, "effect");
+    }
+
+    protected void startFlashing() {
+        flashing = true;
+    }
+
+    protected void stopFlashing() {
+        flashing = false;
+        flashTimer = 0f;
+    }
+
+    @Override
+    public void update(int slot) {
+        super.update(slot);
+        if (flashing) {
+            flashTimer += Gdx.graphics.getDeltaTime();
+            if (flashTimer > 1f) {
+                array.add(new SilentGainPowerEffect(this));
+                flashTimer = 0f;
+            }
+        }
     }
 }

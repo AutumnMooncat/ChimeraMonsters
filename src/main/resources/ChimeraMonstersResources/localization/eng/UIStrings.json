@@ -72,5 +72,21 @@
       "Elite",
       "Boss"
     ]
+  },
+  "${ModID}:IntentPatches": {
+    "TEXT": [
+      "Warning",
+      "This enemy intends to prepare something powerful if not stopped.",
+      "Intercepting",
+      "This enemy will receive all attack damage this turn.",
+      "Feral",
+      "This enemy intends to NL #yAttack you and its allies for #b",
+      "This enemy intends to use a #yBuff and #yAttack you and its allies for #b",
+      "This enemy intends to inflict a #yNegative #yEffect and #yAttack you and its allies for #b",
+      "This enemy intends to #yBlock and #yAttack you and its allies for #b",
+      " damage.",
+      " damage #b",
+      " times."
+    ]
   }
 }
