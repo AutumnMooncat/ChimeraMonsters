@@ -19,6 +19,6 @@
     "TEXT": ["Raging ", "", "Upon reaching half health, gains #yStrength and also attacks its allies."]
   },
   "${ModID}:TwinMod": {
-    "TEXT": ["Twin-", "", "Deals half as much damage but hits twice as much."]
+    "TEXT": ["Twin-", "", "Deals half as much basedamage but hits twice as much."]
   }
 }

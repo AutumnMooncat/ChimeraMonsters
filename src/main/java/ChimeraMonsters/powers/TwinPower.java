@@ -14,16 +14,19 @@ import com.megacrit.cardcrawl.actions.AbstractGameAction;
 import com.megacrit.cardcrawl.actions.animations.AnimateSlowAttackAction;
 import com.megacrit.cardcrawl.actions.common.ApplyPowerAction;
 import com.megacrit.cardcrawl.actions.common.DamageAction;
+import com.megacrit.cardcrawl.actions.common.RollMoveAction;
 import com.megacrit.cardcrawl.actions.unique.VampireDamageAction;
 import com.megacrit.cardcrawl.cards.DamageInfo;
 import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
+import com.megacrit.cardcrawl.daily.mods.Chimera;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.localization.PowerStrings;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.EnemyMoveInfo;
 import com.megacrit.cardcrawl.powers.AbstractPower;
 import com.megacrit.cardcrawl.powers.StrengthPower;
+import org.apache.logging.log4j.Level;
 
 import java.util.ArrayList;
 
@@ -45,7 +48,9 @@ public class TwinPower extends AbstractEasyPower implements IntentInterceptingPo
 
     @Override
     public float interceptRate(EnemyMoveInfo intendedMove) {
-        return intendedMove.baseDamage > 0 ? 1 : 0;
+        DamageInfo di = new DamageInfo(owner, intendedMove.baseDamage/2);
+        di.applyPowers(owner, Wiz.adp());
+        return di.output > 0 ? 1 : 0;
     }
 
     @Override
@@ -62,23 +67,29 @@ public class TwinPower extends AbstractEasyPower implements IntentInterceptingPo
             ActionCapturePatch.doCapture = true;
             ownerMon.takeTurn();
             ArrayList<AbstractGameAction> captured = new ArrayList<>(ActionCapturePatch.capturedActions);
+            ActionCapturePatch.clear();
             for (AbstractGameAction action : captured) {
                 if (action instanceof DamageAction && action.target == AbstractDungeon.player) {
                     DamageInfo di = ReflectionHacks.getPrivate(action, DamageAction.class, "info");
-
-                    addToBot(new DamageAction(owner, new DamageInfo(owner, di.base/2), action.attackEffect));
-                    addToBot(new DamageAction(owner, new DamageInfo(owner, di.base/2), action.attackEffect));
+                    DamageInfo newDamageInfo = new DamageInfo(owner, di.base/2);
+                    newDamageInfo.applyPowers(owner, Wiz.adp());
+                    addToBot(new DamageAction(Wiz.adp(), newDamageInfo, action.attackEffect));
+                    addToBot(new DamageAction(Wiz.adp(), newDamageInfo, action.attackEffect));
                 } else if (action instanceof VampireDamageAction && action.target == AbstractDungeon.player) {
                     DamageInfo di = ReflectionHacks.getPrivate(action, VampireDamageAction.class, "info");
-                    addToBot(new VampireDamageAction(owner, new DamageInfo(owner, di.base/2), action.attackEffect));
-                    addToBot(new VampireDamageAction(owner, new DamageInfo(owner, di.base/2), action.attackEffect));
+                    DamageInfo newDamageInfo = new DamageInfo(owner, di.base/2);
+                    newDamageInfo.applyPowers(owner, Wiz.adp());
+                    addToBot(new VampireDamageAction(Wiz.adp(), newDamageInfo, action.attackEffect));
+                    addToBot(new VampireDamageAction(Wiz.adp(), newDamageInfo, action.attackEffect));
                 } else {
+                    if(action instanceof RollMoveAction){
+                        ChimeraMonstersMod.logger.log(Level.WARN, "AAAAAAAAAAH");
+                    }
                     addToBot(action);
                 }
             }
-            ActionCapturePatch.clear();
         }
-        return false;
+        return true;
     }
 
     @Override

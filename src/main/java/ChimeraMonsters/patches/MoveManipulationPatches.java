@@ -108,7 +108,10 @@ public class MoveManipulationPatches {
         if (creature instanceof AbstractMonster) {
             byte moveByte = ((AbstractMonster) creature).nextMove;
             try {
-                info.nextMove = moveByte;
+               if(info.nextMove!=-1){
+                   ((AbstractMonster) creature).moveHistory.add(info.nextMove);
+                   //TODO: MoveName
+               }
                 moveField.set(creature, info);
                 if (instantCreate) {
                     ((AbstractMonster) creature).createIntent();
