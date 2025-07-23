@@ -2,7 +2,7 @@ package ChimeraMonsters.modifiers.common;
 
 import ChimeraMonsters.ChimeraMonstersMod;
 import ChimeraMonsters.modifiers.AbstractMonsterModifier;
-import ChimeraMonsters.modifiers.GroupModifierInterface;
+import ChimeraMonsters.modifiers.GroupMonsterModifier;
 import ChimeraMonsters.powers.MonsterDexterityPower;
 import ChimeraMonsters.util.Wiz;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
@@ -10,14 +10,14 @@ import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
 import com.megacrit.cardcrawl.powers.StrengthPower;
 
-public class AggressiveMod extends AbstractMonsterModifier implements GroupModifierInterface {
+public class AggressiveMod extends GroupMonsterModifier {
     public static final String ID = ChimeraMonstersMod.makeID(AggressiveMod.class.getSimpleName());
     public static final String[] TEXT = CardCrawlGame.languagePack.getUIString(ID).TEXT;
     public static final int AMOUNT = 1;
 
     @Override
     public ModifierRarity getModRarity() {
-        return ModifierRarity.RARE;
+        return ModifierRarity.COMMON;
     }
 
     @Override

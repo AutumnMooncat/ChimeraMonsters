@@ -1,8 +1,10 @@
-package ChimeraMonsters.modifiers;
+package ChimeraMonsters.curatedFights;
 
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
 
 public abstract class AbstractCuratedFight {
+
+    public abstract String identifier();
 
     public abstract boolean isMonsterGroupValid(MonsterGroup monsterGroup);
 

@@ -1,23 +1,23 @@
 package ChimeraMonsters;
 
 import ChimeraMonsters.commands.Monster;
+import ChimeraMonsters.curatedFights.AbstractCuratedFight;
 import ChimeraMonsters.modifiers.AbstractMonsterModifier;
 import ChimeraMonsters.patches.MonsterModifierFieldPatches;
 import ChimeraMonsters.powers.ModifierExplainerPower;
 import ChimeraMonsters.ui.BiggerModButton;
 import ChimeraMonsters.ui.CenteredModLabel;
 import ChimeraMonsters.ui.ModLabeledToggleTooltipButton;
+import ChimeraMonsters.util.FightModificationManager;
 import ChimeraMonsters.util.KeywordManager;
 import ChimeraMonsters.util.TextureLoader;
 import basemod.*;
 import basemod.devcommands.ConsoleCommand;
-import basemod.interfaces.EditKeywordsSubscriber;
-import basemod.interfaces.EditStringsSubscriber;
-import basemod.interfaces.OnStartBattleSubscriber;
-import basemod.interfaces.PostInitializeSubscriber;
+import basemod.interfaces.*;
 import basemod.patches.whatmod.WhatMod;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.mod.stslib.Keyword;
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.google.gson.Gson;
@@ -53,7 +53,8 @@ public class ChimeraMonstersMod implements
         EditStringsSubscriber,
         PostInitializeSubscriber,
         EditKeywordsSubscriber,
-        OnStartBattleSubscriber {
+        OnStartBattleSubscriber,
+        PostRenderSubscriber {
     public static final Logger logger = LogManager.getLogger(ChimeraMonstersMod.class.getName());
     private static String modID;
 
@@ -97,6 +98,7 @@ public class ChimeraMonstersMod implements
     public static final ArrayList<AbstractMonsterModifier> rareMods = new ArrayList<>();
     public static final ArrayList<AbstractMonsterModifier> specialMods = new ArrayList<>();
     public static final HashMap<String, AbstractMonsterModifier> modMap = new HashMap<>();
+    public static final HashMap<String, AbstractCuratedFight> curatedFightMap = new HashMap<>();
     public static final HashMap<AbstractMonsterModifier, String> crossoverMap = new HashMap<>();
     public static final HashMap<String, String> crossoverLabelMap = new HashMap<>();
     public static final HashMap<String, Integer> crossoverSizeMap = new HashMap<>();
@@ -212,12 +214,6 @@ public class ChimeraMonstersMod implements
         logger.info("Loaded config for modID: "+modID);
     }
 
-    @Deprecated
-    public static void registerMonsterModifier(AbstractMonsterModifier mod) {
-        logger.warn("Modifier "+ mod +" does not include a modID, Chimera Monsters can not manage the spawning of this mod! Please call registerMod then pass your modID when registering augments.");
-        registerMonsterModifier(mod, UNMANAGED_ID);
-    }
-
     public static void registerMonsterModifier(AbstractMonsterModifier a, String modID) {
         if (!Objects.equals(modID, UNMANAGED_ID) && !crossoverEnableMap.containsKey(modID)) {
             logger.warn("Modifier "+a+" with modID "+modID+" does not match any registered configs, Chimera Monsters can not manage the spawning of this mod! Please call registerMod with your ID to set up a config.");
@@ -256,6 +252,30 @@ public class ChimeraMonstersMod implements
                 }
             }
         }
+    }
+
+    public static void registerCuratedFights(AbstractCuratedFight a, String modID) {
+       //TODO: crossover logic
+        if (!a.identifier().isEmpty()) {
+            curatedFightMap.put(a.identifier(), a);
+        } else {
+            //TODO: Make console command for curated fights. Use MonsterSpawn+MonsterApply command logic
+            logger.warn("Curated Fight "+ a +" does not set an identifier, Chimera Monsters can not spawn this curated fight via console commands!");
+        }
+        //TODO: Config Disabling
+        /*if (chimeraMonstersDisabledModifierConfig.has(a.identifier())) {
+            if (chimeraMonstersDisabledModifierConfig.getBool(a.identifier()) && a.getModRarity() != AbstractMonsterModifier.ModifierRarity.SPECIAL) {
+                disabledModifiers.add(a);
+            } else {
+                chimeraMonstersDisabledModifierConfig.remove(a.identifier());
+                try {
+                    chimeraMonstersDisabledModifierConfig.save();
+                } catch (IOException e) {
+                    logger.error("Chimera Monster Modifier Config failed:");
+                    e.printStackTrace();
+                }
+            }
+        }*/
     }
 
     public static void registerCustomBan(String modifierID, Predicate<AbstractMonster> banIf) {
@@ -504,7 +524,9 @@ public class ChimeraMonstersMod implements
         new AutoAdd(modID)
                 .packageFilter("ChimeraMonsters.modifiers")
                 .any(AbstractMonsterModifier.class, (info, abstractAugment) -> registerMonsterModifier(abstractAugment, modID));
-
+        new AutoAdd(modID)
+                .packageFilter("ChimeraMonsters.curatedFights")
+                .any(AbstractCuratedFight.class, (info, abstractAugment) -> registerCuratedFights(abstractAugment, modID));
         logger.info("Done loading monster modifiers");
     }
 
@@ -738,60 +760,7 @@ public class ChimeraMonstersMod implements
         MonsterModifierFieldPatches.ModifierFields.receivedModifiers.get(monster).add(copy);
     }
 
-    public static void rollMonsterModifier(AbstractMonster monster, MonsterGroup context) {
-        if (enableMods && !MonsterModifierFieldPatches.ModifierFields.rolled.get(monster) && (commonWeight + uncommonWeight + rareWeight + rarityBias != 0)) {
-            for (int i = 0 ; i < rollAttempts ; i++) {
-                if (AbstractDungeon.miscRng.random(99) < modProbabilityPercent) {
-                    applyWeightedMonsterModifier(monster, context, rollRarity(monster.type));
-                }
-            }
-        }
-        MonsterModifierFieldPatches.ModifierFields.rolled.set(monster, true);
-    }
 
-    public static AbstractMonsterModifier.ModifierRarity rollRarity(AbstractMonster.EnemyType type) {
-        int c = commonWeight;
-        int u = uncommonWeight;
-        int r = rareWeight;
-        switch (type) {
-            case NORMAL:
-                c += rarityBias;
-                break;
-            case ELITE:
-                u += rarityBias;
-                break;
-            case BOSS:
-                r += rarityBias;
-                break;
-        }
-        int roll = AbstractDungeon.miscRng.random(c + u + r - 1); //StS adds +1 to random call, so subtract 1
-        if ((roll -= c) < 0) {
-            return AbstractMonsterModifier.ModifierRarity.COMMON;
-        } else if (roll - u < 0) {
-            return AbstractMonsterModifier.ModifierRarity.UNCOMMON;
-        } else {
-            return AbstractMonsterModifier.ModifierRarity.RARE;
-        }
-    }
-
-    public static void applyWeightedMonsterModifier(AbstractMonster monster, MonsterGroup context, AbstractMonsterModifier.ModifierRarity rarity) {
-        ArrayList<AbstractMonsterModifier> validMods = new ArrayList<>();
-        switch (rarity) {
-            case COMMON:
-                validMods.addAll(commonMods.stream().filter(m -> m.canApplyTo(monster, context) && isModifierEnabled(m)).collect(Collectors.toCollection(ArrayList::new)));
-                break;
-            case UNCOMMON:
-                validMods.addAll(uncommonMods.stream().filter(m -> m.canApplyTo(monster, context) && isModifierEnabled(m)).collect(Collectors.toCollection(ArrayList::new)));
-                break;
-            case RARE:
-                validMods.addAll(rareMods.stream().filter(m -> m.canApplyTo(monster, context) && isModifierEnabled(m)).collect(Collectors.toCollection(ArrayList::new)));
-                break;
-        }
-        if (!validMods.isEmpty()) {
-            AbstractMonsterModifier mod = validMods.get(AbstractDungeon.miscRng.random(validMods.size()-1)).makeCopy();
-            applyModifier(monster, mod);
-        }
-    }
 
     public static boolean canReceiveModifier(AbstractMonster monster, MonsterGroup context) {
         for (AbstractMonsterModifier a : commonMods) {
@@ -899,9 +868,12 @@ public class ChimeraMonstersMod implements
 
     @Override
     public void receiveOnBattleStart(AbstractRoom room) {
-        for (AbstractMonster monster : room.monsters.monsters) {
-            rollMonsterModifier(monster, room.monsters);
-        }
+        FightModificationManager.rollFightModifiers(room.monsters);
+    }
+
+    @Override
+    public void receivePostRender(SpriteBatch spriteBatch) {
+        FightModificationManager.render(spriteBatch);
     }
 
     @SpirePatch2(clz = CardCrawlGame.class, method = "create")
