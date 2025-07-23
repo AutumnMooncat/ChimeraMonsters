@@ -1,6 +1,7 @@
 package ChimeraMonsters.patches;
 
 import ChimeraMonsters.ChimeraMonstersMod;
+import ChimeraMonsters.util.FightModificationManager;
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.megacrit.cardcrawl.actions.common.SpawnMonsterAction;
 import com.megacrit.cardcrawl.core.AbstractCreature;
@@ -13,7 +14,7 @@ public class SpawnMonsterPatch {
     public static class RollOnSpawn {
         @SpireInsertPatch(locator =  Locator.class)
         public static void plz(AbstractMonster ___m) {
-            ChimeraMonstersMod.rollMonsterModifier(___m, AbstractDungeon.getMonsters());
+            FightModificationManager.rollMonsterModifier(___m, AbstractDungeon.getMonsters());
         }
 
         public static class Locator extends SpireInsertLocator {
