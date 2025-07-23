@@ -22,5 +22,9 @@
   "${ModID}:BerserkerPower": {
     "NAME": "Berserker",
     "DESCRIPTIONS": ["Upon reaching half health, gains #b"," #yStrength and begins attacking its allies as well."]
+  },
+  "${ModID}:TwinPower": {
+    "NAME": "Twin",
+    "DESCRIPTIONS": ["Deals half as much damage but hits twice as much."]
   }
 }
