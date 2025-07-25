@@ -2,26 +2,25 @@ package ChimeraMonsters.powers;
 
 import ChimeraMonsters.ChimeraMonstersMod;
 import ChimeraMonsters.patches.ActionCapturePatch;
-import ChimeraMonsters.patches.CustomIntentPatches;
 import ChimeraMonsters.powers.interfaces.IntentInterceptingPower;
+import ChimeraMonsters.powers.interfaces.RenderModifierPower;
 import ChimeraMonsters.util.Wiz;
 import basemod.ReflectionHacks;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.megacrit.cardcrawl.actions.AbstractGameAction;
 import com.megacrit.cardcrawl.actions.common.DamageAction;
-import com.megacrit.cardcrawl.actions.common.RollMoveAction;
 import com.megacrit.cardcrawl.actions.unique.VampireDamageAction;
 import com.megacrit.cardcrawl.cards.DamageInfo;
 import com.megacrit.cardcrawl.core.AbstractCreature;
-import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
-import com.megacrit.cardcrawl.localization.PowerStrings;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.EnemyMoveInfo;
-import org.apache.logging.log4j.Level;
 
 import java.util.ArrayList;
 
-public class DoppelPower extends AbstractInternalLogicPower implements IntentInterceptingPower {
+public class DoppelPower extends AbstractInternalLogicPower implements IntentInterceptingPower, RenderModifierPower {
     public static final String POWER_ID = ChimeraMonstersMod.makeID(DoppelPower.class.getSimpleName());
 
     public DoppelPower(AbstractCreature owner, int amount) {
@@ -59,9 +58,6 @@ public class DoppelPower extends AbstractInternalLogicPower implements IntentInt
                     addToBot(new VampireDamageAction(Wiz.adp(), di, action.attackEffect));
                     addToBot(new VampireDamageAction(Wiz.adp(), di, action.attackEffect));
                 } else {
-                    if(action instanceof RollMoveAction){
-                        ChimeraMonstersMod.logger.log(Level.WARN, "AAAAAAAAAAH");
-                    }
                     addToBot(action);
                 }
             }
@@ -74,15 +70,12 @@ public class DoppelPower extends AbstractInternalLogicPower implements IntentInt
         return false;
     }
 
-    private void changeIntent(EnemyMoveInfo replacedMove, boolean instant) {
-        if (replacedMove.intent == AbstractMonster.Intent.ATTACK) {
-            setMove(owner, new EnemyMoveInfo(replacedMove.nextMove, CustomIntentPatches.CHIMERA_MONSTERS_SWEEPING_ATTACK, replacedMove.baseDamage, replacedMove.multiplier, replacedMove.isMultiDamage), instant);
-        } else if (replacedMove.intent == AbstractMonster.Intent.ATTACK_BUFF) {
-            setMove(owner, new EnemyMoveInfo(replacedMove.nextMove, CustomIntentPatches.CHIMERA_MONSTERS_SWEEPING_ATTACK_BUFF, replacedMove.baseDamage, replacedMove.multiplier, replacedMove.isMultiDamage), instant);
-        } else if (replacedMove.intent == AbstractMonster.Intent.ATTACK_DEBUFF) {
-            setMove(owner, new EnemyMoveInfo(replacedMove.nextMove, CustomIntentPatches.CHIMERA_MONSTERS_SWEEPING_ATTACK_DEBUFF, replacedMove.baseDamage, replacedMove.multiplier, replacedMove.isMultiDamage), instant);
-        } else {
-            setMove(owner, new EnemyMoveInfo(replacedMove.nextMove, CustomIntentPatches.CHIMERA_MONSTERS_SWEEPING_ATTACK_BLOCK, replacedMove.baseDamage, replacedMove.multiplier, replacedMove.isMultiDamage), instant);
-        }
+    @Override
+    public void onRender(SpriteBatch sb, TextureRegion tex) {
+        Color origColor = sb.getColor();
+        sb.setColor(Color.WHITE);
+        sb.draw(tex, -25, 5);
+        sb.draw(tex, 25, -5);
+        sb.setColor(origColor);
     }
 }

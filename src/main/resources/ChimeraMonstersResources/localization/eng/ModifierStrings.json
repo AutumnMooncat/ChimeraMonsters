@@ -20,5 +20,8 @@
   },
   "${ModID}:DoppelMod": {
     "TEXT": ["Doppel", "", "Hits twice as many times but base damage is halved.", "TL Note: Doppel is added to last part of the monster name"]
+  },
+  "${ModID}:ShadowMod": {
+    "TEXT": ["Shadow ", "", "Increases base damage by #b50%. NL Reduces health by #b33%."]
   }
 }
