@@ -3,7 +3,6 @@ package ChimeraMonsters.modifiers.rare;
 import ChimeraMonsters.ChimeraMonstersMod;
 import ChimeraMonsters.modifiers.AbstractMonsterModifier;
 import ChimeraMonsters.powers.AugerPower;
-import ChimeraMonsters.util.Wiz;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
@@ -40,8 +39,8 @@ public class AugerMod extends AbstractMonsterModifier {
 
     @Override
     public void applyTo(AbstractMonster monster) {
-        manipulateHealth(monster, DEBUFF_MINOR);
-        Wiz.applyToEnemy(monster, new AugerPower(monster, AMOUNT));
+        manipulateBaseHealth(monster, DEBUFF_MINOR);
+        applyPowersToCreature(monster, new AugerPower(monster, AMOUNT));
     }
 
     @Override
