@@ -7,7 +7,7 @@
     "TEXT": ["Drill ", "", "Reduces health by #b20%. NL Applies #yVulnerable when breaking #yBlock."]
   },
   "${ModID}:BulkyMod": {
-    "TEXT": ["Bulky ", "", "Increase #yBlock gained by #b33%. NL Reduces damage dealt by #b20%."]
+    "TEXT": ["Bulky ", "", "Increase #yBlock gained by #b33%. NL Reduces base damage by #b20%."]
   },
   "${ModID}:AggressiveMod": {
     "TEXT": ["Aggressive ", "", "Starts with #b1 #yStrength and #b-1 #yDexterity."]
@@ -18,7 +18,7 @@
   "${ModID}:BerserkerMod": {
     "TEXT": ["Raging ", "", "Upon reaching half health, gains #yStrength and also attacks its allies."]
   },
-  "${ModID}:TwinMod": {
-    "TEXT": ["Twin-", "", "Deals half as much basedamage but hits twice as much."]
+  "${ModID}:DoppelMod": {
+    "TEXT": ["Doppel", "", "Hits twice as many times but base damage is halved.", "TL Note: Doppel is added to last part of the monster name"]
   }
 }
