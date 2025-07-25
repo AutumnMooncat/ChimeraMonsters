@@ -3,7 +3,6 @@ package ChimeraMonsters.modifiers.rare;
 import ChimeraMonsters.ChimeraMonstersMod;
 import ChimeraMonsters.modifiers.AbstractMonsterModifier;
 import ChimeraMonsters.powers.BerserkerPower;
-import ChimeraMonsters.util.Wiz;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
@@ -39,7 +38,7 @@ public class BerserkerMod extends AbstractMonsterModifier {
 
     @Override
     public void applyTo(AbstractMonster monster) {
-        Wiz.applyToEnemy(monster, new BerserkerPower(monster, 3));
+        applyPowersToCreature(monster, new BerserkerPower(monster, 3));
     }
 
     @Override

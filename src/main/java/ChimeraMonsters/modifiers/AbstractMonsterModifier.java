@@ -3,16 +3,19 @@ package ChimeraMonsters.modifiers;
 import ChimeraMonsters.ChimeraMonstersMod;
 import ChimeraMonsters.patches.MonsterModifierFieldPatches;
 import ChimeraMonsters.util.Wiz;
+import com.evacipated.cardcrawl.mod.stslib.powers.interfaces.InvisiblePower;
 import com.evacipated.cardcrawl.modthespire.Loader;
 import com.megacrit.cardcrawl.actions.AbstractGameAction;
 import com.megacrit.cardcrawl.actions.common.GainBlockAction;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.DamageInfo;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
+import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
+import com.megacrit.cardcrawl.powers.AbstractPower;
 import javassist.*;
 import javassist.expr.ExprEditor;
 import javassist.expr.MethodCall;
@@ -24,16 +27,16 @@ import java.util.function.Predicate;
 
 public abstract class AbstractMonsterModifier {
     private static final String[] BASE_TEXT = CardCrawlGame.languagePack.getUIString(ChimeraMonstersMod.makeID(AbstractMonsterModifier.class.getSimpleName())).TEXT;
-    public static final float BUFF_HUGE = 3/2f;
-    public static final float BUFF_MAJOR = 4/3f;
-    public static final float BUFF_MODERATE = 5/4f;
-    public static final float BUFF_MINOR = 6/5f;
-    public static final float BUFF_TINY = 11/10f;
-    public static final float DEBUFF_HUGE = 1/2f;
-    public static final float DEBUFF_MAJOR = 2/3f;
-    public static final float DEBUFF_MODERATE = 3/4f;
-    public static final float DEBUFF_MINOR = 4/5f;
-    public static final float DEBUFF_TINY = 9/10f;
+    public static final float BUFF_HUGE = 3 / 2f;
+    public static final float BUFF_MAJOR = 4 / 3f;
+    public static final float BUFF_MODERATE = 5 / 4f;
+    public static final float BUFF_MINOR = 6 / 5f;
+    public static final float BUFF_TINY = 11 / 10f;
+    public static final float DEBUFF_HUGE = 1 / 2f;
+    public static final float DEBUFF_MAJOR = 2 / 3f;
+    public static final float DEBUFF_MODERATE = 3 / 4f;
+    public static final float DEBUFF_MINOR = 4 / 5f;
+    public static final float DEBUFF_TINY = 9 / 10f;
     public static final Predicate<MonsterGroup> singleCombat = (group) -> group.monsters.size() == 1;
     public static final Predicate<MonsterGroup> multiCombat = (group) -> group.monsters.size() > 1;
     public static final BiPredicate<MonsterGroup, AbstractMonsterModifier> onePerFight = (group, toCheck) -> group.monsters.stream().noneMatch(mon -> MonsterModifierFieldPatches.ModifierFields.receivedModifiers.get(mon).stream().anyMatch(mod -> mod.identifier().equals(toCheck.identifier())));
@@ -46,6 +49,7 @@ public abstract class AbstractMonsterModifier {
         UNCOMMON,
         RARE,
         SPECIAL;
+
         public String toString() {
             return name().charAt(0) + name().substring(1).toLowerCase();
         }
@@ -56,6 +60,27 @@ public abstract class AbstractMonsterModifier {
     protected abstract boolean validMonster(AbstractMonster monster, MonsterGroup context);
 
     public abstract void applyTo(AbstractMonster monster);
+
+    public void applyPowersToCreature(AbstractCreature owner, AbstractPower... powers) {
+        for (AbstractPower powerToApply : powers) {
+            AbstractPower p = owner.getPower(powerToApply.ID);
+            if (p != null) {
+                p.stackPower(powerToApply.amount);
+                if (!(p instanceof InvisiblePower)) {
+                    p.flash();
+                }
+                p.updateDescription();
+            } else {
+                owner.addPower(powerToApply);
+                powerToApply.onInitialApplication();
+                if (!(powerToApply instanceof InvisiblePower)) {
+                    powerToApply.flash();
+                }
+            }
+            //AbstractDungeon.onModifyPower();
+        }
+        //TODO: Apply Buff/Debuff VFX
+    }
 
     public abstract String identifier();
 
@@ -91,18 +116,18 @@ public abstract class AbstractMonsterModifier {
         return context == null || check.test(context, this);
     }
 
-    public void manipulateHealth(AbstractMonster monster, float factor) {
+    public void manipulateBaseHealth(AbstractMonster monster, float factor) {
         monster.currentHealth = (int) (monster.currentHealth * factor);
         monster.maxHealth = (int) (monster.maxHealth * factor);
     }
 
-    public void manipulateDamage(AbstractMonster monster, float factor) {
+    public void manipulateBaseDamage(AbstractMonster monster, float factor) {
         for (DamageInfo di : monster.damage) {
             di.base = (int) (di.base * factor);
         }
     }
 
-    public void manipulateBlock(AbstractMonster monster, float factor) {
+    public void manipulateFinalBlock(AbstractMonster monster, float factor) {
         MonsterModifierFieldPatches.ModifierFields.blockMulti.set(monster, MonsterModifierFieldPatches.ModifierFields.blockMulti.get(monster) * factor);
     }
 
@@ -138,7 +163,8 @@ public abstract class AbstractMonsterModifier {
     public static boolean doesntOverride(Object o, Class<?> clazz, String method, Class<?>... paramtypez) {
         try {
             return o.getClass().getMethod(method, paramtypez).getDeclaringClass().equals(clazz);
-        } catch (NoSuchMethodException ignored) {}
+        } catch (NoSuchMethodException ignored) {
+        }
         return false;
     }
 
@@ -177,10 +203,12 @@ public abstract class AbstractMonsterModifier {
                                 }
                             }
                         });
-                    } catch (Exception ignored) {}
+                    } catch (Exception ignored) {
+                    }
                 }
             });
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
         return usesAction[0];
     }
 

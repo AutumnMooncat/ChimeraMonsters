@@ -3,7 +3,6 @@ package ChimeraMonsters.modifiers.uncommon;
 import ChimeraMonsters.ChimeraMonstersMod;
 import ChimeraMonsters.modifiers.AbstractMonsterModifier;
 import ChimeraMonsters.powers.InterceptionPower;
-import ChimeraMonsters.util.Wiz;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
@@ -39,7 +38,7 @@ public class InterceptingMod extends AbstractMonsterModifier {
 
     @Override
     public void applyTo(AbstractMonster monster) {
-        Wiz.applyToEnemy(monster, new InterceptionPower(monster, 10));
+        applyPowersToCreature(monster, new InterceptionPower(monster, 10));
     }
 
     @Override

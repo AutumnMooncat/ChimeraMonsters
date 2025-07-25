@@ -4,7 +4,6 @@ import ChimeraMonsters.ChimeraMonstersMod;
 import ChimeraMonsters.modifiers.AbstractMonsterModifier;
 import ChimeraMonsters.modifiers.GroupMonsterModifier;
 import ChimeraMonsters.powers.MonsterDexterityPower;
-import ChimeraMonsters.util.Wiz;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
@@ -42,8 +41,7 @@ public class AggressiveMod extends GroupMonsterModifier {
 
     @Override
     public void applyTo(AbstractMonster monster) {
-        Wiz.applyToEnemy(monster, new StrengthPower(monster, AMOUNT));
-        Wiz.applyToEnemy(monster, new MonsterDexterityPower(monster, -AMOUNT));
+        applyPowersToCreature(monster, new StrengthPower(monster, AMOUNT), new MonsterDexterityPower(monster, -AMOUNT));
     }
 
     @Override

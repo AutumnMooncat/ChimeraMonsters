@@ -752,7 +752,7 @@ public class ChimeraMonstersMod implements
         if (CardCrawlGame.isInARun()) {
             copy.applyTo(monster);
             if (ChimeraMonstersMod.enableTooltips) {
-                AbstractDungeon.actionManager.addToBottom(new ApplyPowerAction(monster, monster, new ModifierExplainerPower(monster, copy.getModifierName(), copy.getModifierDescription())));
+                monster.addPower(new ModifierExplainerPower(monster, copy.getModifierName(), copy.getModifierDescription()));
             }
         }
         MonsterModifierFieldPatches.ModifierFields.originalName.set(monster, monster.name);
@@ -868,7 +868,7 @@ public class ChimeraMonstersMod implements
 
     @Override
     public void receiveOnBattleStart(AbstractRoom room) {
-        FightModificationManager.rollFightModifiers(room.monsters);
+
     }
 
     @Override
