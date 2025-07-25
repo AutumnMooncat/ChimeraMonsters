@@ -92,6 +92,9 @@ public class ChimeraMonstersMod implements
     public static final String SHOW_BREAKDOWN = "showBreakdown";
     public static boolean showBreakdown = false;
 
+    public static final String ENABLE_SHADERS = "enableShaders";
+    public static boolean enableShaders = true;
+
     //Mod Lists
     public static final ArrayList<AbstractMonsterModifier> commonMods = new ArrayList<>();
     public static final ArrayList<AbstractMonsterModifier> uncommonMods = new ArrayList<>();
@@ -126,6 +129,7 @@ public class ChimeraMonstersMod implements
     public static String ENABLE_TIPS_TEXT;
     public static String ROLL_ATTEMPTS_TEXT;
     public static String SHOW_ANALYSIS_TEXT;
+    public static String ENABLE_SHADERS_TEXT;
     public static String[] EXTRA_TEXT;
     private static final String AUTHOR = "Mistress Autumn, Mindbomber";
 
@@ -169,6 +173,7 @@ public class ChimeraMonstersMod implements
         chimeraMonstersDefaultSettings.setProperty(ENABLE_TOOLTIPS, Boolean.toString(enableTooltips));
         chimeraMonstersDefaultSettings.setProperty(ROLL_ATTEMPTS, String.valueOf(rollAttempts));
         chimeraMonstersDefaultSettings.setProperty(SHOW_BREAKDOWN, Boolean.toString(showBreakdown));
+        chimeraMonstersDefaultSettings.setProperty(ENABLE_SHADERS, Boolean.toString(enableShaders));
         try {
             chimeraMonstersConfig = new SpireConfig(modID, FILE_NAME, chimeraMonstersDefaultSettings);
             chimeraMonstersCrossoverConfig = new SpireConfig(modID, CROSSOVER_FILE_NAME);
@@ -182,6 +187,7 @@ public class ChimeraMonstersMod implements
             enableTooltips = chimeraMonstersConfig.getBool(ENABLE_TOOLTIPS);
             rollAttempts = chimeraMonstersConfig.getInt(ROLL_ATTEMPTS);
             showBreakdown = chimeraMonstersConfig.getBool(SHOW_BREAKDOWN);
+            enableShaders = chimeraMonstersConfig.getBool(ENABLE_SHADERS);
         } catch (IOException e) {
             logger.error("Chimera Monsters SpireConfig initialization failed:");
             e.printStackTrace();
@@ -361,6 +367,7 @@ public class ChimeraMonstersMod implements
         ENABLE_TIPS_TEXT = TEXT[6];
         ROLL_ATTEMPTS_TEXT = TEXT[7];
         SHOW_ANALYSIS_TEXT = TEXT[8];
+        ENABLE_SHADERS_TEXT = TEXT[9];
         // Create the Mod Menu
 
         // Load the Mod Badge
@@ -474,6 +481,15 @@ public class ChimeraMonstersMod implements
                 chimeraMonstersConfig.save();} catch (IOException e) {e.printStackTrace();}
         });
 
+        //Used enable shaders
+        ModLabeledToggleButton enableShadersButton = new ModLabeledToggleButton(ENABLE_SHADERS_TEXT,LAYOUT_X - 40f, LAYOUT_Y - 10f, Settings.CREAM_COLOR, FontHelper.charDescFont,
+                chimeraMonstersConfig.getBool(ENABLE_SHADERS), settingsPanel, (label) -> {}, (button) -> {
+            chimeraMonstersConfig.setBool(ENABLE_SHADERS, button.enabled);
+            enableTooltips = button.enabled;
+            try {
+                chimeraMonstersConfig.save();} catch (IOException e) {e.printStackTrace();}
+        });
+
         registerUIElement(dataButton, false);
         registerUIElement(enableModsButton);
         registerUIElement(probabilityLabel, false);
@@ -489,6 +505,7 @@ public class ChimeraMonstersMod implements
         registerUIElement(biasLabel, false);
         registerUIElement(biasSlider);
         registerUIElement(enableTooltipsButton);
+        registerUIElement(enableShadersButton);
 
         CenteredModLabel pageLabel = new CenteredModLabel(crossoverUIStrings.TEXT[1], Settings.WIDTH/2f/Settings.xScale, LAYOUT_Y + 70f, settingsPanel, l -> {
             l.text = crossoverUIStrings.TEXT[1] + " " + (currentPage + 1) + "/" + (pages.size());

@@ -9,7 +9,8 @@
       "Monster Type Weight Bias (Default 1):",
       "Enable Modifier Tooltips",
       "Roll Attempts (Default 1):",
-      "Show Analysis"
+      "Show Analysis",
+      "Enable Shaders"
     ],
     "EXTRA_TEXT": [
       "Chimera Monsters",
