@@ -25,6 +25,8 @@ public class ShaderCompiler {
                 frag == null ? defaultShader.getFragmentShaderSource() : Gdx.files.internal(frag).readString(String.valueOf(StandardCharsets.UTF_8))
         );
         if (prog.isCompiled()) {
+            ChimeraMonstersMod.logger.log(Level.INFO, "Shader compiled");
+            ChimeraMonstersMod.logger.log(Level.INFO, "Vert: {}, Frag: {}", vert == null ? "default" : vert, frag == null ? "default" : frag);
             return prog;
         }
         ChimeraMonstersMod.logger.log(Level.ERROR, "Shader failed to compile");

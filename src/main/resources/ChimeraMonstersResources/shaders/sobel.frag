@@ -52,4 +52,5 @@ void main() {
     vec2 uv = v_texCoords.xy / u_screenSize.xy;
     vec4 color = texture(u_texture, uv.xy);
     gl_FragColor.xyz = sobel(stepSize /u_screenSize.x, stepSize /u_screenSize.y, v_texCoords);
+    gl_FragColor.a = color.a;
 }
