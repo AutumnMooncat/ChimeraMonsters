@@ -22,5 +22,9 @@
   "${ModID}:BerserkerPower": {
     "NAME": "Berserker",
     "DESCRIPTIONS": ["Upon reaching half health, gains #b"," #yStrength and begins attacking its allies as well."]
+  },
+  "${ModID}:VampiricPower": {
+    "NAME": "Vampiric",
+    "DESCRIPTIONS": ["Heals for #b", "% of unblocked damage dealt."]
   }
 }
