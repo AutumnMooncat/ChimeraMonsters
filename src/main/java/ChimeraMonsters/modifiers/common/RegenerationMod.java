@@ -83,6 +83,6 @@ public class RegenerationMod extends GroupMonsterModifier {
 
     @Override
     public String fightName(MonsterGroup context) {
-        return "Dracula's Brood"; //TODO: localization
+        return "Rejuvenating Spring"; //TODO: localization
     }
 }
