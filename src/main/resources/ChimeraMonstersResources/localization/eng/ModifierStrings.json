@@ -25,6 +25,9 @@
     "TEXT": ["Shadow ", "", "Increases base damage by #b50%. NL Reduces health by #b33%."]
   },
   "${ModID}:VampiricMod": {
-    "TEXT": ["Vampiric ", "", "Heals for 50% of unblocked damage dealt."]
+    "TEXT": ["Vampiric ", "", "Heals for 50% of unblocked damage dealt. Starts with 70% of it's maximum health."]
+  },
+  "${ModID}:RegenerationMod": {
+    "TEXT": ["Regenerating ", "", "Starts with [4/7/10] #yRegeneration. Starts with 70% of it's maximum health."]
   }
 }
