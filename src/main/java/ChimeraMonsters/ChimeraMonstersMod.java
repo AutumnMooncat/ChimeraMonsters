@@ -769,7 +769,7 @@ public class ChimeraMonstersMod implements
         if (CardCrawlGame.isInARun()) {
             copy.applyTo(monster);
             if (ChimeraMonstersMod.enableTooltips) {
-                monster.addPower(new ModifierExplainerPower(monster, copy.getModifierName(), copy.getModifierDescription()));
+                monster.powers.add(new ModifierExplainerPower(monster, copy.getModifierName(), copy.getModifierDescription()));
             }
         }
         MonsterModifierFieldPatches.ModifierFields.originalName.set(monster, monster.name);
