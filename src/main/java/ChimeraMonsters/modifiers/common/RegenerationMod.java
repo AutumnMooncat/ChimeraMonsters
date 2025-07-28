@@ -4,16 +4,18 @@ import ChimeraMonsters.ChimeraMonstersMod;
 import ChimeraMonsters.modifiers.AbstractMonsterModifier;
 import ChimeraMonsters.modifiers.GroupMonsterModifier;
 import ChimeraMonsters.powers.VampiricPower;
-import com.evacipated.cardcrawl.mod.stslib.damagemods.BindingHelper;
-import com.megacrit.cardcrawl.cards.DamageInfo;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
+import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
+import com.megacrit.cardcrawl.powers.RegenerateMonsterPower;
 
-public class VampiricMod extends GroupMonsterModifier {
-    public static final String ID = ChimeraMonstersMod.makeID(VampiricMod.class.getSimpleName());
+public class RegenerationMod extends GroupMonsterModifier {
+    public static final String ID = ChimeraMonstersMod.makeID(RegenerationMod.class.getSimpleName());
     public static final String[] TEXT = CardCrawlGame.languagePack.getUIString(ID).TEXT;
-    public static final int PERCENTAGE = 50;
+    public static final int ACT_ONE = 4;
+    public static final int ACT_TWO = 7;
+    public static final int ACT_THREE_PLUS = 10;
 
     @Override
     public ModifierRarity getModRarity() {
@@ -37,12 +39,25 @@ public class VampiricMod extends GroupMonsterModifier {
 
     @Override
     protected boolean validMonster(AbstractMonster monster, MonsterGroup context) {
-        return true; //TODO: Scaling,Multi Enemy Fight or On-hit check
+        return true; //TODO: Regeneration Check
     }
 
     @Override
     public void applyTo(AbstractMonster monster) {
-        applyPowersToCreature(monster, new VampiricPower(monster, PERCENTAGE));
+        int amount = 0;
+        switch (AbstractDungeon.actNum){
+            case 1:
+                amount=ACT_ONE;
+                break;
+            case 2:
+                amount=ACT_TWO;
+                break;
+            case 3:
+            default:
+                amount=ACT_THREE_PLUS;
+        }
+
+        applyPowersToCreature(monster, new RegenerateMonsterPower(monster, amount));
         monster.currentHealth = monster.maxHealth * 7/10;
     }
 
@@ -53,7 +68,7 @@ public class VampiricMod extends GroupMonsterModifier {
 
     @Override
     public AbstractMonsterModifier makeCopy() {
-        return new VampiricMod();
+        return new RegenerationMod();
     }
 
     @Override
