@@ -20,7 +20,7 @@ public class SpawnMonsterPatch {
         public static class Locator extends SpireInsertLocator {
             @Override
             public int[] Locate(CtBehavior ctBehavior) throws Exception {
-                Matcher.MethodCallMatcher match = new Matcher.MethodCallMatcher(AbstractMonster.class, "showHealthBar");
+                Matcher.MethodCallMatcher match = new Matcher.MethodCallMatcher(AbstractMonster.class, "init");
                 return LineFinder.findInOrder(ctBehavior, match);
             }
         }

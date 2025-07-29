@@ -26,5 +26,9 @@
   "${ModID}:VampiricPower": {
     "NAME": "Vampiric",
     "DESCRIPTIONS": ["Heals for #b", "% of unblocked damage dealt."]
+  },
+  "${ModID}:SplittingPower": {
+    "NAME": "Splitting",
+    "DESCRIPTIONS": ["When its HP is at or below 50%, will split into 2 copies of itself with its current HP."]
   }
 }
