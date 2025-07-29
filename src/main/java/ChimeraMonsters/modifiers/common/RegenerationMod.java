@@ -58,7 +58,7 @@ public class RegenerationMod extends GroupMonsterModifier {
         }
 
         applyPowersToCreature(monster, new RegenerateMonsterPower(monster, amount));
-        monster.currentHealth = monster.maxHealth * 7/10;
+        startDamaged(monster, 0.7f);
     }
 
     @Override

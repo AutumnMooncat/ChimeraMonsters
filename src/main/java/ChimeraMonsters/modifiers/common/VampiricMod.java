@@ -43,7 +43,7 @@ public class VampiricMod extends GroupMonsterModifier {
     @Override
     public void applyTo(AbstractMonster monster) {
         applyPowersToCreature(monster, new VampiricPower(monster, PERCENTAGE));
-        monster.currentHealth = monster.maxHealth * 7/10;
+        startDamaged(monster, 0.7f);
     }
 
     @Override

@@ -117,8 +117,12 @@ public abstract class AbstractMonsterModifier {
     }
 
     public void manipulateBaseHealth(AbstractMonster monster, float factor) {
-        monster.currentHealth = (int) (monster.currentHealth * factor);
-        monster.maxHealth = (int) (monster.maxHealth * factor);
+        monster.currentHealth = Math.max(1,(int) (monster.currentHealth * factor));
+        monster.maxHealth = Math.max(1,(int) (monster.maxHealth * factor));
+    }
+
+    public void startDamaged(AbstractMonster monster, float factor){
+        monster.currentHealth = Math.max(1, Math.min(monster.currentHealth,(int) (monster.maxHealth * factor)));
     }
 
     public void manipulateBaseDamage(AbstractMonster monster, float factor) {
