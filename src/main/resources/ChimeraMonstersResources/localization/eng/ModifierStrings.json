@@ -4,7 +4,7 @@
     "EXTRA_TEXT": ["Anything else needed"]
   },
   "${ModID}:AugerMod": {
-    "TEXT": ["Drill ", "", "Reduces health by #b20%. NL Applies #yVulnerable when breaking #yBlock."]
+    "TEXT": ["Drill ", "", "Reduces #yHP by #b20%. NL Applies #yVulnerable when breaking #yBlock."]
   },
   "${ModID}:BulkyMod": {
     "TEXT": ["Bulky ", "", "Increase #yBlock gained by #b33%. NL Reduces base damage by #b20%."]
@@ -16,21 +16,21 @@
     "TEXT": ["", " the Tank", "Can Block and intercept attacks."]
   },
   "${ModID}:BerserkerMod": {
-    "TEXT": ["Raging ", "", "Upon reaching half health, gains #yStrength and also attacks its allies."]
+    "TEXT": ["Raging ", "", "Upon reaching half #yhealth, gains #yStrength and also attacks its allies."]
   },
   "${ModID}:DoppelMod": {
     "TEXT": ["Doppel", "", "Hits twice as many times but base damage is halved.", "TL Note: Doppel is added to last part of the monster name"]
   },
   "${ModID}:ShadowMod": {
-    "TEXT": ["Shadow ", "", "Increases base damage by #b50%. NL Reduces health by #b33%."]
+    "TEXT": ["Shadow ", "", "Increases base damage by #b50%. NL Reduces #yHP by #b33%."]
   },
   "${ModID}:VampiricMod": {
-    "TEXT": ["Vampiric ", "", "Heals for 50% of unblocked damage dealt. Starts with 70% of it's maximum health."]
+    "TEXT": ["Vampiric ", "", "Heals for #b50% of unblocked damage dealt. Starts with #b70% of it's maximum #yHP."]
   },
   "${ModID}:RegenerationMod": {
-    "TEXT": ["Regenerating ", "", "Starts with [4/7/10] #yRegeneration. Starts with 70% of it's maximum health."]
+    "TEXT": ["Regenerating ", "", "Starts with #b[4/7/10] #yRegeneration. Starts with #b70% of it's maximum #yHP."]
   },
   "${ModID}:SplittingMod": {
-    "TEXT": ["Splitting ", "", "When its HP is at or below 50%, will split into 2 copies of itself with its current HP."]
+    "TEXT": ["Splitting ", "", "When its #yHP is at or below #b50%, will split into two copies of itself with its current #yHP."]
   }
 }
