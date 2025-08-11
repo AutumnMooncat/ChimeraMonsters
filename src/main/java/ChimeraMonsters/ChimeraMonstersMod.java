@@ -890,7 +890,7 @@ public class ChimeraMonstersMod implements
 
     @Override
     public void receivePostRender(SpriteBatch spriteBatch) {
-        FightModificationManager.render(spriteBatch);
+
     }
 
     @SpirePatch2(clz = CardCrawlGame.class, method = "create")

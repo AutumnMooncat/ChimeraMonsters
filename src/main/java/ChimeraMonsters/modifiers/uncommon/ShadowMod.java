@@ -20,7 +20,7 @@ public class ShadowMod extends GroupMonsterModifier {
 
     @Override
     public String fightName(MonsterGroup context) {
-        return "Shadeling"; //TODO: WIP. Like the Noun thing tho
+        return "Shadelings"; //TODO: WIP. Like the Noun thing tho
     }
 
     @Override

@@ -111,9 +111,4 @@ public class FightModificationManager {
             ChimeraMonstersMod.applyModifier(monster, mod);
         }
     }
-
-    public static void render(SpriteBatch sb){
-        //TODO: Patch the battle start font. Display Fightname. Make it slow.
-        FontHelper.renderFontCentered(sb, FontHelper.healthInfoFont, fightName, 800f * Settings.scale, 800f * Settings.scale, Color.WHITE.cpy());
-    }
 }
