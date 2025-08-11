@@ -73,8 +73,9 @@ public class DoppelPower extends AbstractInternalLogicPower implements IntentInt
     @Override
     public void onRender(SpriteBatch sb, TextureRegion tex) {
         Color origColor = sb.getColor();
-        sb.setColor(Color.WHITE);
+        sb.setColor(new Color(0.85f,0.8f,0.85f,1f));
         render(sb, tex, -25, 5);
+        sb.setColor(Color.WHITE);
         render(sb, tex, 25, -5);
         sb.setColor(origColor);
     }

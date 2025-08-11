@@ -126,6 +126,7 @@ public abstract class AbstractMonsterModifier {
     }
 
     public void manipulateBaseDamage(AbstractMonster monster, float factor) {
+        //TODO: what to do about Hexaghost Turn 2 and similar attacks
         for (DamageInfo di : monster.damage) {
             di.base = (int) (di.base * factor);
         }
