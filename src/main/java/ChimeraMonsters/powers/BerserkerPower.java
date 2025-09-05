@@ -6,7 +6,7 @@ import ChimeraMonsters.patches.ActionCapturePatch;
 import ChimeraMonsters.patches.CustomIntentPatches;
 import ChimeraMonsters.patches.MonsterModifierFieldPatches;
 import ChimeraMonsters.powers.interfaces.IntentInterceptingPower;
-import ChimeraMonsters.util.PowerAnalyzer;
+import ChimeraMonsters.util.analysis.PowerAnalyzer;
 import ChimeraMonsters.util.Wiz;
 import basemod.ReflectionHacks;
 import basemod.interfaces.CloneablePowerInterface;

@@ -1,7 +1,7 @@
 package ChimeraMonsters.powers.interfaces;
 
 import ChimeraMonsters.ChimeraMonstersMod;
-import ChimeraMonsters.powers.CreatureRenderPatches;
+import ChimeraMonsters.patches.CreatureRenderPatches;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;

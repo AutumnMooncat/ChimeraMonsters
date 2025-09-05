@@ -1,4 +1,4 @@
-package ChimeraMonsters.util;
+package ChimeraMonsters.util.analysis;
 
 import ChimeraMonsters.powers.MonsterDexterityPower;
 import ChimeraMonsters.powers.MonsterFrailPower;
