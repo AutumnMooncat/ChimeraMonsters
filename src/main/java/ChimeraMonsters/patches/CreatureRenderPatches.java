@@ -1,4 +1,4 @@
-package ChimeraMonsters.powers;
+package ChimeraMonsters.patches;
 
 import ChimeraMonsters.powers.interfaces.RenderModifierPower;
 import ChimeraMonsters.util.ImageHelper;
