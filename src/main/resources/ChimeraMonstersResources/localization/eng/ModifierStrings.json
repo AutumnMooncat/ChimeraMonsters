@@ -32,5 +32,8 @@
   },
   "${ModID}:SplittingMod": {
     "TEXT": ["Splitting ", "", "When its #yHP is at or below #b50%, will split into two copies of itself with its current #yHP."]
+  },
+  "${ModID}:ThiefMod": {
+    "TEXT": ["", " the Thief", "Reduces base damage and health by #b25%. Copies your cards as your play them, playing one per turn."]
   }
 }
