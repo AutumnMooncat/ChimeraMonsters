@@ -1,6 +1,7 @@
 package ChimeraMonsters.patches;
 
 import ChimeraMonsters.powers.interfaces.RenderModifierPower;
+import ChimeraMonsters.ui.HoveringCardManager;
 import ChimeraMonsters.util.ImageHelper;
 import ChimeraMonsters.util.matchers.SuperFieldAccessMatcher;
 import basemod.abstracts.CustomMonster;
@@ -16,8 +17,12 @@ import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
+import com.megacrit.cardcrawl.orbs.AbstractOrb;
 import com.megacrit.cardcrawl.powers.AbstractPower;
+import com.megacrit.cardcrawl.stances.AbstractStance;
 import javassist.CtBehavior;
+
+import java.util.ArrayList;
 
 public class CreatureRenderPatches {
     private static final FrameBuffer frontBuffer = ImageHelper.createBuffer();
@@ -171,12 +176,36 @@ public class CreatureRenderPatches {
     public static class RenderTime {
         @SpirePrefixPatch
         public static void onAtStart(AbstractMonster __instance, SpriteBatch sb) {
+            Color orig = sb.getColor();
+            sb.setColor(Color.WHITE);
+            AbstractStance stance = MonsterModifierFieldPatches.ModifierFields.stance.get(__instance);
+            if (stance != null) {
+                stance.render(sb);
+            }
+            ArrayList<AbstractOrb> orbs = MonsterModifierFieldPatches.ModifierFields.orbs.get(__instance);
+            if (orbs != null) {
+                for (AbstractOrb orb : orbs) {
+                    orb.render(sb);
+                }
+            }
+            sb.setColor(orig);
             beginCapture(__instance, sb);
         }
 
         @SpireInsertPatch(locator = Locator.class)
         public static void offBeforeIntents(AbstractMonster __instance, SpriteBatch sb) {
             endCapture(__instance, sb);
+        }
+
+        @SpirePostfixPatch
+        public static void renderCards(AbstractMonster __instance, SpriteBatch sb) {
+            Color orig = sb.getColor();
+            sb.setColor(Color.WHITE);
+            HoveringCardManager manager = MonsterModifierFieldPatches.ModifierFields.cardManager.get(__instance);
+            if (manager != null) {
+                manager.render(sb);
+            }
+            sb.setColor(orig);
         }
 
         public static class Locator extends SpireInsertLocator {
