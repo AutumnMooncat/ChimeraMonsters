@@ -5,11 +5,7 @@ import ChimeraMonsters.curatedFights.AbstractCuratedFight;
 import ChimeraMonsters.modifiers.AbstractMonsterModifier;
 import ChimeraMonsters.modifiers.GroupMonsterModifier;
 import ChimeraMonsters.patches.MonsterModifierFieldPatches;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
-import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
 
@@ -21,7 +17,7 @@ public class FightModificationManager {
 
     public static String fightName = "";
 
-    public static void rollFightModifiers (MonsterGroup monsterGroup){
+    public static void rollFightModifiers(MonsterGroup monsterGroup) {
         int curatedFightWeight = 25; //TODO: calculate/decide
         int thematicWeight = 25; //TODO: calculate/decide
         int randomNumber = AbstractDungeon.miscRng.random(99);
