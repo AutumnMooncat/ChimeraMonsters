@@ -82,7 +82,7 @@ public class MoveManipulationPatches {
         IntentInterceptingPower interceptor = MonsterModifierFieldPatches.ModifierFields.interceptor.get(monster);
         if (interceptor != null) {
             if (!interceptor.performIntercept()) {
-                Wiz.atb(new RollMoveAction(monster));
+                Wiz.atb(new RollMoveAction(monster)); // TODO may not actually generate a new move, see Slime Boss, Ranger Captain has a fix
             }
             return true;
         }
