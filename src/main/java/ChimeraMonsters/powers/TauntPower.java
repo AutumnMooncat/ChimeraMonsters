@@ -15,7 +15,6 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.localization.UIStrings;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.vfx.SpeechBubble;
-import com.megacrit.cardcrawl.vfx.SpeechTextEffect;
 
 public class TauntPower extends AbstractInternalLogicPower implements RenderModifierPower, MonsterPreventPlayingCardsPower {
     public static final String POWER_ID = ChimeraMonstersMod.makeID(TauntPower.class.getSimpleName());

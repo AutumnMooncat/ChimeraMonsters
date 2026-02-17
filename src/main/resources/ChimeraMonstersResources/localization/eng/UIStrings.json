@@ -93,7 +93,8 @@
   "${ModID}:CantUseText": {
     "TEXT": [
       "This monster is hidden.",
-      "A taunting monster is in the way."
+      "A taunting monster is in the way.",
+      "You already played 3 cards this turn."
     ]
   },
   "${ModID}:SpeechText": {

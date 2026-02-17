@@ -2,7 +2,6 @@ package ChimeraMonsters.modifiers.uncommon;
 
 import ChimeraMonsters.ChimeraMonstersMod;
 import ChimeraMonsters.modifiers.AbstractMonsterModifier;
-import ChimeraMonsters.powers.BackstagePower;
 import ChimeraMonsters.powers.TauntPower;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
