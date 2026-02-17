@@ -92,7 +92,13 @@
   },
   "${ModID}:CantUseText": {
     "TEXT": [
-      "This monster is hidden."
+      "This monster is hidden.",
+      "A taunting monster is in the way."
+    ]
+  },
+  "${ModID}:SpeechText": {
+    "TEXT": [
+      "Hello! Hello! Hello!"
     ]
   }
 }
