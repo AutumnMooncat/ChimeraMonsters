@@ -64,6 +64,13 @@ public class FightModificationManager {
         MonsterModifierFieldPatches.ModifierFields.rolled.set(monster, true);
     }
 
+    public static void rollFromAllowlist(AbstractMonster monster, List<AbstractMonsterModifier> allowlist){
+        AbstractMonsterModifier.ModifierRarity rarity = FightModificationManager.rollRarity(monster.type);
+        allowlist = allowlist.stream().filter(modifier -> modifier.getModRarity().equals(rarity)).collect(Collectors.toList());
+        AbstractMonsterModifier mod = allowlist.get(AbstractDungeon.miscRng.random(allowlist.size()-1)).makeCopy();
+        ChimeraMonstersMod.applyModifier(monster, mod);
+    }
+
     public static AbstractMonsterModifier.ModifierRarity rollRarity(AbstractMonster.EnemyType type) {
         int c = ChimeraMonstersMod.commonWeight;
         int u = ChimeraMonstersMod.uncommonWeight;
