@@ -24,7 +24,6 @@ public class BackstagePower extends AbstractInternalLogicPower implements Render
     @Override
     public void onRender(SpriteBatch sb, TextureRegion tex) {
         Color origColor = sb.getColor();
-        //sb.setColor(Color.WHITE);
         if (!isLast()) {
             sb.setColor(new Color(0.75f, 0.7f, 0.75f, 1f));
             render(sb, tex, 0, 150, 0.6f, 10);
