@@ -89,5 +89,10 @@
       " damage #b",
       " times."
     ]
+  },
+  "${ModID}:CantUseText": {
+    "TEXT": [
+      "This monster is hidden."
+    ]
   }
 }
