@@ -1,111 +1,48 @@
 {
   "${ModID}:ExampleMod": {
-    "TEXT": [
-      "Prefix name",
-      "Suffix name",
-      "Modifier description"
-    ],
-    "EXTRA_TEXT": [
-      "Anything else needed"
-    ]
+    "TEXT": ["Prefix name", "Suffix name", "Modifier description"],
+    "EXTRA_TEXT": ["Anything else needed"]
   },
   "${ModID}:AugerMod": {
-    "TEXT": [
-      "Drill ",
-      "",
-      "Reduces #yHP by #b20%. NL Applies #yVulnerable when breaking #yBlock."
-    ]
+    "TEXT": ["Drill ", "", "Reduces #yHP by #b20%. NL Applies #yVulnerable when breaking #yBlock."]
   },
   "${ModID}:BulkyMod": {
-    "TEXT": [
-      "Bulky ",
-      "",
-      "Increase #yBlock gained by #b33%. NL Reduces base damage by #b20%."
-    ]
+    "TEXT": ["Bulky ", "", "Increase #yBlock gained by #b33%. NL Reduces base damage by #b20%."]
   },
   "${ModID}:AggressiveMod": {
-    "TEXT": [
-      "Aggressive ",
-      "",
-      "Starts with #b1 #yStrength and #b-1 #yDexterity."
-    ]
+    "TEXT": ["Aggressive ", "", "Starts with #b1 #yStrength and #b-1 #yDexterity."]
   },
   "${ModID}:InterceptingMod": {
-    "TEXT": [
-      "",
-      " the Tank",
-      "Can Block and intercept attacks."
-    ]
+    "TEXT": ["", " the Tank", "Can Block and intercept attacks."]
   },
   "${ModID}:BerserkerMod": {
-    "TEXT": [
-      "Raging ",
-      "",
-      "Upon reaching half #yhealth, gains #yStrength and also attacks its allies."
-    ]
+    "TEXT": ["Raging ", "", "Upon reaching half #yhealth, gains #yStrength and also attacks its allies."]
   },
   "${ModID}:DoppelMod": {
-    "TEXT": [
-      "Doppel",
-      "",
-      "Hits twice as many times but base damage is halved.",
-      "TL Note: Doppel is added to last part of the monster name"
-    ]
+    "TEXT": ["Doppel", "", "Hits twice as many times but base damage is halved.", "TL Note: Doppel is added to last part of the monster name"]
   },
   "${ModID}:ShadowMod": {
-    "TEXT": [
-      "Shadow ",
-      "",
-      "Increases base damage by #b50%. NL Reduces #yHP by #b33%."
-    ]
+    "TEXT": ["Shadow ", "", "Increases base damage by #b50%. NL Reduces #yHP by #b33%."]
   },
   "${ModID}:VampiricMod": {
-    "TEXT": [
-      "Vampiric ",
-      "",
-      "Heals for #b50% of unblocked damage dealt. Starts with #b70% of it's maximum #yHP."
-    ]
+    "TEXT": ["Vampiric ", "", "Heals for #b50% of unblocked damage dealt. Starts with #b70% of it's maximum #yHP."]
   },
   "${ModID}:RegenerationMod": {
-    "TEXT": [
-      "Regenerating ",
-      "",
-      "Starts with #b[4/7/10] #yRegeneration. Starts with #b70% of it's maximum #yHP."
-    ]
+    "TEXT": ["Regenerating ", "", "Starts with #b[4/7/10] #yRegeneration. Starts with #b70% of it's maximum #yHP."]
   },
   "${ModID}:SplittingMod": {
-    "TEXT": [
-      "Splitting ",
-      "",
-      "When its #yHP is at or below #b50%, will split into two copies of itself with its current #yHP."
-    ]
+    "TEXT": ["Splitting ", "", "When its #yHP is at or below #b50%, will split into two copies of itself with its current #yHP."]
   },
   "${ModID}:ThiefMod": {
-    "TEXT": [
-      "",
-      " the Thief",
-      "Reduces base damage and health by #b25%. Copies your cards as you play them, playing one per turn."
-    ]
+    "TEXT": ["", " the Thief", "Reduces base damage and health by #b25%. Copies your cards as you play them, playing one per turn."]
   },
   "${ModID}:BackstageMod": {
-    "TEXT": [
-      "Hidden ",
-      "",
-      "Can't be targeted until all other enemies are dead."
-    ]
+    "TEXT": ["Hidden ", "", "Can't be targeted until all other enemies are dead."]
   },
   "${ModID}:TauntMod": {
-    "TEXT": [
-      "Annoying ",
-      "",
-      "Can ONLY target this monster."
-    ]
+    "TEXT": ["Annoying ", "", "Can ONLY target this monster."]
   },
   "${ModID}:NormalMod": {
-    "TEXT": [
-      "Normal ",
-      "",
-      "You cannot play more than 3 cards per turn."
-    ]
+    "TEXT": ["Normal ", "", "You cannot play more than 3 cards per turn."]
   }
 }
