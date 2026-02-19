@@ -30,5 +30,9 @@
   "${ModID}:SplittingPower": {
     "NAME": "Splitting",
     "DESCRIPTIONS": ["When its #yHP is at or below #b50%, will split into two copies of itself with its current #yHP."]
+  },
+  "${ModID}:HoverPower": {
+    "NAME": "Hover",
+    "DESCRIPTIONS": ["Receives 50% less attack damage. Cancelled if dealt attack damage #b", " times. Loses #b25% of Max HP upon landing."]
   }
 }
