@@ -4,13 +4,16 @@ import ChimeraMonsters.powers.interfaces.RenderModifierPower;
 import ChimeraMonsters.ui.HoveringCardManager;
 import ChimeraMonsters.util.ImageHelper;
 import ChimeraMonsters.util.matchers.SuperFieldAccessMatcher;
+import basemod.ReflectionHacks;
 import basemod.abstracts.CustomMonster;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.esotericsoftware.spine.Skeleton;
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.AbstractCreature;
@@ -30,7 +33,7 @@ public class CreatureRenderPatches {
     private static final FrameBuffer shaderBuffer = ImageHelper.createBuffer();
     private static FrameBuffer activeBuffer = frontBuffer;
     private static boolean capturing = false;
-    private static final float[] transform = new float[4];
+    private static final float[] transform = new float[5];
 
     private static void beginCapture(AbstractCreature __instance, SpriteBatch sb) {
         capturing = false;
@@ -118,7 +121,7 @@ public class CreatureRenderPatches {
         sb.setColor(Color.WHITE);
         //sb.setBlendFunction(GL20.GL_ONE, GL20.GL_ZERO);
         sb.setBlendFunction(GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA);
-        sb.draw(r, transform[0] + transform[2] - Settings.WIDTH/2f, transform[1] + transform[3] - Settings.HEIGHT/2f);
+        sb.draw(r, transform[0] + transform[2] - Settings.WIDTH/2f, transform[1] + transform[3] + transform[4] - Settings.HEIGHT/2f);
         sb.setColor(origColor);
         sb.setBlendFunction(src, dst);
     }
@@ -132,6 +135,20 @@ public class CreatureRenderPatches {
         __instance.drawY = Settings.HEIGHT/2f;
         __instance.animX = 0;
         __instance.animY = 0;
+        Skeleton skel = ReflectionHacks.getPrivate(__instance, AbstractCreature.class, "skeleton");
+        Texture img = null;
+        if (__instance instanceof AbstractMonster) {
+            img = ReflectionHacks.getPrivate(__instance, AbstractMonster.class, "img");
+        }
+        if (skel == null) {
+            if (img != null) {
+                __instance.drawY -= img.getHeight() * Settings.scale / 2f;
+                transform[4] = img.getHeight() * Settings.scale / 2f;
+            }
+        } else {
+            __instance.drawY -= skel.getData().getHeight() / 2f;
+            transform[4] = skel.getData().getHeight() / 2f;
+        }
     }
 
     private static void undoTransform(AbstractCreature __instance) {
@@ -143,6 +160,7 @@ public class CreatureRenderPatches {
         transform[1] = 0;
         transform[2] = 0;
         transform[3] = 0;
+        transform[4] = 0;
     }
 
     public static void render(SpriteBatch sb, TextureRegion tex) {
@@ -166,9 +184,16 @@ public class CreatureRenderPatches {
         int h = tex.getRegionHeight();
         int w2 = (int) (w/2f);
         int h2 = (int) (h/2f);
-        sb.draw(tex, offsetX, offsetY, w2, h2, w, h, scaleX, scaleY, angle);
-        //Texture tex2 = tex.getTexture();
-        //sb.draw(tex2, offsetX, offsetY, w2, h2, w, h, scaleX, scaleY, angle, 0, 0, tex2.getWidth(), tex2.getHeight(), false, true);
+        //sb.draw(tex, offsetX, offsetY, w2, h2, w, h, scaleX, scaleY, angle);
+        sb.draw(tex, Settings.WIDTH/2f - w2 + offsetX * Settings.scale, Settings.HEIGHT/2f - h2 + offsetY * Settings.scale, w2, h2, w, h, scaleX, scaleY, angle);
+    }
+
+    public static void renderRescale(SpriteBatch sb, TextureRegion tex, float offsetX, float offsetY, float scaleX, float scaleY, float angle) {
+        int w = tex.getRegionWidth();
+        int h = tex.getRegionHeight();
+        int w2 = (int) (w/2f);
+        int h2 = (int) (h/2f);
+        sb.draw(tex, Settings.WIDTH/2f - w2 + offsetX * Settings.scale, Settings.HEIGHT/2f - h2 + offsetY * Settings.scale, w2, h2, w, h, scaleX * Settings.scale, scaleY * Settings.scale, angle);
     }
 
     @SpirePatch2(clz = AbstractMonster.class, method = "render")

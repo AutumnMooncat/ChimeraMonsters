@@ -43,4 +43,24 @@ public interface RenderModifierPower {
     default void render(SpriteBatch sb, TextureRegion tex, float offsetX, float offsetY, float scaleX, float scaleY, float angle) {
         CreatureRenderPatches.render(sb, tex, offsetX, offsetY, scaleX, scaleY, angle);
     }
+
+    default void renderRescale(SpriteBatch sb, TextureRegion tex) {
+        CreatureRenderPatches.renderRescale(sb, tex, 0, 0, 1, 1, 0);
+    }
+
+    default void renderRescale(SpriteBatch sb, TextureRegion tex, float offsetX, float offsetY) {
+        CreatureRenderPatches.renderRescale(sb, tex, offsetX, offsetY, 1, 1, 0);
+    }
+
+    default void renderRescale(SpriteBatch sb, TextureRegion tex, float scale) {
+        CreatureRenderPatches.renderRescale(sb, tex, 0, 0, scale, scale, 0);
+    }
+
+    default void renderRescale(SpriteBatch sb, TextureRegion tex, float offsetX, float offsetY, float scale, float angle) {
+        CreatureRenderPatches.renderRescale(sb, tex, offsetX, offsetY, scale, scale, angle);
+    }
+
+    default void renderRescale(SpriteBatch sb, TextureRegion tex, float offsetX, float offsetY, float scaleX, float scaleY, float angle) {
+        CreatureRenderPatches.renderRescale(sb, tex, offsetX, offsetY, scaleX, scaleY, angle);
+    }
 }
