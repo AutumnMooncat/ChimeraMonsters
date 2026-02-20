@@ -19,6 +19,7 @@ public class NormalPower extends AbstractInternalLogicPower implements RenderMod
 
     public NormalPower(AbstractCreature owner, int amount) {
         super(POWER_ID, owner, amount);
+        priority=-200;
 
     }
 

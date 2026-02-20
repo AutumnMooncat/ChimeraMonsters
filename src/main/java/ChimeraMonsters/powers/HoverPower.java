@@ -4,6 +4,7 @@ import ChimeraMonsters.ChimeraMonstersMod;
 import ChimeraMonsters.powers.interfaces.RenderModifierPower;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.megacrit.cardcrawl.actions.common.LoseHPAction;
@@ -13,7 +14,6 @@ import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.localization.PowerStrings;
 
-
 public class HoverPower extends AbstractEasyPower implements RenderModifierPower {
     public static final String POWER_ID = ChimeraMonstersMod.makeID(HoverPower.class.getSimpleName());
     private static final PowerStrings powerStrings = CardCrawlGame.languagePack.getPowerStrings(POWER_ID);
@@ -21,9 +21,14 @@ public class HoverPower extends AbstractEasyPower implements RenderModifierPower
     public static final String[] DESCRIPTIONS = powerStrings.DESCRIPTIONS;
     private float timePassed;
 
+    public static final Texture KITE = new Texture(ChimeraMonstersMod.getModID() + "Resources/images/modifiers/HoveringKite.png");
+    public static final TextureRegion kite_region = new TextureRegion(KITE);
+
     public HoverPower(AbstractCreature owner, int amount) {
         super(POWER_ID, NAME, PowerType.BUFF, false, owner, amount);
-        timePassed=0f;
+        timePassed = 0f;
+        priority=-20;
+
     }
 
     @Override
@@ -57,10 +62,12 @@ public class HoverPower extends AbstractEasyPower implements RenderModifierPower
 
     @Override
     public void onRender(SpriteBatch sb, TextureRegion tex) {
-        timePassed+=Gdx.graphics.getDeltaTime();
+        timePassed += Gdx.graphics.getDeltaTime();
         Color origColor = sb.getColor();
         sb.setColor(Color.WHITE);
         render(sb, tex, (float) (50 * Math.sin(timePassed)), 150f + (float) (50 * Math.sin(timePassed)), 1f, 15);
+        //renderRescale(sb, kite_region, (Settings.WIDTH/2)-(kite_region.getRegionWidth()/2)+(float)(50 * Math.sin(timePassed)), (Settings.HEIGHT/2) + 150f+ (float) (50 * Math.sin(timePassed)), 1f, 15);
+        renderRescale(sb, kite_region, (float)(150 * Math.sin(timePassed+0.75f)), 250f+ (float) (50 * Math.sin(timePassed)), 1f, 15);
 
         sb.setColor(origColor);
     }

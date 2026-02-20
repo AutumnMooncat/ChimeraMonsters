@@ -72,6 +72,7 @@ public abstract class AbstractMonsterModifier {
                 p.updateDescription();
             } else {
                 owner.addPower(powerToApply);
+                Collections.sort(owner.powers);
                 powerToApply.onInitialApplication();
                 if (!(powerToApply instanceof InvisiblePower)) {
                     powerToApply.flash();
