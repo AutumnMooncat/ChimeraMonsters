@@ -44,6 +44,12 @@
       "Monster Modifiers"
     ]
   },
+  "${ModID}:ExplainerItem": {
+    "TEXT": [
+      "Active Modifiers",
+      "None!"
+    ]
+  },
   "${ModID}:ModifierScreen": {
     "TEXT": [
       "Back",

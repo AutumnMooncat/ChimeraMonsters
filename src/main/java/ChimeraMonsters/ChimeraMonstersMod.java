@@ -8,12 +8,15 @@ import ChimeraMonsters.powers.ModifierExplainerPower;
 import ChimeraMonsters.ui.BiggerModButton;
 import ChimeraMonsters.ui.CenteredModLabel;
 import ChimeraMonsters.ui.ModLabeledToggleTooltipButton;
+import ChimeraMonsters.ui.TopPanelExplainer;
 import ChimeraMonsters.util.FightModificationManager;
 import ChimeraMonsters.util.KeywordManager;
 import ChimeraMonsters.util.TextureLoader;
+import ChimeraMonsters.util.Wiz;
 import basemod.*;
 import basemod.devcommands.ConsoleCommand;
 import basemod.interfaces.*;
+import basemod.patches.com.megacrit.cardcrawl.helpers.TopPanel.TopPanelHelper;
 import basemod.patches.whatmod.WhatMod;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
@@ -142,6 +145,9 @@ public class ChimeraMonstersMod implements
     public static final float FULL_PAGE_Y = (SPACING_Y * 13);
     public static float deltaY = 0;
     public static int currentPage = 0;
+
+    public static TopPanelExplainer explainer;
+    public static boolean explainerPresent;
     
     // =============== INPUT TEXTURE LOCATION =================
     
@@ -337,6 +343,12 @@ public class ChimeraMonstersMod implements
         findMonsters();
 
         logger.info("Done finding monsters");
+
+        logger.info("Misc setup");
+
+        explainer = new TopPanelExplainer();
+
+        logger.info("Done misc setup");
     }
 
     private static void setupSettingsPanel() {
@@ -771,13 +783,28 @@ public class ChimeraMonstersMod implements
             if (ChimeraMonstersMod.enableTooltips) {
                 monster.powers.add(new ModifierExplainerPower(monster, copy.getModifierName(), copy.getModifierDescription()));
             }
+            if (!explainerPresent) {
+                TopPanelHelper.topPanelGroup.addPanelItem(explainer);
+                explainerPresent = true;
+            }
         }
         MonsterModifierFieldPatches.ModifierFields.originalName.set(monster, monster.name);
         monster.name = copy.modifyName(monster);
         MonsterModifierFieldPatches.ModifierFields.receivedModifiers.get(monster).add(copy);
     }
 
-
+    public static List<AbstractMonsterModifier> currentCombatModifiers() {
+        List<AbstractMonsterModifier> mods = new ArrayList<>();
+        if (Wiz.isInCombat()) {
+            Wiz.forAllMonstersLiving(mon ->
+                    mods.addAll(MonsterModifierFieldPatches.ModifierFields.receivedModifiers.get(mon)
+                            .stream().filter(check ->
+                                    mods.stream().noneMatch(mod ->
+                                            mod.getClass() == check.getClass()))
+                            .collect(Collectors.toList())));
+        }
+        return mods;
+    }
 
     public static boolean canReceiveModifier(AbstractMonster monster, MonsterGroup context) {
         for (AbstractMonsterModifier a : commonMods) {

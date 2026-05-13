@@ -1,7 +1,9 @@
 package ChimeraMonsters.patches;
 
+import ChimeraMonsters.ChimeraMonstersMod;
 import ChimeraMonsters.util.FightModificationManager;
 import ChimeraMonsters.vfx.CustomBattleStartEffect;
+import basemod.patches.com.megacrit.cardcrawl.helpers.TopPanel.TopPanelHelper;
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
@@ -13,6 +15,9 @@ public class StartOfCombatPatches {
     public static class RollOnCombatStart {
         @SpirePrefixPatch()
         public static void plz(MonsterGroup __instance) {
+            TopPanelHelper.topPanelGroup.removePanelItem(ChimeraMonstersMod.explainer);
+            ChimeraMonstersMod.explainer.reset();
+            ChimeraMonstersMod.explainerPresent = false;
             FightModificationManager.rollFightModifiers(__instance);
         }
     }
