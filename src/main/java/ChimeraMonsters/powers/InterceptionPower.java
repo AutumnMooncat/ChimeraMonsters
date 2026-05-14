@@ -3,21 +3,19 @@ package ChimeraMonsters.powers;
 import ChimeraMonsters.ChimeraMonstersMod;
 import ChimeraMonsters.patches.CustomIntentPatches;
 import ChimeraMonsters.powers.interfaces.IntentInterceptingPower;
-import com.evacipated.cardcrawl.mod.stslib.patches.NeutralPowertypePatch;
-import com.evacipated.cardcrawl.mod.stslib.powers.interfaces.InvisiblePower;
 import com.megacrit.cardcrawl.actions.common.GainBlockAction;
 import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.EnemyMoveInfo;
 
-public class InterceptionPower extends AbstractEasyPower implements IntentInterceptingPower, InvisiblePower {
+public class InterceptionPower extends AbstractInternalLogicPower implements IntentInterceptingPower {
     public static final String POWER_ID = ChimeraMonstersMod.makeID(InterceptionPower.class.getSimpleName());
     public int cooldown;
     public boolean didBlock;
 
     public InterceptionPower(AbstractCreature owner, int amount) {
-        super(POWER_ID, POWER_ID, NeutralPowertypePatch.NEUTRAL, false, owner, amount);
+        super(POWER_ID, owner, amount);
     }
 
     @Override
