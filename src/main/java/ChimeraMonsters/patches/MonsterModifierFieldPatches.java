@@ -6,6 +6,7 @@ import ChimeraMonsters.ui.HoveringCardManager;
 import com.evacipated.cardcrawl.modthespire.lib.SpireField;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
+import com.megacrit.cardcrawl.monsters.EnemyMoveInfo;
 import com.megacrit.cardcrawl.orbs.AbstractOrb;
 import com.megacrit.cardcrawl.stances.AbstractStance;
 
@@ -20,6 +21,8 @@ public class MonsterModifierFieldPatches {
         public static SpireField<String> originalName = new SpireField<>(() -> null);
         public static SpireField<Float> blockMulti = new SpireField<>(() -> 1f);
         public static SpireField<IntentInterceptingPower> interceptor = new SpireField<>(() -> null);
+        public static SpireField<EnemyMoveInfo> replacedIntendedMove = new SpireField<>(() -> null);
+        public static SpireField<Boolean> successfullyRolledMove = new SpireField<>(() -> false);
         public static SpireField<HoveringCardManager> cardManager = new SpireField<>(() -> null);
         public static SpireField<ArrayList<AbstractOrb>> orbs = new SpireField<>(() -> null);
         public static SpireField<AbstractStance> stance = new SpireField<>(() -> null); // TODO stances not implemented

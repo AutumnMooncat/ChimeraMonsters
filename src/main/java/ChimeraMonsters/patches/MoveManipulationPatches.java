@@ -1,5 +1,6 @@
 package ChimeraMonsters.patches;
 
+import ChimeraMonsters.actions.DoAction;
 import ChimeraMonsters.powers.interfaces.IntentInterceptingPower;
 import ChimeraMonsters.powers.interfaces.IntentLockingPower;
 import ChimeraMonsters.util.Wiz;
@@ -59,6 +60,7 @@ public class MoveManipulationPatches {
             if (power instanceof IntentInterceptingPower) {
                 IntentInterceptingPower interceptor = (IntentInterceptingPower) power;
                 if (newInterceptor == null && (!((IntentInterceptingPower) power).rollOnly() || wasRolled) && AbstractDungeon.aiRng.random(1f) <= interceptor.interceptRate(intendedMove)) {
+                    MonsterModifierFieldPatches.ModifierFields.replacedIntendedMove.set(monster, intendedMove);
                     interceptor.setInterceptIntent(intendedMove);
                     monster.moveName = interceptor.interceptName();
                     MonsterModifierFieldPatches.ModifierFields.interceptor.set(monster, interceptor);
@@ -83,11 +85,25 @@ public class MoveManipulationPatches {
         IntentInterceptingPower interceptor = MonsterModifierFieldPatches.ModifierFields.interceptor.get(monster);
         if (interceptor != null) {
             if (!interceptor.performIntercept()) {
-                Wiz.atb(new RollMoveAction(monster)); // TODO may not actually generate a new move, see Slime Boss, Ranger Captain has a fix
+                rollOrBackupMove(monster);
             }
             return true;
         }
         return false;
+    }
+
+    private static void rollOrBackupMove(AbstractMonster monster) {
+        Wiz.atb(new DoAction(() -> MonsterModifierFieldPatches.ModifierFields.successfullyRolledMove.set(monster, false)));
+        Wiz.atb(new RollMoveAction(monster));
+        Wiz.atb(new DoAction(() -> {
+            if (!MonsterModifierFieldPatches.ModifierFields.successfullyRolledMove.get(monster)) {
+                EnemyMoveInfo backup = MonsterModifierFieldPatches.ModifierFields.replacedIntendedMove.get(monster);
+                if (backup != null) {
+                    setMove(monster, backup);
+                }
+                // Else rip lol
+            }
+        }));
     }
 
     public static EnemyMoveInfo getMove(AbstractCreature creature) {
@@ -131,6 +147,7 @@ public class MoveManipulationPatches {
         public static SpireReturn<Void> plz(AbstractMonster __instance, String moveName, byte nextMove, AbstractMonster.Intent intent, int baseDamage, int multiplier, boolean isMultiDamage) {
             EnemyMoveInfo lastMove = getMove(__instance);
             EnemyMoveInfo intendedMove = new EnemyMoveInfo(nextMove, intent, baseDamage, multiplier, isMultiDamage);
+            MonsterModifierFieldPatches.ModifierFields.successfullyRolledMove.set(__instance, true);
             EnemyMoveInfoPatches.setName(intendedMove, moveName);
             boolean shouldContinue = shouldSetMove(__instance, lastMove, intendedMove);
             EnemyMoveInfo currentInfo = getMove(__instance);
