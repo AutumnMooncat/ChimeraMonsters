@@ -53,5 +53,8 @@
   },
   "${ModID}:PacifistMod": {
     "TEXT": ["Pacifist ", "", "Every other attack is replaced with an interruptable heal."]
+  },
+  "${ModID}:SpikyMod": {
+    "TEXT": ["Spiky ", "", "Reduces #yHP by #b25%. NL Starts with, and has an intent to gain, #yThorns."]
   }
 }
