@@ -255,6 +255,20 @@ public abstract class AbstractMonsterModifier {
         return !((AbstractDungeon.getCurrRoom() instanceof MonsterRoomElite) || (AbstractDungeon.getCurrRoom() instanceof MonsterRoomBoss));
     }
 
+    public boolean actAtLeast(int num) {
+        if (!CardCrawlGame.isInARun()) {
+            return true;
+        }
+        return AbstractDungeon.actNum >= num;
+    }
+
+    public boolean actAtMost(int num) {
+        if (!CardCrawlGame.isInARun()) {
+            return true;
+        }
+        return AbstractDungeon.actNum <= num;
+    }
+
     public int getConstructedBaseHealth(AbstractMonster monster) {
         return MonsterFields.baseMaxHP.get(monster);
     }
