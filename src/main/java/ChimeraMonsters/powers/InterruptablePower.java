@@ -2,8 +2,7 @@ package ChimeraMonsters.powers;
 
 import ChimeraMonsters.ChimeraMonstersMod;
 import ChimeraMonsters.actions.DoAction;
-import ChimeraMonsters.patches.EnemyMoveInfoPatches;
-import ChimeraMonsters.patches.MonsterModifierFieldPatches;
+import ChimeraMonsters.patches.MonsterFields;
 import ChimeraMonsters.patches.MoveManipulationPatches;
 import com.evacipated.cardcrawl.mod.stslib.patches.NeutralPowertypePatch;
 import com.megacrit.cardcrawl.actions.common.RemoveSpecificPowerAction;
@@ -36,7 +35,7 @@ public class InterruptablePower extends AbstractEasyPower {
         if (owner instanceof AbstractMonster && info.owner != null && damageAmount > 0 && info.type == DamageInfo.DamageType.NORMAL) {
             AbstractMonster ownerMon = (AbstractMonster) owner;
             addToTop(new DoAction(() -> {
-                MonsterModifierFieldPatches.ModifierFields.interceptor.set(ownerMon, null);
+                MonsterFields.interceptor.set(ownerMon, null);
                 MoveManipulationPatches.setMove(ownerMon, moveInfo, true);
             }));
             addToTop(new RemoveSpecificPowerAction(owner, owner, this));

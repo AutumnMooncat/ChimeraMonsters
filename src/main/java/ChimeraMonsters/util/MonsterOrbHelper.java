@@ -1,7 +1,7 @@
 package ChimeraMonsters.util;
 
 import ChimeraMonsters.patches.ActionCapturePatch;
-import ChimeraMonsters.patches.MonsterModifierFieldPatches;
+import ChimeraMonsters.patches.MonsterFields;
 import basemod.ReflectionHacks;
 import com.badlogic.gdx.math.MathUtils;
 import com.evacipated.cardcrawl.modthespire.lib.*;
@@ -24,11 +24,11 @@ import java.util.Collections;
 
 public class MonsterOrbHelper {
     public static ArrayList<AbstractOrb> getOrbs(AbstractMonster owner) {
-        return MonsterModifierFieldPatches.ModifierFields.orbs.get(owner);
+        return MonsterFields.orbs.get(owner);
     }
 
     public static int getMaxOrbs(AbstractMonster owner) {
-        return MonsterModifierFieldPatches.ModifierFields.maxOrbs.get(owner);
+        return MonsterFields.maxOrbs.get(owner);
     }
 
     public static void applyFocus(AbstractMonster owner, AbstractOrb orb) {
@@ -68,7 +68,7 @@ public class MonsterOrbHelper {
 
     public static ArrayList<AbstractOrb> initSlots(AbstractMonster owner, int amount) {
         ArrayList<AbstractOrb> orbs = new ArrayList<>();
-        MonsterModifierFieldPatches.ModifierFields.orbs.set(owner, orbs);
+        MonsterFields.orbs.set(owner, orbs);
         for (int i = 0; i < amount; i++) {
             orbs.add(new EmptyOrbSlot());
             setSlot(owner, orbs.get(i), i, amount);
@@ -224,7 +224,7 @@ public class MonsterOrbHelper {
                 CardCrawlGame.sound.play("ORB_SLOT_GAIN", 0.1F);
             }
 
-            MonsterModifierFieldPatches.ModifierFields.maxOrbs.set(owner, maxOrbs + amount);
+            MonsterFields.maxOrbs.set(owner, maxOrbs + amount);
 
             int i;
             for (i = 0; i < amount; ++i) {
@@ -245,7 +245,7 @@ public class MonsterOrbHelper {
             orbs = initSlots(owner, maxOrbs);
         }
         if (maxOrbs > 0) {
-            MonsterModifierFieldPatches.ModifierFields.maxOrbs.set(owner, Math.max(0, maxOrbs - amount));
+            MonsterFields.maxOrbs.set(owner, Math.max(0, maxOrbs - amount));
 
             if (!orbs.isEmpty()) {
                 orbs.remove(orbs.size() - 1);

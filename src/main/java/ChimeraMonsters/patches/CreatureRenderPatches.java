@@ -203,11 +203,11 @@ public class CreatureRenderPatches {
         public static void onAtStart(AbstractMonster __instance, SpriteBatch sb) {
             Color orig = sb.getColor();
             sb.setColor(Color.WHITE);
-            AbstractStance stance = MonsterModifierFieldPatches.ModifierFields.stance.get(__instance);
+            AbstractStance stance = MonsterFields.stance.get(__instance);
             if (stance != null) {
                 stance.render(sb);
             }
-            ArrayList<AbstractOrb> orbs = MonsterModifierFieldPatches.ModifierFields.orbs.get(__instance);
+            ArrayList<AbstractOrb> orbs = MonsterFields.orbs.get(__instance);
             if (orbs != null) {
                 for (AbstractOrb orb : orbs) {
                     orb.render(sb);
@@ -226,7 +226,7 @@ public class CreatureRenderPatches {
         public static void renderCards(AbstractMonster __instance, SpriteBatch sb) {
             Color orig = sb.getColor();
             sb.setColor(Color.WHITE);
-            HoveringCardManager manager = MonsterModifierFieldPatches.ModifierFields.cardManager.get(__instance);
+            HoveringCardManager manager = MonsterFields.cardManager.get(__instance);
             if (manager != null) {
                 manager.render(sb);
             }

@@ -4,7 +4,7 @@ import ChimeraMonsters.ChimeraMonstersMod;
 import ChimeraMonsters.actions.DoAction;
 import ChimeraMonsters.patches.ActionCapturePatch;
 import ChimeraMonsters.patches.MonsterEncounterPatches;
-import ChimeraMonsters.patches.MonsterModifierFieldPatches;
+import ChimeraMonsters.patches.MonsterFields;
 import ChimeraMonsters.powers.interfaces.IntentInterceptingPower;
 import ChimeraMonsters.util.MonsterSpawnHelper;
 import com.megacrit.cardcrawl.actions.animations.AnimateShakeAction;
@@ -51,7 +51,7 @@ public class SplittingPower extends AbstractEasyPower implements IntentIntercept
             addToBot(new DoAction(() -> {
                 EnemyMoveInfo newMove = new EnemyMoveInfo(getMove(owner).nextMove, AbstractMonster.Intent.UNKNOWN, -1 , 0, false);
                 setMove(owner,newMove, true);
-                MonsterModifierFieldPatches.ModifierFields.interceptor.set(owner, this);
+                MonsterFields.interceptor.set(owner, this);
             }));
         }
     }

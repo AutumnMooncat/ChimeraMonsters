@@ -3,13 +3,12 @@ package ChimeraMonsters;
 import ChimeraMonsters.commands.Monster;
 import ChimeraMonsters.curatedFights.AbstractCuratedFight;
 import ChimeraMonsters.modifiers.AbstractMonsterModifier;
-import ChimeraMonsters.patches.MonsterModifierFieldPatches;
+import ChimeraMonsters.patches.MonsterFields;
 import ChimeraMonsters.powers.ModifierExplainerPower;
 import ChimeraMonsters.ui.BiggerModButton;
 import ChimeraMonsters.ui.CenteredModLabel;
 import ChimeraMonsters.ui.ModLabeledToggleTooltipButton;
 import ChimeraMonsters.ui.TopPanelExplainer;
-import ChimeraMonsters.util.FightModificationManager;
 import ChimeraMonsters.util.KeywordManager;
 import ChimeraMonsters.util.TextureLoader;
 import ChimeraMonsters.util.Wiz;
@@ -24,7 +23,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.mod.stslib.Keyword;
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.google.gson.Gson;
-import com.megacrit.cardcrawl.actions.common.ApplyPowerAction;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
@@ -788,16 +786,16 @@ public class ChimeraMonstersMod implements
                 explainerPresent = true;
             }
         }
-        MonsterModifierFieldPatches.ModifierFields.originalName.set(monster, monster.name);
         monster.name = copy.modifyName(monster);
         MonsterModifierFieldPatches.ModifierFields.receivedModifiers.get(monster).add(copy);
+        MonsterFields.receivedModifiers.get(monster).add(copy);
     }
 
     public static List<AbstractMonsterModifier> currentCombatModifiers() {
         List<AbstractMonsterModifier> mods = new ArrayList<>();
         if (Wiz.isInCombat()) {
             Wiz.forAllMonstersLiving(mon ->
-                    mods.addAll(MonsterModifierFieldPatches.ModifierFields.receivedModifiers.get(mon)
+                    mods.addAll(MonsterFields.receivedModifiers.get(mon)
                             .stream().filter(check ->
                                     mods.stream().noneMatch(mod ->
                                             mod.getClass() == check.getClass()))

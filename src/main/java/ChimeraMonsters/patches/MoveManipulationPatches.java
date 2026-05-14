@@ -43,12 +43,12 @@ public class MoveManipulationPatches {
     }
 
     public static boolean hasInterceptorFollowup(AbstractMonster monster) {
-        IntentInterceptingPower interceptor = MonsterModifierFieldPatches.ModifierFields.interceptor.get(monster);
+        IntentInterceptingPower interceptor = MonsterFields.interceptor.get(monster);
         if (interceptor != null) {
             if (interceptor.setFollowupInterceptionIntent()) {
                 return true;
             } else {
-                MonsterModifierFieldPatches.ModifierFields.interceptor.set(monster, null);
+                MonsterFields.interceptor.set(monster, null);
             }
         }
         return false;
@@ -60,10 +60,10 @@ public class MoveManipulationPatches {
             if (power instanceof IntentInterceptingPower) {
                 IntentInterceptingPower interceptor = (IntentInterceptingPower) power;
                 if (newInterceptor == null && (!((IntentInterceptingPower) power).rollOnly() || wasRolled) && AbstractDungeon.aiRng.random(1f) <= interceptor.interceptRate(intendedMove)) {
-                    MonsterModifierFieldPatches.ModifierFields.replacedIntendedMove.set(monster, intendedMove);
+                    MonsterFields.replacedIntendedMove.set(monster, intendedMove);
                     interceptor.setInterceptIntent(intendedMove);
                     monster.moveName = interceptor.interceptName();
-                    MonsterModifierFieldPatches.ModifierFields.interceptor.set(monster, interceptor);
+                    MonsterFields.interceptor.set(monster, interceptor);
                     newInterceptor = interceptor;
                 }
             }
@@ -82,7 +82,7 @@ public class MoveManipulationPatches {
     }
 
     public static boolean performedIntercept(AbstractMonster monster) {
-        IntentInterceptingPower interceptor = MonsterModifierFieldPatches.ModifierFields.interceptor.get(monster);
+        IntentInterceptingPower interceptor = MonsterFields.interceptor.get(monster);
         if (interceptor != null) {
             if (!interceptor.performIntercept()) {
                 rollOrBackupMove(monster);
@@ -93,11 +93,11 @@ public class MoveManipulationPatches {
     }
 
     private static void rollOrBackupMove(AbstractMonster monster) {
-        Wiz.atb(new DoAction(() -> MonsterModifierFieldPatches.ModifierFields.successfullyRolledMove.set(monster, false)));
+        Wiz.atb(new DoAction(() -> MonsterFields.successfullyRolledMove.set(monster, false)));
         Wiz.atb(new RollMoveAction(monster));
         Wiz.atb(new DoAction(() -> {
-            if (!MonsterModifierFieldPatches.ModifierFields.successfullyRolledMove.get(monster)) {
-                EnemyMoveInfo backup = MonsterModifierFieldPatches.ModifierFields.replacedIntendedMove.get(monster);
+            if (!MonsterFields.successfullyRolledMove.get(monster)) {
+                EnemyMoveInfo backup = MonsterFields.replacedIntendedMove.get(monster);
                 if (backup != null) {
                     setMove(monster, backup);
                 }
@@ -147,7 +147,7 @@ public class MoveManipulationPatches {
         public static SpireReturn<Void> plz(AbstractMonster __instance, String moveName, byte nextMove, AbstractMonster.Intent intent, int baseDamage, int multiplier, boolean isMultiDamage) {
             EnemyMoveInfo lastMove = getMove(__instance);
             EnemyMoveInfo intendedMove = new EnemyMoveInfo(nextMove, intent, baseDamage, multiplier, isMultiDamage);
-            MonsterModifierFieldPatches.ModifierFields.successfullyRolledMove.set(__instance, true);
+            MonsterFields.successfullyRolledMove.set(__instance, true);
             EnemyMoveInfoPatches.setName(intendedMove, moveName);
             boolean shouldContinue = shouldSetMove(__instance, lastMove, intendedMove);
             EnemyMoveInfo currentInfo = getMove(__instance);
@@ -157,7 +157,7 @@ public class MoveManipulationPatches {
             for (AbstractPower power : __instance.powers) {
                 if (power instanceof IntentInterceptingPower) {
                     IntentInterceptingPower interceptor = (IntentInterceptingPower) power;
-                    if (interceptor != MonsterModifierFieldPatches.ModifierFields.interceptor.get(__instance)) {
+                    if (interceptor != MonsterFields.interceptor.get(__instance)) {
                         interceptor.otherIntentPicked(currentInfo);
                     }
                 }
@@ -176,7 +176,7 @@ public class MoveManipulationPatches {
     public static class OnIntentCreated {
         @SpirePrefixPatch
         public static void plz (AbstractMonster __instance) {
-            IntentInterceptingPower interceptor = MonsterModifierFieldPatches.ModifierFields.interceptor.get(__instance);
+            IntentInterceptingPower interceptor = MonsterFields.interceptor.get(__instance);
             if (interceptor != null) {
                 interceptor.onInterceptedIntentCreated();
             }

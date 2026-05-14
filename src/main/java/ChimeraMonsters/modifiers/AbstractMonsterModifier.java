@@ -1,7 +1,7 @@
 package ChimeraMonsters.modifiers;
 
 import ChimeraMonsters.ChimeraMonstersMod;
-import ChimeraMonsters.patches.MonsterModifierFieldPatches;
+import ChimeraMonsters.patches.MonsterFields;
 import ChimeraMonsters.util.Wiz;
 import com.evacipated.cardcrawl.mod.stslib.powers.interfaces.InvisiblePower;
 import com.evacipated.cardcrawl.modthespire.Loader;
@@ -39,7 +39,7 @@ public abstract class AbstractMonsterModifier {
     public static final float DEBUFF_TINY = 9 / 10f;
     public static final Predicate<MonsterGroup> singleCombat = (group) -> group.monsters.size() == 1;
     public static final Predicate<MonsterGroup> multiCombat = (group) -> group.monsters.size() > 1;
-    public static final BiPredicate<MonsterGroup, AbstractMonsterModifier> onePerFight = (group, toCheck) -> group.monsters.stream().noneMatch(mon -> MonsterModifierFieldPatches.ModifierFields.receivedModifiers.get(mon).stream().anyMatch(mod -> mod.identifier().equals(toCheck.identifier())));
+    public static final BiPredicate<MonsterGroup, AbstractMonsterModifier> onePerFight = (group, toCheck) -> group.monsters.stream().noneMatch(mon -> MonsterFields.receivedModifiers.get(mon).stream().anyMatch(mod -> mod.identifier().equals(toCheck.identifier())));
     public static final BiPredicate<MonsterGroup, AbstractMonster> lastMonster = (group, mon) -> group.monsters.get(group.monsters.size() - 1) == mon;
 
     private static final ArrayList<AbstractCard> cardsToCheck = new ArrayList<>();
@@ -230,11 +230,11 @@ public abstract class AbstractMonsterModifier {
     }
 
     public void manipulateFinalBlock(AbstractMonster monster, float factor) {
-        MonsterModifierFieldPatches.ModifierFields.blockMulti.set(monster, MonsterModifierFieldPatches.ModifierFields.blockMulti.get(monster) * factor);
+        MonsterFields.blockMulti.set(monster, MonsterFields.blockMulti.get(monster) * factor);
     }
 
     public boolean hasThisMod(AbstractMonster monster) {
-        return MonsterModifierFieldPatches.ModifierFields.receivedModifiers.get(monster).stream().anyMatch(mod -> mod.identifier().equals(identifier()));
+        return MonsterFields.receivedModifiers.get(monster).stream().anyMatch(mod -> mod.identifier().equals(identifier()));
     }
 
     public boolean canApplyTo(AbstractMonster monster, MonsterGroup context) {

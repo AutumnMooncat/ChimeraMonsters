@@ -1,6 +1,6 @@
 package ChimeraMonsters.ui;
 
-import ChimeraMonsters.patches.MonsterModifierFieldPatches;
+import ChimeraMonsters.patches.MonsterFields;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.megacrit.cardcrawl.cards.AbstractCard;
@@ -101,7 +101,7 @@ public class HoveringCardManager {
     public static class EmptyCards {
         @SpirePostfixPatch
         public static void yeet(AbstractMonster __instance) {
-            HoveringCardManager manager = MonsterModifierFieldPatches.ModifierFields.cardManager.get(__instance);
+            HoveringCardManager manager = MonsterFields.cardManager.get(__instance);
             if (manager != null) {
                 manager.cards.clear();
             }

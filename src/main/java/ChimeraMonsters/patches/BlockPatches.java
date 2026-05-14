@@ -22,7 +22,7 @@ public class BlockPatches {
                         temp = ((MonsterBlockChangingPower) power).modifyMonsterBlock(temp);
                     }
                 }
-                temp *= MonsterModifierFieldPatches.ModifierFields.blockMulti.get(__instance.target);
+                temp *= MonsterFields.blockMulti.get(__instance.target);
                 __instance.amount = (int) (temp);
             }
         }

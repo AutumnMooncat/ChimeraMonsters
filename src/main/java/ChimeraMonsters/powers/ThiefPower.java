@@ -4,7 +4,7 @@ import ChimeraMonsters.ChimeraMonstersMod;
 import ChimeraMonsters.actions.DoAction;
 import ChimeraMonsters.damagemods.vfx.LightningVFX;
 import ChimeraMonsters.patches.ActionCapturePatch;
-import ChimeraMonsters.patches.MonsterModifierFieldPatches;
+import ChimeraMonsters.patches.MonsterFields;
 import ChimeraMonsters.ui.HoveringCardManager;
 import ChimeraMonsters.util.analysis.ActionAnalyzer;
 import ChimeraMonsters.util.MonsterOrbHelper;
@@ -38,7 +38,7 @@ public class ThiefPower extends AbstractInternalLogicPower {
         priority = -5;
         if (owner instanceof AbstractMonster) {
             manager = new HoveringCardManager(owner);
-            MonsterModifierFieldPatches.ModifierFields.cardManager.set(owner, manager);
+            MonsterFields.cardManager.set(owner, manager);
         }
     }
 

@@ -15,11 +15,11 @@ public class CreatureUpdatePatches {
     public static class UpdateTime {
         @SpirePrefixPatch
         public static void preUpdate(AbstractMonster __instance) {
-            AbstractStance stance = MonsterModifierFieldPatches.ModifierFields.stance.get(__instance);
+            AbstractStance stance = MonsterFields.stance.get(__instance);
             if (stance != null) {
                 stance.update();
             }
-            ArrayList<AbstractOrb> orbs = MonsterModifierFieldPatches.ModifierFields.orbs.get(__instance);
+            ArrayList<AbstractOrb> orbs = MonsterFields.orbs.get(__instance);
             if (orbs != null) {
                 for (AbstractOrb orb : orbs) {
                     orb.update();
@@ -30,7 +30,7 @@ public class CreatureUpdatePatches {
 
         @SpirePostfixPatch
         public static void postUpdate(AbstractMonster __instance) {
-            HoveringCardManager manager = MonsterModifierFieldPatches.ModifierFields.cardManager.get(__instance);
+            HoveringCardManager manager = MonsterFields.cardManager.get(__instance);
             if (manager != null) {
                 manager.update();
             }

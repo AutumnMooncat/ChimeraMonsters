@@ -2,7 +2,7 @@ package ChimeraMonsters.commands;
 
 import ChimeraMonsters.ChimeraMonstersMod;
 import ChimeraMonsters.modifiers.AbstractMonsterModifier;
-import ChimeraMonsters.patches.MonsterModifierFieldPatches;
+import ChimeraMonsters.patches.MonsterFields;
 import basemod.DevConsole;
 import basemod.devcommands.ConsoleCommand;
 import com.megacrit.cardcrawl.actions.common.SpawnMonsterAction;
@@ -28,7 +28,7 @@ public class MonsterSpawn extends ConsoleCommand {
                 if (mod.canApplyTo(monster, null)) {
                     DevConsole.log("spawning " + monsterID + " with " + mod.getClass().getSimpleName());
                     ChimeraMonstersMod.applyModifier(monster, mod.makeCopy());
-                    MonsterModifierFieldPatches.ModifierFields.rolled.set(monster, true);
+                    MonsterFields.rolledModifiers.set(monster, true);
                     addAndPositionMonster(monster);
                 } else {
                     DevConsole.log(mod.getClass().getSimpleName() + " cannot be applied to " + monsterID);

@@ -4,7 +4,7 @@ import ChimeraMonsters.ChimeraMonstersMod;
 import ChimeraMonsters.actions.DoAction;
 import ChimeraMonsters.patches.ActionCapturePatch;
 import ChimeraMonsters.patches.CustomIntentPatches;
-import ChimeraMonsters.patches.MonsterModifierFieldPatches;
+import ChimeraMonsters.patches.MonsterFields;
 import ChimeraMonsters.powers.interfaces.IntentInterceptingPower;
 import ChimeraMonsters.util.analysis.PowerAnalyzer;
 import ChimeraMonsters.util.Wiz;
@@ -53,7 +53,7 @@ public class BerserkerPower extends AbstractEasyPower implements IntentIntercept
             addToBot(new ApplyPowerAction(owner, owner, new StrengthPower(owner, amount)));
             addToBot(new DoAction(() -> {
                 changeIntent(getMove(owner), true);
-                MonsterModifierFieldPatches.ModifierFields.interceptor.set(owner, this);
+                MonsterFields.interceptor.set(owner, this);
             }));
         }
     }

@@ -4,7 +4,7 @@ import ChimeraMonsters.ChimeraMonstersMod;
 import ChimeraMonsters.curatedFights.AbstractCuratedFight;
 import ChimeraMonsters.modifiers.AbstractMonsterModifier;
 import ChimeraMonsters.modifiers.GroupMonsterModifier;
-import ChimeraMonsters.patches.MonsterModifierFieldPatches;
+import ChimeraMonsters.patches.MonsterFields;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
@@ -54,14 +54,14 @@ public class FightModificationManager {
     }
 
     public static void rollMonsterModifier(AbstractMonster monster, MonsterGroup context) {
-        if (ChimeraMonstersMod.enableMods && !MonsterModifierFieldPatches.ModifierFields.rolled.get(monster) && (ChimeraMonstersMod.commonWeight + ChimeraMonstersMod.uncommonWeight + ChimeraMonstersMod.rareWeight + ChimeraMonstersMod.rarityBias != 0)) {
+        if (ChimeraMonstersMod.enableMods && !MonsterFields.rolledModifiers.get(monster) && (ChimeraMonstersMod.commonWeight + ChimeraMonstersMod.uncommonWeight + ChimeraMonstersMod.rareWeight + ChimeraMonstersMod.rarityBias != 0)) {
             for (int i = 0 ; i < ChimeraMonstersMod.rollAttempts ; i++) {
                 if (AbstractDungeon.miscRng.random(99) < ChimeraMonstersMod.modProbabilityPercent) {
                     applyWeightedMonsterModifier(monster, context, rollRarity(monster.type));
                 }
             }
         }
-        MonsterModifierFieldPatches.ModifierFields.rolled.set(monster, true);
+        MonsterFields.rolledModifiers.set(monster, true);
     }
 
     public static AbstractMonsterModifier.ModifierRarity rollRarity(AbstractMonster.EnemyType type) {
