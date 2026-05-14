@@ -50,5 +50,8 @@
   },
   "${ModID}:BurningMod": {
     "TEXT": ["Burning ", "", "Has #b[2/4/6] #yBurning."]
+  },
+  "${ModID}:PacifistMod": {
+    "TEXT": ["Pacifist ", "", "Every other attack is replaced with an interruptable heal."]
   }
 }
