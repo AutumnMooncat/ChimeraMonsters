@@ -48,11 +48,24 @@ public interface IntentInterceptingPower {
     default void otherIntentPicked(EnemyMoveInfo nextMove) {}
 
     /**
+     * Called when the monster actually creates and begins rendering its intent at the start of the turn
+     */
+    default void onInterceptedIntentCreated() {}
+
+    /**
      * Determines if this interceptor can replace hardcoded move changes or if it only replaces randomly rolled moves
      * @return If this interceptor only replaces random rolls.
      */
     default boolean rollOnly() {
         return false;
+    }
+
+    /**
+     * Allows changing the move name displayed when this intent is activated
+     * @return The new move name, or null to not display one
+     */
+    default String interceptName() {
+        return null;
     }
 
     /**

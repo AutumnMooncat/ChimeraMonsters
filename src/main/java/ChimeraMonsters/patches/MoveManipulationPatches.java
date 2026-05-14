@@ -60,6 +60,7 @@ public class MoveManipulationPatches {
                 IntentInterceptingPower interceptor = (IntentInterceptingPower) power;
                 if (newInterceptor == null && (!((IntentInterceptingPower) power).rollOnly() || wasRolled) && AbstractDungeon.aiRng.random(1f) <= interceptor.interceptRate(intendedMove)) {
                     interceptor.setInterceptIntent(intendedMove);
+                    monster.moveName = interceptor.interceptName();
                     MonsterModifierFieldPatches.ModifierFields.interceptor.set(monster, interceptor);
                     newInterceptor = interceptor;
                 }
@@ -108,14 +109,16 @@ public class MoveManipulationPatches {
         if (creature instanceof AbstractMonster) {
             byte moveByte = ((AbstractMonster) creature).nextMove;
             try {
-               if(info.nextMove!=-1){
+               if (info.nextMove != -1) {
                    ((AbstractMonster) creature).moveHistory.add(info.nextMove);
                    //TODO: MoveName
                }
-                moveField.set(creature, info);
-                if (instantCreate) {
-                    ((AbstractMonster) creature).createIntent();
-                }
+
+               moveField.set(creature, info);
+               ((AbstractMonster) creature).moveName = EnemyMoveInfoPatches.getName(info);
+               if (instantCreate) {
+                   ((AbstractMonster) creature).createIntent();
+               }
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -128,6 +131,7 @@ public class MoveManipulationPatches {
         public static SpireReturn<Void> plz(AbstractMonster __instance, String moveName, byte nextMove, AbstractMonster.Intent intent, int baseDamage, int multiplier, boolean isMultiDamage) {
             EnemyMoveInfo lastMove = getMove(__instance);
             EnemyMoveInfo intendedMove = new EnemyMoveInfo(nextMove, intent, baseDamage, multiplier, isMultiDamage);
+            EnemyMoveInfoPatches.setName(intendedMove, moveName);
             boolean shouldContinue = shouldSetMove(__instance, lastMove, intendedMove);
             EnemyMoveInfo currentInfo = getMove(__instance);
             if (currentInfo == lastMove) {
@@ -142,6 +146,23 @@ public class MoveManipulationPatches {
                 }
             }
             return shouldContinue ? SpireReturn.Continue() : SpireReturn.Return();
+        }
+
+        @SpirePostfixPatch
+        public static void setName(AbstractMonster __instance) {
+            EnemyMoveInfo currentMove = getMove(__instance);
+            EnemyMoveInfoPatches.setName(currentMove, __instance.moveName);
+        }
+    }
+
+    @SpirePatch(clz = AbstractMonster.class, method = "createIntent")
+    public static class OnIntentCreated {
+        @SpirePrefixPatch
+        public static void plz (AbstractMonster __instance) {
+            IntentInterceptingPower interceptor = MonsterModifierFieldPatches.ModifierFields.interceptor.get(__instance);
+            if (interceptor != null) {
+                interceptor.onInterceptedIntentCreated();
+            }
         }
     }
 
