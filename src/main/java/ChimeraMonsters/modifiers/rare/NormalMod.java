@@ -21,10 +21,7 @@ public class NormalMod extends AbstractMonsterModifier {
 
     @Override
     protected boolean validMonster(AbstractMonster monster, MonsterGroup context) {
-        if (AbstractDungeon.getCurrRoom() == null) {
-            return true;
-        }
-        return !((AbstractDungeon.getCurrRoom() instanceof MonsterRoomElite) || (AbstractDungeon.getCurrRoom() instanceof MonsterRoomBoss));
+        return noEliteOrBossCheck(monster, context);
     }
 
     @Override

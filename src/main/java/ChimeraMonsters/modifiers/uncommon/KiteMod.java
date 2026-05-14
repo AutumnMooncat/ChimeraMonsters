@@ -23,10 +23,7 @@ public class KiteMod extends AbstractMonsterModifier {
 
     @Override
     protected boolean validMonster(AbstractMonster monster, MonsterGroup context) {
-        if (AbstractDungeon.getCurrRoom() == null) {
-            return true;
-        }
-        return !(AbstractDungeon.getCurrRoom() instanceof MonsterRoomBoss);
+        return noBossCheck(monster, context);
     }
 
     @Override

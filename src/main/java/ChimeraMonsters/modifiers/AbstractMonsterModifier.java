@@ -16,6 +16,8 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
 import com.megacrit.cardcrawl.powers.AbstractPower;
+import com.megacrit.cardcrawl.rooms.MonsterRoomBoss;
+import com.megacrit.cardcrawl.rooms.MonsterRoomElite;
 
 import java.util.*;
 import java.util.function.BiPredicate;
@@ -35,6 +37,9 @@ public abstract class AbstractMonsterModifier {
     public static final float DEBUFF_10 = 9 / 10f;
     public static final Predicate<MonsterGroup> singleCombat = (group) -> group.monsters.size() == 1;
     public static final Predicate<MonsterGroup> multiCombat = (group) -> group.monsters.size() > 1;
+    public static final Predicate<MonsterGroup> noBosses = (group) -> group.monsters.stream().noneMatch(mon -> mon.type == AbstractMonster.EnemyType.BOSS);
+    public static final Predicate<MonsterGroup> noElites = (group) -> group.monsters.stream().noneMatch(mon -> mon.type == AbstractMonster.EnemyType.ELITE);
+    public static final Predicate<MonsterGroup> noElitesOrBosses = (group) -> group.monsters.stream().allMatch(mon -> mon.type == AbstractMonster.EnemyType.NORMAL);
     public static final BiPredicate<MonsterGroup, AbstractMonsterModifier> onePerFight = (group, toCheck) -> group.monsters.stream().noneMatch(mon -> MonsterFields.receivedModifiers.get(mon).stream().anyMatch(mod -> mod.identifier().equals(toCheck.identifier())));
     public static final BiPredicate<MonsterGroup, AbstractMonster> lastMonster = (group, mon) -> group.monsters.get(group.monsters.size() - 1) == mon;
 
@@ -209,6 +214,49 @@ public abstract class AbstractMonsterModifier {
 
     public boolean checkContext(MonsterGroup context, BiPredicate<MonsterGroup, AbstractMonsterModifier> check) {
         return context == null || check.test(context, this);
+    }
+
+    public boolean noEliteCheck(AbstractMonster monster, MonsterGroup context) {
+        if (monster.type == AbstractMonster.EnemyType.ELITE) {
+            return false;
+        }
+        if (!checkContext(context, noElites)) {
+            return false;
+        }
+        if (AbstractDungeon.currMapNode == null || AbstractDungeon.getCurrRoom() == null) {
+            return true;
+        }
+        return !(AbstractDungeon.getCurrRoom() instanceof MonsterRoomElite);
+    }
+
+    public boolean noBossCheck(AbstractMonster monster, MonsterGroup context) {
+        if (monster.type == AbstractMonster.EnemyType.BOSS) {
+            return false;
+        }
+        if (!checkContext(context, noBosses)) {
+            return false;
+        }
+        if (AbstractDungeon.currMapNode == null || AbstractDungeon.getCurrRoom() == null) {
+            return true;
+        }
+        return !(AbstractDungeon.getCurrRoom() instanceof MonsterRoomBoss);
+    }
+
+    public boolean noEliteOrBossCheck(AbstractMonster monster, MonsterGroup context) {
+        if (monster.type != AbstractMonster.EnemyType.NORMAL) {
+            return false;
+        }
+        if (!checkContext(context, noElitesOrBosses)) {
+            return false;
+        }
+        if (AbstractDungeon.currMapNode == null || AbstractDungeon.getCurrRoom() == null) {
+            return true;
+        }
+        return !((AbstractDungeon.getCurrRoom() instanceof MonsterRoomElite) || (AbstractDungeon.getCurrRoom() instanceof MonsterRoomBoss));
+    }
+
+    public int getConstructedBaseHealth(AbstractMonster monster) {
+        return MonsterFields.baseMaxHP.get(monster);
     }
 
     public void manipulateBaseHealth(AbstractMonster monster, float factor) {
