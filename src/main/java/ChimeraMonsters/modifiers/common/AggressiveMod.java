@@ -36,7 +36,7 @@ public class AggressiveMod extends GroupMonsterModifier {
 
     @Override
     protected boolean validMonster(AbstractMonster monster, MonsterGroup context) {
-        return hasBlockAction(monster);
+        return hasBlockTurn(monster);
     }
 
     @Override

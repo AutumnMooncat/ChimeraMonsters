@@ -33,7 +33,7 @@ public class BulkyMod extends AbstractMonsterModifier {
 
     @Override
     protected boolean validMonster(AbstractMonster monster, MonsterGroup context) {
-        return hasBlockAction(monster);
+        return hasBlockTurn(monster);
     }
 
     @Override

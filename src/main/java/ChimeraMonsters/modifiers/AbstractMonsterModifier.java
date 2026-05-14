@@ -3,8 +3,8 @@ package ChimeraMonsters.modifiers;
 import ChimeraMonsters.ChimeraMonstersMod;
 import ChimeraMonsters.patches.MonsterFields;
 import ChimeraMonsters.util.Wiz;
+import ChimeraMonsters.util.analysis.ClassAnalyzer;
 import com.evacipated.cardcrawl.mod.stslib.powers.interfaces.InvisiblePower;
-import com.evacipated.cardcrawl.modthespire.Loader;
 import com.megacrit.cardcrawl.actions.AbstractGameAction;
 import com.megacrit.cardcrawl.actions.common.GainBlockAction;
 import com.megacrit.cardcrawl.cards.AbstractCard;
@@ -17,9 +17,6 @@ import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
 import com.megacrit.cardcrawl.powers.AbstractPower;
 import javassist.*;
-import javassist.expr.ExprEditor;
-import javassist.expr.MethodCall;
-import javassist.expr.NewExpr;
 
 import java.util.*;
 import java.util.function.BiPredicate;
@@ -43,6 +40,8 @@ public abstract class AbstractMonsterModifier {
     public static final BiPredicate<MonsterGroup, AbstractMonster> lastMonster = (group, mon) -> group.monsters.get(group.monsters.size() - 1) == mon;
 
     private static final ArrayList<AbstractCard> cardsToCheck = new ArrayList<>();
+    private static final String TAKE_TURN = "takeTurn";
+    private static final String PRE_BATTLE = "usePreBattleAction";
 
     public enum ModifierRarity {
         COMMON,
@@ -259,59 +258,35 @@ public abstract class AbstractMonsterModifier {
     }
 
     public static boolean doesntOverride(AbstractMonster monster, String method, Class<?>... paramtypez) {
-        return doesntOverride(monster, AbstractMonster.class, method, paramtypez);
+        return ClassAnalyzer.doesntOverride(monster, AbstractMonster.class, method, paramtypez);
     }
 
-    public static boolean doesntOverride(Object o, Class<?> clazz, String method, Class<?>... paramtypez) {
-        try {
-            return o.getClass().getMethod(method, paramtypez).getDeclaringClass().equals(clazz);
-        } catch (NoSuchMethodException ignored) {
-        }
-        return false;
+    public static boolean hasBlockTurn(AbstractMonster monster) {
+        return ClassAnalyzer.methodHasAnyClass(monster, TAKE_TURN, GainBlockAction.class);
     }
 
-    public static boolean hasBlockAction(AbstractMonster monster) {
-        return usesAction(monster, GainBlockAction.class);
+    public static boolean hasAnyInTurn(AbstractMonster monster, Class<?>... clazzez) {
+        return ClassAnalyzer.methodHasAnyClass(monster, TAKE_TURN, clazzez);
     }
 
-    public static boolean usesAction(AbstractMonster monster, Class<? extends AbstractGameAction> clazz) {
-        return usesClass(monster, clazz);
+    public static boolean hasAllInTurn(AbstractMonster monster, Class<?>... clazzez) {
+        return ClassAnalyzer.methodHasAllClass(monster, TAKE_TURN, clazzez);
     }
 
-    public static boolean usesClass(AbstractMonster monster, Class<?> clazz) {
-        final boolean[] usesAction = {false};
-        ClassPool pool = Loader.getClassPool();
-        try {
-            CtClass ctClass = pool.get(monster.getClass().getName());
-            ctClass.defrost();
-            CtMethod ctTakeTurn = ctClass.getDeclaredMethod("takeTurn");
-            ctTakeTurn.instrument(new ExprEditor() {
-                @Override
-                public void edit(NewExpr e) {
-                    if (e.getClassName().equals(clazz.getName())) {
-                        usesAction[0] = true;
-                    }
-                }
+    public static boolean hasAnyInSetup(AbstractMonster monster, Class<?>... clazzez) {
+        return ClassAnalyzer.methodHasAnyClass(monster, PRE_BATTLE, clazzez);
+    }
 
-                @Override
-                public void edit(MethodCall m) {
-                    try {
-                        CtMethod check = m.getMethod();
-                        check.instrument(new ExprEditor() {
-                            @Override
-                            public void edit(NewExpr e) {
-                                if (e.getClassName().equals(clazz.getName())) {
-                                    usesAction[0] = true;
-                                }
-                            }
-                        });
-                    } catch (Exception ignored) {
-                    }
-                }
-            });
-        } catch (Exception ignored) {
-        }
-        return usesAction[0];
+    public static boolean hasAllInSetup(AbstractMonster monster, Class<?>... clazzez) {
+        return ClassAnalyzer.methodHasAllClass(monster, PRE_BATTLE, clazzez);
+    }
+
+    public static boolean hasAnyAnywhere(AbstractMonster monster, Class<?>... clazzez) {
+        return ClassAnalyzer.classHasAnyClass(monster, clazzez);
+    }
+
+    public static boolean hasAllAnywhere(AbstractMonster monster, Class<?>... clazzez) {
+        return ClassAnalyzer.classHasAllClass(monster, clazzez);
     }
 
     public void addToBot(AbstractGameAction action) {
