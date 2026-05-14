@@ -34,5 +34,12 @@
   "${ModID}:HoverPower": {
     "NAME": "Hover",
     "DESCRIPTIONS": ["Receives 50% less attack damage. Cancelled if dealt attack damage #b", " times. Loses #b25% of Max HP upon landing."]
+  },
+  "${ModID}:BurningPower": {
+    "NAME": "Burning",
+    "DESCRIPTIONS": [
+      "At the end of your turn, take #b"," damage. Whenever you deal unblocked attack damage, apply half your #yBurning.",
+      "At the start of its turn, loses #b"," HP. Whenever you receive attack damage from this enemy, gain half its #yBurning."
+    ]
   }
 }
