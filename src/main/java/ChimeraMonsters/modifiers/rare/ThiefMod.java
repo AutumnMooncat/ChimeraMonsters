@@ -23,8 +23,8 @@ public class ThiefMod extends AbstractMonsterModifier {
 
     @Override
     public void applyTo(AbstractMonster monster) {
-        manipulateBaseDamage(monster, DEBUFF_MODERATE);
-        manipulateBaseHealth(monster, DEBUFF_MODERATE);
+        manipulateBaseDamage(monster, DEBUFF_25);
+        manipulateBaseHealth(monster, DEBUFF_25);
         applyPowersToCreature(monster, new ThiefPower(monster, 1));
     }
 

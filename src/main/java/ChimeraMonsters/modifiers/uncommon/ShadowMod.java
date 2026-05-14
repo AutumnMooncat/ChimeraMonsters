@@ -34,8 +34,8 @@ public class ShadowMod extends GroupMonsterModifier {
 
     @Override
     public void applyTo(AbstractMonster monster) {
-        manipulateBaseDamage(monster, BUFF_HUGE);
-        manipulateBaseHealth(monster, DEBUFF_MAJOR);
+        manipulateBaseDamage(monster, BUFF_50);
+        manipulateBaseHealth(monster, DEBUFF_33);
         applyPowersToCreature(monster, new ShadowPower(monster, 1));
     }
 

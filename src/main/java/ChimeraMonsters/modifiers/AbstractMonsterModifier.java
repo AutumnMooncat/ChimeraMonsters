@@ -16,7 +16,6 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
 import com.megacrit.cardcrawl.powers.AbstractPower;
-import javassist.*;
 
 import java.util.*;
 import java.util.function.BiPredicate;
@@ -24,16 +23,16 @@ import java.util.function.Predicate;
 
 public abstract class AbstractMonsterModifier {
     private static final String[] BASE_TEXT = CardCrawlGame.languagePack.getUIString(ChimeraMonstersMod.makeID(AbstractMonsterModifier.class.getSimpleName())).TEXT;
-    public static final float BUFF_HUGE = 3 / 2f;
-    public static final float BUFF_MAJOR = 4 / 3f;
-    public static final float BUFF_MODERATE = 5 / 4f;
-    public static final float BUFF_MINOR = 6 / 5f;
-    public static final float BUFF_TINY = 11 / 10f;
-    public static final float DEBUFF_HUGE = 1 / 2f;
-    public static final float DEBUFF_MAJOR = 2 / 3f;
-    public static final float DEBUFF_MODERATE = 3 / 4f;
-    public static final float DEBUFF_MINOR = 4 / 5f;
-    public static final float DEBUFF_TINY = 9 / 10f;
+    public static final float BUFF_50 = 3 / 2f;
+    public static final float BUFF_33 = 4 / 3f;
+    public static final float BUFF_25 = 5 / 4f;
+    public static final float BUFF_20 = 6 / 5f;
+    public static final float BUFF_10 = 11 / 10f;
+    public static final float DEBUFF_50 = 1 / 2f;
+    public static final float DEBUFF_33 = 2 / 3f;
+    public static final float DEBUFF_25 = 3 / 4f;
+    public static final float DEBUFF_20 = 4 / 5f;
+    public static final float DEBUFF_10 = 9 / 10f;
     public static final Predicate<MonsterGroup> singleCombat = (group) -> group.monsters.size() == 1;
     public static final Predicate<MonsterGroup> multiCombat = (group) -> group.monsters.size() > 1;
     public static final BiPredicate<MonsterGroup, AbstractMonsterModifier> onePerFight = (group, toCheck) -> group.monsters.stream().noneMatch(mon -> MonsterFields.receivedModifiers.get(mon).stream().anyMatch(mod -> mod.identifier().equals(toCheck.identifier())));

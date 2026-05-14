@@ -39,7 +39,7 @@ public class AugerMod extends AbstractMonsterModifier {
 
     @Override
     public void applyTo(AbstractMonster monster) {
-        manipulateBaseHealth(monster, DEBUFF_MINOR);
+        manipulateBaseHealth(monster, DEBUFF_20);
         applyPowersToCreature(monster, new AugerPower(monster, AMOUNT));
     }
 

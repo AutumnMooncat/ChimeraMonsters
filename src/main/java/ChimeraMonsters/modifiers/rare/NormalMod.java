@@ -29,7 +29,7 @@ public class NormalMod extends AbstractMonsterModifier {
 
     @Override
     public void applyTo(AbstractMonster monster) {
-        manipulateBaseHealth(monster, DEBUFF_MAJOR);
+        manipulateBaseHealth(monster, DEBUFF_33);
         applyPowersToCreature(monster, new NormalPower(monster, 1));
     }
 

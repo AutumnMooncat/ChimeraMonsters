@@ -38,8 +38,8 @@ public class BulkyMod extends AbstractMonsterModifier {
 
     @Override
     public void applyTo(AbstractMonster monster) {
-        manipulateFinalBlock(monster, BUFF_MAJOR);
-        manipulateBaseDamage(monster, DEBUFF_MINOR);
+        manipulateFinalBlock(monster, BUFF_33);
+        manipulateBaseDamage(monster, DEBUFF_20);
     }
 
     @Override
