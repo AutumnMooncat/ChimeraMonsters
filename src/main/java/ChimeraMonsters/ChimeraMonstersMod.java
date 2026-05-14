@@ -12,6 +12,7 @@ import ChimeraMonsters.ui.TopPanelExplainer;
 import ChimeraMonsters.util.KeywordManager;
 import ChimeraMonsters.util.TextureLoader;
 import ChimeraMonsters.util.Wiz;
+import ChimeraMonsters.util.compat.SpirePeopleCompat;
 import basemod.*;
 import basemod.devcommands.ConsoleCommand;
 import basemod.interfaces.*;
@@ -21,6 +22,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.mod.stslib.Keyword;
+import com.evacipated.cardcrawl.modthespire.Loader;
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.google.gson.Gson;
 import com.megacrit.cardcrawl.cards.AbstractCard;
@@ -787,7 +789,9 @@ public class ChimeraMonstersMod implements
             }
         }
         monster.name = copy.modifyName(monster);
-        MonsterModifierFieldPatches.ModifierFields.receivedModifiers.get(monster).add(copy);
+        if (Loader.isModLoaded("SpirePeople")) {
+            SpirePeopleCompat.fixName(monster);
+        }
         MonsterFields.receivedModifiers.get(monster).add(copy);
     }
 
