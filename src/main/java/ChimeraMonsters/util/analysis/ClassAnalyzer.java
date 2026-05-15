@@ -114,38 +114,4 @@ public class ClassAnalyzer {
         } catch (Exception ignored) {}
         return false;
     }
-
-    public static boolean usesClass(AbstractMonster monster, Class<?> clazz) {
-        final boolean[] usesAction = {false};
-        ClassPool pool = Loader.getClassPool();
-        try {
-            CtClass ctClass = pool.get(monster.getClass().getName());
-            ctClass.defrost();
-            CtMethod ctTakeTurn = ctClass.getDeclaredMethod("takeTurn");
-            ctTakeTurn.instrument(new ExprEditor() {
-                @Override
-                public void edit(NewExpr e) {
-                    if (e.getClassName().equals(clazz.getName())) {
-                        usesAction[0] = true;
-                    }
-                }
-
-                @Override
-                public void edit(MethodCall m) {
-                    try {
-                        CtMethod check = m.getMethod();
-                        check.instrument(new ExprEditor() {
-                            @Override
-                            public void edit(NewExpr e) {
-                                if (e.getClassName().equals(clazz.getName())) {
-                                    usesAction[0] = true;
-                                }
-                            }
-                        });
-                    } catch (Exception ignored) {}
-                }
-            });
-        } catch (Exception ignored) {}
-        return usesAction[0];
-    }
 }
