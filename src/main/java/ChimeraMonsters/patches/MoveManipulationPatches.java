@@ -95,7 +95,7 @@ public class MoveManipulationPatches {
         MonsterFields.interceptor.set(monster, null);
     }
 
-    // Called by AbstractMonsterDynamicPatch, should wrap all stateChange overrides
+    // Called by AbstractMonsterDynamicPatch, should wrap all stateChange overrides and damage overrides if reaction changes intent
     public static void beginStateChange(AbstractMonster monster) {
         changingState = true;
     }
