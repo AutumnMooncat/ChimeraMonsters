@@ -21,6 +21,7 @@ import java.lang.reflect.Field;
 public class MoveManipulationPatches {
     private static final Field moveField;
     private static boolean wasRolled;
+    private static boolean changingState;
 
     static {
         try {
@@ -48,7 +49,7 @@ public class MoveManipulationPatches {
             if (interceptor.setFollowupInterceptionIntent()) {
                 return true;
             } else {
-                MonsterFields.interceptor.set(monster, null);
+                removeAndResetInterceptor(monster);
             }
         }
         return false;
@@ -72,6 +73,11 @@ public class MoveManipulationPatches {
     }
 
     public static boolean shouldSetMove(AbstractMonster monster, EnemyMoveInfo lastMove, EnemyMoveInfo intendedMove) {
+        // Some enemies have important intent state changes like Bryd/Parasite stun, Guardian close up, Hexaghost inferno
+        if (changingState) {
+            removeAndResetInterceptor(monster);
+            return true;
+        }
         if (hasIntentLock(monster, lastMove, intendedMove)) {
             return false;
         }
@@ -81,6 +87,24 @@ public class MoveManipulationPatches {
         return !hasNewInterceptor(monster, intendedMove);
     }
 
+    public static void removeAndResetInterceptor(AbstractMonster monster) {
+        IntentInterceptingPower interceptor = MonsterFields.interceptor.get(monster);
+        if (interceptor != null) {
+            interceptor.onFinishedThisIntercept();
+        }
+        MonsterFields.interceptor.set(monster, null);
+    }
+
+    // Called by AbstractMonsterDynamicPatch, should wrap all stateChange overrides
+    public static void beginStateChange(AbstractMonster monster) {
+        changingState = true;
+    }
+
+    public static void endStateChange(AbstractMonster monster) {
+        changingState = false;
+    }
+
+    // Called by GetNextAction
     public static boolean performedIntercept(AbstractMonster monster) {
         IntentInterceptingPower interceptor = MonsterFields.interceptor.get(monster);
         if (interceptor != null) {

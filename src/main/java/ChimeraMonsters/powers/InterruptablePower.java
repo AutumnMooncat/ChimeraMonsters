@@ -35,7 +35,7 @@ public class InterruptablePower extends AbstractEasyPower {
         if (owner instanceof AbstractMonster && info.owner != null && damageAmount > 0 && info.type == DamageInfo.DamageType.NORMAL) {
             AbstractMonster ownerMon = (AbstractMonster) owner;
             addToTop(new DoAction(() -> {
-                MonsterFields.interceptor.set(ownerMon, null);
+                MoveManipulationPatches.removeAndResetInterceptor(ownerMon);
                 MoveManipulationPatches.setMove(ownerMon, moveInfo, true);
             }));
             addToTop(new RemoveSpecificPowerAction(owner, owner, this));

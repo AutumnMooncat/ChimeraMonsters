@@ -42,6 +42,12 @@ public interface IntentInterceptingPower {
     boolean setFollowupInterceptionIntent();
 
     /**
+     * Called whenever this intercept is removed, either because it was finished or forced to stop.
+     * Any cleanup/reset required if this interrupt is forced to stop should be done here.
+     */
+    default void onFinishedThisIntercept() {}
+
+    /**
      * Called whenever this doesnt perform an intercept, including if this is due to the intent being locked or another interceptor spanning multiple turns.
      * @param nextMove The move info that the monster now has.
      */

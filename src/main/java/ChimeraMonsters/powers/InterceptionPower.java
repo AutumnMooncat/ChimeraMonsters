@@ -45,8 +45,6 @@ public class InterceptionPower extends AbstractInternalLogicPower implements Int
             didBlock = true;
             cooldown = 4;
             addToBot(new GainBlockAction(owner, owner, amount));
-        } else {
-            didBlock = false;
         }
         return false;
     }
@@ -58,5 +56,10 @@ public class InterceptionPower extends AbstractInternalLogicPower implements Int
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void onFinishedThisIntercept() {
+        didBlock = false;
     }
 }
