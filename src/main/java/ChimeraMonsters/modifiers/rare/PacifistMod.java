@@ -1,8 +1,7 @@
-package ChimeraMonsters.modifiers.uncommon;
+package ChimeraMonsters.modifiers.rare;
 
 import ChimeraMonsters.ChimeraMonstersMod;
 import ChimeraMonsters.modifiers.AbstractMonsterModifier;
-import ChimeraMonsters.powers.InterceptionPower;
 import ChimeraMonsters.powers.PacifistPower;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
