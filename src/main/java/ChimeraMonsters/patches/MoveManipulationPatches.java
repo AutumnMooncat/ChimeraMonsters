@@ -61,10 +61,7 @@ public class MoveManipulationPatches {
             if (power instanceof IntentInterceptingPower) {
                 IntentInterceptingPower interceptor = (IntentInterceptingPower) power;
                 if (newInterceptor == null && (!((IntentInterceptingPower) power).rollOnly() || wasRolled) && AbstractDungeon.aiRng.random(1f) <= interceptor.interceptRate(intendedMove)) {
-                    MonsterFields.replacedIntendedMove.set(monster, intendedMove);
-                    interceptor.setInterceptIntent(intendedMove);
-                    monster.moveName = interceptor.interceptName();
-                    MonsterFields.interceptor.set(monster, interceptor);
+                    applyInterceptor(monster, interceptor, intendedMove);
                     newInterceptor = interceptor;
                 }
             }
@@ -85,6 +82,13 @@ public class MoveManipulationPatches {
             return false;
         }
         return !hasNewInterceptor(monster, intendedMove);
+    }
+
+    public static void applyInterceptor(AbstractMonster monster, IntentInterceptingPower interceptor, EnemyMoveInfo intendedMove) {
+        MonsterFields.replacedIntendedMove.set(monster, intendedMove);
+        interceptor.setInterceptIntent(intendedMove);
+        monster.moveName = interceptor.interceptName();
+        MonsterFields.interceptor.set(monster, interceptor);
     }
 
     public static void removeAndResetInterceptor(AbstractMonster monster) {
