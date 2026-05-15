@@ -47,5 +47,11 @@
     "DESCRIPTIONS": [
       "This monster will change intent upon receiving attack damage."
     ]
+  },
+  "${ModID}:WrathfulPower": {
+    "NAME": "Wrathful",
+    "DESCRIPTIONS": [
+      "This monster's attacks deal double damage and it takes double damage from your attacks."
+    ]
   }
 }

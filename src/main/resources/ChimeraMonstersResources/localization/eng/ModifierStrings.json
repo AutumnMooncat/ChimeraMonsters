@@ -56,5 +56,8 @@
   },
   "${ModID}:SpikyMod": {
     "TEXT": ["Spiky ", "", "Reduces #yHP by #b25%. NL Starts with, and has an intent to gain, #yThorns."]
+  },
+  "${ModID}:AwakeningMod": {
+    "TEXT": ["Awakening ", "", "Reduces #yHP by #b50%. NL Can revive once in #yWrath."]
   }
 }
