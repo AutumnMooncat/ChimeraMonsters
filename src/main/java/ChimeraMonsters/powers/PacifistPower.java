@@ -51,18 +51,34 @@ public class PacifistPower extends AbstractInternalLogicPower implements IntentI
     @Override
     public void onInterceptedIntentCreated() {
         addToBot(new ApplyPowerAction(owner, owner, new InterruptablePower(owner, replacedMove)));
-        replacedMove = null;
     }
 
     @Override
     public boolean performIntercept() {
         cooldown = 1;
-        Wiz.forAllMonstersLiving(mon -> Wiz.atb(new HealAction(mon, owner, amount)));
+        // Heal is equal to the replaced attack damage, or power amount as a fallback
+        int[] heal = {amount};
+        int times = 1;
+        if (replacedMove != null && replacedMove.baseDamage > 0) {
+            // TODO Do we want to have vuln/str affect this heal? Can pass it through monster.calcDamage if so
+            heal[0] = replacedMove.baseDamage;
+            if (replacedMove.isMultiDamage && replacedMove.multiplier > 0) {
+                times = replacedMove.multiplier;
+            }
+        }
+        for (int i = 0 ; i < times ; i++) {
+            Wiz.forAllMonstersLiving(mon -> Wiz.atb(new HealAction(mon, owner, heal[0])));
+        }
         return false;
     }
 
     @Override
     public boolean setFollowupInterceptionIntent() {
         return false;
+    }
+
+    @Override
+    public void onFinishedThisIntercept() {
+        replacedMove = null;
     }
 }
