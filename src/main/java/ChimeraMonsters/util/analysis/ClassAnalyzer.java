@@ -2,13 +2,9 @@ package ChimeraMonsters.util.analysis;
 
 import com.evacipated.cardcrawl.modthespire.Loader;
 import com.evacipated.cardcrawl.modthespire.lib.Matcher;
-import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtMethod;
-import javassist.expr.ExprEditor;
-import javassist.expr.MethodCall;
-import javassist.expr.NewExpr;
 
 import java.util.HashMap;
 
@@ -72,6 +68,43 @@ public class ClassAnalyzer {
         return false;
     }
 
+    public static boolean methodHasAnyMatchers(Object o, String method, Matcher... matchers) {
+        return methodHasAnyMatchers(o.getClass(), method, matchers);
+    }
+
+    public static boolean methodHasAnyMatchers(Class<?> source, String method, Matcher... matchers) {
+        try {
+            ClassPool pool = Loader.getClassPool();
+            CtClass ctClass = pool.get(source.getName());
+            CtMethod ctMethod = ctClass.getDeclaredMethod(method);
+            for (Matcher match : matchers) {
+                if (CtClassAnalyzer.performTest(ctMethod, match)) {
+                    return true;
+                }
+            }
+        } catch (Exception ignored) {}
+        return false;
+    }
+
+    public static boolean methodHasAllMatchers(Object o, String method, Matcher... matchers) {
+        return methodHasAllMatchers(o.getClass(), method, matchers);
+    }
+
+    public static boolean methodHasAllMatchers(Class<?> source, String method, Matcher... matchers) {
+        try {
+            ClassPool pool = Loader.getClassPool();
+            CtClass ctClass = pool.get(source.getName());
+            CtMethod ctMethod = ctClass.getDeclaredMethod(method);
+            for (Matcher match : matchers) {
+                if (!CtClassAnalyzer.performTest(ctMethod, match)) {
+                    return false;
+                }
+            }
+            return true;
+        } catch (Exception ignored) {}
+        return false;
+    }
+
     public static boolean classHasAllClass(Object o, Class<?>... clazzez) {
         return classHasAllClass(o.getClass(), clazzez);
     }
@@ -109,6 +142,66 @@ public class ClassAnalyzer {
                     if (CtClassAnalyzer.performTest(ctMethod, new Matcher.NewExprMatcher(clazz.getName()))) {
                         return true;
                     }
+                }
+            }
+        } catch (Exception ignored) {}
+        return false;
+    }
+
+    public static boolean classHasAnyMatchers(Object o, Matcher... matchers) {
+        return classHasAnyMatchers(o.getClass(), matchers);
+    }
+
+    public static boolean classHasAnyMatchers(Class<?> source, Matcher... matchers) {
+        try {
+            ClassPool pool = Loader.getClassPool();
+            CtClass ctClass = pool.get(source.getName());
+            for (CtMethod ctMethod : ctClass.getDeclaredMethods()) {
+                for (Matcher match : matchers) {
+                    if (CtClassAnalyzer.performTest(ctMethod, match)) {
+                        return true;
+                    }
+                }
+            }
+        } catch (Exception ignored) {}
+        return false;
+    }
+
+    public static boolean classHasAllMatchers(Object o, Matcher... matchers) {
+        return classHasAllMatchers(o.getClass(), matchers);
+    }
+
+    public static boolean classHasAllMatchers(Class<?> source, Matcher... matchers) {
+        try {
+            HashMap<Matcher, Boolean> checks = new HashMap<>();
+            for (Matcher match : matchers) {
+                checks.put(match, false);
+            }
+            ClassPool pool = Loader.getClassPool();
+            CtClass ctClass = pool.get(source.getName());
+            for (CtMethod ctMethod : ctClass.getDeclaredMethods()) {
+                for (Matcher match : matchers) {
+                    if (CtClassAnalyzer.performTest(ctMethod, match)) {
+                        checks.put(match, true);
+                    }
+                }
+            }
+            return checks.values().stream().allMatch(Boolean::booleanValue);
+        } catch (Exception ignored) {}
+        return false;
+    }
+
+    public static boolean classReferencesField(Object o, Class<?> containingClazz, String fieldName) {
+        return classReferencesField(o.getClass(), containingClazz, fieldName);
+    }
+
+    public static boolean classReferencesField(Class<?> source, Class<?> containingClazz, String fieldName) {
+        try {
+            ClassPool pool = Loader.getClassPool();
+            CtClass ctClass = pool.get(source.getName());
+            for (CtMethod ctMethod : ctClass.getDeclaredMethods()) {
+                if (CtClassAnalyzer.performTest(ctMethod, new Matcher.FieldAccessMatcher(containingClazz, fieldName))) {
+                    return true;
                 }
             }
         } catch (Exception ignored) {}

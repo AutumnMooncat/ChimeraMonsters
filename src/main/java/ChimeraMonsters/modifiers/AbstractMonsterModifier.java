@@ -5,6 +5,7 @@ import ChimeraMonsters.patches.MonsterFields;
 import ChimeraMonsters.util.Wiz;
 import ChimeraMonsters.util.analysis.ClassAnalyzer;
 import com.evacipated.cardcrawl.mod.stslib.powers.interfaces.InvisiblePower;
+import com.evacipated.cardcrawl.modthespire.lib.Matcher;
 import com.megacrit.cardcrawl.actions.AbstractGameAction;
 import com.megacrit.cardcrawl.actions.common.GainBlockAction;
 import com.megacrit.cardcrawl.cards.AbstractCard;
@@ -330,24 +331,48 @@ public abstract class AbstractMonsterModifier {
         return ClassAnalyzer.methodHasAnyClass(monster, TAKE_TURN, clazzez);
     }
 
+    public static boolean hasAnyInTurn(AbstractMonster monster, Matcher... matchers) {
+        return ClassAnalyzer.methodHasAnyMatchers(monster, TAKE_TURN, matchers);
+    }
+
     public static boolean hasAllInTurn(AbstractMonster monster, Class<?>... clazzez) {
         return ClassAnalyzer.methodHasAllClass(monster, TAKE_TURN, clazzez);
+    }
+
+    public static boolean hasAllInTurn(AbstractMonster monster, Matcher... matchers) {
+        return ClassAnalyzer.methodHasAllMatchers(monster, TAKE_TURN, matchers);
     }
 
     public static boolean hasAnyInSetup(AbstractMonster monster, Class<?>... clazzez) {
         return ClassAnalyzer.methodHasAnyClass(monster, PRE_BATTLE, clazzez);
     }
 
+    public static boolean hasAnyInSetup(AbstractMonster monster, Matcher... matchers) {
+        return ClassAnalyzer.methodHasAnyMatchers(monster, PRE_BATTLE, matchers);
+    }
+
     public static boolean hasAllInSetup(AbstractMonster monster, Class<?>... clazzez) {
         return ClassAnalyzer.methodHasAllClass(monster, PRE_BATTLE, clazzez);
+    }
+
+    public static boolean hasAllInSetup(AbstractMonster monster, Matcher... matchers) {
+        return ClassAnalyzer.methodHasAllMatchers(monster, PRE_BATTLE, matchers);
     }
 
     public static boolean hasAnyAnywhere(AbstractMonster monster, Class<?>... clazzez) {
         return ClassAnalyzer.classHasAnyClass(monster, clazzez);
     }
 
+    public static boolean hasAnyAnywhere(AbstractMonster monster, Matcher... matchers) {
+        return ClassAnalyzer.classHasAnyMatchers(monster, matchers);
+    }
+
     public static boolean hasAllAnywhere(AbstractMonster monster, Class<?>... clazzez) {
         return ClassAnalyzer.classHasAllClass(monster, clazzez);
+    }
+
+    public static boolean hasAllAnywhere(AbstractMonster monster, Matcher... matchers) {
+        return ClassAnalyzer.classHasAllMatchers(monster, matchers);
     }
 
     public void addToBot(AbstractGameAction action) {
