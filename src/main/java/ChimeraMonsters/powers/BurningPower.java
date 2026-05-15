@@ -31,6 +31,11 @@ public class BurningPower extends AbstractEasyPower implements HealthBarRenderPo
     }
 
     @Override
+    public void playApplyPowerSfx() {
+        CardCrawlGame.sound.play("ATTACK_FIRE", 0.05F);
+    }
+
+    @Override
     public void updateDescription() {
         if (owner instanceof AbstractPlayer) {
             description = DESCRIPTIONS[0] + amount + DESCRIPTIONS[1];
