@@ -62,5 +62,8 @@
   },
   "${ModID}:MimicMod": {
     "TEXT": ["", "?", "This monster is not what it seems."]
+  },
+  "${ModID}:HexaghostMod": {
+    "TEXT": ["", "aghost", "Has a powerful attack intent every 6 turns."]
   }
 }
