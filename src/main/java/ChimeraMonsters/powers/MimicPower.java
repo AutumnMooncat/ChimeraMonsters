@@ -55,13 +55,13 @@ public class MimicPower extends AbstractInternalLogicPower implements RenderModi
 
     @Override
     public void onPreventDeath(AbstractMonster monsterOwner) {
-        addToBot(new TimedVFXAction(new SmokeBombEffect(owner.hb.cX, owner.hb.cY)));
-        addToBot(new DoAction(() -> {
+        addToTop(new DoAction(() -> {
             owner.halfDead = false;
             monsterOwner.currentHealth = origHP;
             monsterOwner.maxHealth = origMaxHP;
             monsterOwner.healthBarUpdatedEvent();
             broken = true;
         }));
+        addToTop(new TimedVFXAction(new SmokeBombEffect(owner.hb.cX, owner.hb.cY)));
     }
 }
