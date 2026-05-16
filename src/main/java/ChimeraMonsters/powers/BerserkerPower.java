@@ -4,7 +4,7 @@ import ChimeraMonsters.ChimeraMonstersMod;
 import ChimeraMonsters.actions.DoAction;
 import ChimeraMonsters.patches.ActionCapturePatch;
 import ChimeraMonsters.patches.CustomIntentPatches;
-import ChimeraMonsters.patches.MonsterFields;
+import ChimeraMonsters.patches.MoveManipulationPatches;
 import ChimeraMonsters.powers.interfaces.IntentInterceptingPower;
 import ChimeraMonsters.util.analysis.PowerAnalyzer;
 import ChimeraMonsters.util.Wiz;
@@ -33,6 +33,7 @@ public class BerserkerPower extends AbstractEasyPower implements IntentIntercept
     public static final String NAME = powerStrings.NAME;
     public static final String[] DESCRIPTIONS = powerStrings.DESCRIPTIONS;
     private boolean activated;
+    private boolean nextIntentInstant;
 
     public BerserkerPower(AbstractCreature owner, int amount) {
         super(POWER_ID, NAME, PowerType.BUFF, false, owner, amount);
@@ -52,8 +53,9 @@ public class BerserkerPower extends AbstractEasyPower implements IntentIntercept
             flash();
             addToBot(new ApplyPowerAction(owner, owner, new StrengthPower(owner, amount)));
             addToBot(new DoAction(() -> {
-                changeIntent(getMove(owner), true);
-                MonsterFields.interceptor.set(owner, this);
+                MoveManipulationPatches.removeAndResetInterceptor((AbstractMonster) owner);
+                nextIntentInstant = true;
+                MoveManipulationPatches.applyInterceptor((AbstractMonster) owner, this, getMove(owner));
             }));
         }
     }
@@ -70,7 +72,8 @@ public class BerserkerPower extends AbstractEasyPower implements IntentIntercept
 
     @Override
     public void setInterceptIntent(EnemyMoveInfo replacedMove) {
-        changeIntent(replacedMove, false);
+        changeIntent(replacedMove, nextIntentInstant);
+        nextIntentInstant = false;
     }
 
     @Override
