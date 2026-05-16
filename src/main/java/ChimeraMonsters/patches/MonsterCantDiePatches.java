@@ -19,9 +19,10 @@ public class MonsterCantDiePatches {
         }
     }
 
+    @SpirePatch2(clz = AbstractMonster.class, method = "die", paramtypez = {})
     @SpirePatch2(clz = AbstractMonster.class, method = "die", paramtypez = {boolean.class})
     public static class DontBonkDie {
-        // Also called by dynamic patch if class doesnt call super
+        // Also called by dynamic patch
         @SpirePrefixPatch
         public static SpireReturn<?> plz(AbstractMonster __instance) {
             MonsterCantDiePower pow = null;

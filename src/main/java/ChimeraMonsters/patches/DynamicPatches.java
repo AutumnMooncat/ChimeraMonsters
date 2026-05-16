@@ -60,11 +60,8 @@ public class DynamicPatches {
                                 m.insertAfter(MonsterCantDiePatches.DontBonkDamage.class.getName() + ".plz($0);");
                             }
                         }
-                        if (m.getName().equals("die") && m.getParameterTypes().length > 0) {
-                            if (!CtClassAnalyzer.performTest(m, dieCall)) {
-                                ChimeraMonstersMod.logger.info("Manually account for class {} that overrides die and does not call super", ctClass.getName());
-                                m.insertAfter(MonsterCantDiePatches.DontBonkDie.class.getName() + ".plz($0);");
-                            }
+                        if (m.getName().equals("die")) {
+                            m.insertBefore("if(" + MonsterCantDiePatches.DontBonkDie.class.getName() + ".plz($0).isPresent()) {return;}");
                         }
                     }
                 } catch (CannotCompileException ignored) {}
