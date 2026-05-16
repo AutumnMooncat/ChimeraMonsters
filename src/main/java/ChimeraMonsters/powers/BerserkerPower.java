@@ -122,13 +122,13 @@ public class BerserkerPower extends AbstractEasyPower implements IntentIntercept
 
     private void changeIntent(EnemyMoveInfo replacedMove, boolean instant) {
         if (replacedMove.intent == AbstractMonster.Intent.ATTACK) {
-            setMove(owner, new EnemyMoveInfo(replacedMove.nextMove, CustomIntentPatches.CHIMERA_MONSTERS_SWEEPING_ATTACK, replacedMove.baseDamage, replacedMove.multiplier, replacedMove.isMultiDamage), instant);
+            overrideMove(owner, new EnemyMoveInfo(replacedMove.nextMove, CustomIntentPatches.CHIMERA_MONSTERS_SWEEPING_ATTACK, replacedMove.baseDamage, replacedMove.multiplier, replacedMove.isMultiDamage), instant);
         } else if (replacedMove.intent == AbstractMonster.Intent.ATTACK_BUFF) {
-            setMove(owner, new EnemyMoveInfo(replacedMove.nextMove, CustomIntentPatches.CHIMERA_MONSTERS_SWEEPING_ATTACK_BUFF, replacedMove.baseDamage, replacedMove.multiplier, replacedMove.isMultiDamage), instant);
+            overrideMove(owner, new EnemyMoveInfo(replacedMove.nextMove, CustomIntentPatches.CHIMERA_MONSTERS_SWEEPING_ATTACK_BUFF, replacedMove.baseDamage, replacedMove.multiplier, replacedMove.isMultiDamage), instant);
         } else if (replacedMove.intent == AbstractMonster.Intent.ATTACK_DEBUFF) {
-            setMove(owner, new EnemyMoveInfo(replacedMove.nextMove, CustomIntentPatches.CHIMERA_MONSTERS_SWEEPING_ATTACK_DEBUFF, replacedMove.baseDamage, replacedMove.multiplier, replacedMove.isMultiDamage), instant);
+            overrideMove(owner, new EnemyMoveInfo(replacedMove.nextMove, CustomIntentPatches.CHIMERA_MONSTERS_SWEEPING_ATTACK_DEBUFF, replacedMove.baseDamage, replacedMove.multiplier, replacedMove.isMultiDamage), instant);
         } else {
-            setMove(owner, new EnemyMoveInfo(replacedMove.nextMove, CustomIntentPatches.CHIMERA_MONSTERS_SWEEPING_ATTACK_BLOCK, replacedMove.baseDamage, replacedMove.multiplier, replacedMove.isMultiDamage), instant);
+            overrideMove(owner, new EnemyMoveInfo(replacedMove.nextMove, CustomIntentPatches.CHIMERA_MONSTERS_SWEEPING_ATTACK_BLOCK, replacedMove.baseDamage, replacedMove.multiplier, replacedMove.isMultiDamage), instant);
         }
     }
 }

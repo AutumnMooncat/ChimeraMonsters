@@ -36,7 +36,7 @@ public class InterceptionPower extends AbstractInternalLogicPower implements Int
     @Override
     public void setInterceptIntent(EnemyMoveInfo replacedMove) {
         didBlock = false;
-        setMove(owner, new EnemyMoveInfo((byte) -1, AbstractMonster.Intent.DEFEND, -1, 0, false));
+        overrideMove(owner, new EnemyMoveInfo((byte) -1, AbstractMonster.Intent.DEFEND, -1, 0, false));
     }
 
     @Override
@@ -52,7 +52,7 @@ public class InterceptionPower extends AbstractInternalLogicPower implements Int
     @Override
     public boolean setFollowupInterceptionIntent() {
         if (didBlock) {
-            setMove(owner, new EnemyMoveInfo((byte) -1, CustomIntentPatches.CHIMERA_MONSTERS_INTERCEPTING, -1, 0, false));
+            overrideMove(owner, new EnemyMoveInfo((byte) -1, CustomIntentPatches.CHIMERA_MONSTERS_INTERCEPTING, -1, 0, false));
             return true;
         }
         return false;

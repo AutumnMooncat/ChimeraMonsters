@@ -50,7 +50,7 @@ public class SplittingPower extends AbstractEasyPower implements IntentIntercept
             flash();
             addToBot(new DoAction(() -> {
                 EnemyMoveInfo newMove = new EnemyMoveInfo(getMove(owner).nextMove, AbstractMonster.Intent.UNKNOWN, -1 , 0, false);
-                setMove(owner,newMove, true);
+                overrideMove(owner,newMove, true);
                 MonsterFields.interceptor.set(owner, this);
             }));
         }
@@ -67,7 +67,7 @@ public class SplittingPower extends AbstractEasyPower implements IntentIntercept
     @Override
     public void setInterceptIntent(EnemyMoveInfo replacedMove) {
         EnemyMoveInfo newMove = new EnemyMoveInfo(replacedMove.nextMove, AbstractMonster.Intent.UNKNOWN, -1 , 0, false);
-        setMove(owner,newMove);
+        overrideMove(owner,newMove);
     }
 
     @Override

@@ -1,13 +1,9 @@
 package ChimeraMonsters.powers;
 
 import ChimeraMonsters.ChimeraMonstersMod;
-import ChimeraMonsters.patches.CustomIntentPatches;
 import ChimeraMonsters.powers.interfaces.IntentInterceptingPower;
 import ChimeraMonsters.util.Wiz;
-import com.evacipated.cardcrawl.mod.stslib.patches.NeutralPowertypePatch;
-import com.evacipated.cardcrawl.mod.stslib.powers.interfaces.InvisiblePower;
 import com.megacrit.cardcrawl.actions.common.ApplyPowerAction;
-import com.megacrit.cardcrawl.actions.common.GainBlockAction;
 import com.megacrit.cardcrawl.actions.common.HealAction;
 import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
@@ -44,7 +40,7 @@ public class PacifistPower extends AbstractInternalLogicPower implements IntentI
 
     @Override
     public void setInterceptIntent(EnemyMoveInfo replacedMove) {
-        setMove(owner, new EnemyMoveInfo((byte) -1, AbstractMonster.Intent.BUFF, -1, 0, false));
+        overrideMove(owner, new EnemyMoveInfo((byte) -1, AbstractMonster.Intent.BUFF, -1, 0, false));
         this.replacedMove = replacedMove;
     }
 

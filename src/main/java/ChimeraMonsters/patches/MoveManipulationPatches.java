@@ -127,7 +127,7 @@ public class MoveManipulationPatches {
             if (!MonsterFields.successfullyRolledMove.get(monster)) {
                 EnemyMoveInfo backup = MonsterFields.replacedIntendedMove.get(monster);
                 if (backup != null) {
-                    setMove(monster, backup);
+                    overrideMove(monster, backup);
                 }
                 // Else rip lol
             }
@@ -145,11 +145,11 @@ public class MoveManipulationPatches {
         return null;
     }
 
-    public static void setMove(AbstractCreature creature, EnemyMoveInfo info) {
-        setMove(creature, info, false);
+    public static void overrideMove(AbstractCreature creature, EnemyMoveInfo info) {
+        overrideMove(creature, info, false);
     }
 
-    public static void setMove(AbstractCreature creature, EnemyMoveInfo info, boolean instantCreate) {
+    public static void overrideMove(AbstractCreature creature, EnemyMoveInfo info, boolean instantCreate) {
         if (creature instanceof AbstractMonster) {
             byte moveByte = ((AbstractMonster) creature).nextMove;
             try {

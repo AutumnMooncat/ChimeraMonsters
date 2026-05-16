@@ -37,7 +37,7 @@ public class DoppelPower extends AbstractInternalLogicPower implements IntentInt
     public void setInterceptIntent(EnemyMoveInfo replacedMove) {
         int multi = replacedMove.multiplier == 0 ? 2 : replacedMove.multiplier*2;
         EnemyMoveInfo newMove = new EnemyMoveInfo(replacedMove.nextMove, replacedMove.intent, replacedMove.baseDamage,multi, true);
-        setMove(owner,newMove);
+        overrideMove(owner,newMove);
     }
 
     @Override

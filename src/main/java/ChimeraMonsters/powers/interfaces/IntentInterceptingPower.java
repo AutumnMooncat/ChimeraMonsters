@@ -1,5 +1,6 @@
 package ChimeraMonsters.powers.interfaces;
 
+import ChimeraMonsters.patches.EnemyMoveInfoPatches;
 import ChimeraMonsters.patches.MoveManipulationPatches;
 import com.badlogic.gdx.math.MathUtils;
 import com.megacrit.cardcrawl.blights.Spear;
@@ -7,6 +8,7 @@ import com.megacrit.cardcrawl.cards.DamageInfo;
 import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.EnemyMoveInfo;
 import com.megacrit.cardcrawl.powers.AbstractPower;
 
@@ -23,6 +25,7 @@ public interface IntentInterceptingPower {
     /**
      * Called when this intercepts with the intention of assigning new move info as the monster still has its move info from the last turn.
      * If this intercept spans multiple turns, this is only called on the first turn.
+     * As interceptor logic has already been processed and handed over, {@link IntentInterceptingPower#overrideMove(AbstractCreature, EnemyMoveInfo)} should be used for this.
      * @see IntentInterceptingPower#setFollowupInterceptionIntent
      * @param replacedMove EnemyMoveInfo that was originally going to be set.
      */
@@ -37,6 +40,7 @@ public interface IntentInterceptingPower {
 
     /**
      * Called on subsequent turns if this intercept was active with the intention of assigning new move into if this intercept is to continue.
+     * As interceptor logic has already been processed and handed over, {@link IntentInterceptingPower#overrideMove(AbstractCreature, EnemyMoveInfo)} should be used for this.
      * @return If this intercept should continue
      */
     boolean setFollowupInterceptionIntent();
@@ -84,25 +88,56 @@ public interface IntentInterceptingPower {
     }
 
     /**
-     * Sets the private move info if the creature is a monster.
-     * @see IntentInterceptingPower#setMove(AbstractCreature, EnemyMoveInfo, boolean)
-     * @param creature The creature to try setting the info for.
-     * @param info The new move info to set.
+     * Calls monster.setMove if the creature is a monster, allowing this interceptor to reset if it is done and potentially obtain a new one.
+     * @see IntentInterceptingPower#setMove(AbstractCreature, String, byte, AbstractMonster.Intent, int, int, boolean)
+     * @param creature The creature to try setting a move for.
+     * @param info The info to unpack for the intent.
      */
     default void setMove(AbstractCreature creature, EnemyMoveInfo info) {
-        setMove(creature, info, false);
+        setMove(creature, EnemyMoveInfoPatches.getName(info), info.nextMove, info.intent, info.baseDamage, info.multiplier, info.isMultiDamage);
     }
 
     /**
-     * Sets the private move info and potentially immediately calls create intent if the creature is a monster.
-     * If the intent is being changed while an intent is already active, create intent should be called, otherwise it should not to allow the intent to be created alongside the other intents at the start of turn.
+     * Calls monster.setMove if the creature is a monster, allowing this interceptor to reset if it is done and potentially obtain a new one.
      * @see IntentInterceptingPower#setMove(AbstractCreature, EnemyMoveInfo)
+     * @param creature The creature to try setting a move for.
+     * @param name The name of the move, or null to not display one.
+     * @param nextMove The byte corresponding to the desired move in monster.takeTurn.
+     * @param intent The intent to render.
+     * @param baseDamage The base damage for the intent.
+     * @param multiplier The multihit of the intent, if isMultiDamage.
+     * @param isMultiDamage If multiplier should be used.
+     */
+    default void setMove(AbstractCreature creature, String name, byte nextMove, AbstractMonster.Intent intent, int baseDamage, int multiplier, boolean isMultiDamage) {
+        if (creature instanceof AbstractMonster) {
+            ((AbstractMonster) creature).setMove(name, nextMove, intent, baseDamage, multiplier, isMultiDamage);
+        }
+    }
+
+    /**
+     * Directly sets the private move info field if the creature is a monster.
+     * This bypasses any interceptor checks/resets so the expected use case is in {@link IntentInterceptingPower#setInterceptIntent(EnemyMoveInfo)} and {@link IntentInterceptingPower#setFollowupInterceptionIntent()} as the interceptor logic has already been processed and has handed control over.
+     * As such, care should be taken to manually release any interceptors if using this elsewhere.
+     * @see IntentInterceptingPower#overrideMove(AbstractCreature, EnemyMoveInfo, boolean)
+     * @param creature The creature to try setting the info for.
+     * @param info The new move info to set.
+     */
+    default void overrideMove(AbstractCreature creature, EnemyMoveInfo info) {
+        overrideMove(creature, info, false);
+    }
+
+    /**
+     * Directly sets the private move info field and potentially immediately calls create intent if the creature is a monster.
+     * If the intent is being changed while an intent is already active, create intent should be called, otherwise it should not to allow the intent to be created alongside the other intents at the start of turn.
+     * This bypasses any interceptor checks/resets so the expected use case is in {@link IntentInterceptingPower#setInterceptIntent(EnemyMoveInfo)} and {@link IntentInterceptingPower#setFollowupInterceptionIntent()} as the interceptor logic has already been processed and has handed control over.
+     * As such, care should be taken to manually release any interceptors if using this elsewhere.
+     * @see IntentInterceptingPower#overrideMove(AbstractCreature, EnemyMoveInfo)
      * @param creature The creature to try setting the info for.
      * @param info The new move info to set.
      * @param instantCreate If create intent should be called.
      */
-    default void setMove(AbstractCreature creature, EnemyMoveInfo info, boolean instantCreate) {
-        MoveManipulationPatches.setMove(creature, info, instantCreate);
+    default void overrideMove(AbstractCreature creature, EnemyMoveInfo info, boolean instantCreate) {
+        MoveManipulationPatches.overrideMove(creature, info, instantCreate);
     }
 
     /**

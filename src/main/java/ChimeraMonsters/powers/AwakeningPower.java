@@ -53,7 +53,7 @@ public class AwakeningPower extends AbstractInternalLogicPower implements Monste
     @Override
     public void setInterceptIntent(EnemyMoveInfo replacedMove) {
         lastMove = replacedMove;
-        setMove(owner, new EnemyMoveInfo((byte) -1, AbstractMonster.Intent.UNKNOWN, -1, 0, false), true);
+        overrideMove(owner, new EnemyMoveInfo((byte) -1, AbstractMonster.Intent.UNKNOWN, -1, 0, false), true);
     }
 
     @Override
