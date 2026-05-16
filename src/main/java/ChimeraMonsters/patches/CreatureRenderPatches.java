@@ -35,6 +35,10 @@ public class CreatureRenderPatches {
     private static boolean capturing = false;
     private static final float[] transform = new float[5];
 
+    public static float[] transformState() {
+        return transform.clone();
+    }
+
     private static void beginCapture(AbstractCreature __instance, SpriteBatch sb) {
         capturing = false;
         if (__instance.powers.stream().anyMatch(p -> p instanceof RenderModifierPower)) {

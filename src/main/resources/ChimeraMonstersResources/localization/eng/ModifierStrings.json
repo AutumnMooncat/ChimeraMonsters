@@ -59,5 +59,8 @@
   },
   "${ModID}:AwakeningMod": {
     "TEXT": ["Awakening ", "", "Reduces #yHP by #b50%. NL Can revive once in #yWrath."]
+  },
+  "${ModID}:MimicMod": {
+    "TEXT": ["", "?", "This monster is not what it seems."]
   }
 }
