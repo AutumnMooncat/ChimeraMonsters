@@ -17,7 +17,7 @@ public class MimicMod extends AbstractMonsterModifier {
 
     @Override
     public ModifierRarity getModRarity() {
-        return ModifierRarity.COMMON;
+        return ModifierRarity.RARE;
     }
 
     @Override
