@@ -192,6 +192,15 @@ public class CreatureRenderPatches {
         sb.draw(tex, Settings.WIDTH/2f - w2 + offsetX * Settings.scale, Settings.HEIGHT/2f - h2 + offsetY * Settings.scale, w2, h2, w, h, scaleX, scaleY, angle);
     }
 
+    public static void render(SpriteBatch sb, Texture tex, float offsetX, float offsetY, float scaleX, float scaleY, float angle) {
+        int w = tex.getWidth();
+        int h = tex.getHeight();
+        int w2 = (int) (w/2f);
+        int h2 = (int) (h/2f);
+        //sb.draw(tex, offsetX, offsetY, w2, h2, w, h, scaleX, scaleY, angle);
+        sb.draw(tex, Settings.WIDTH/2f - w2 + offsetX * Settings.scale, Settings.HEIGHT/2f - h2 + offsetY * Settings.scale, w2, h2, w, h, scaleX, scaleY, angle, 0, 0, w, h, false, false);
+    }
+
     public static void renderRescale(SpriteBatch sb, TextureRegion tex, float offsetX, float offsetY, float scaleX, float scaleY, float angle) {
         int w = tex.getRegionWidth();
         int h = tex.getRegionHeight();

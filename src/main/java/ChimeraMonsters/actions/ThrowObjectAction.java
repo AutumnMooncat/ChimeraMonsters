@@ -17,6 +17,14 @@ public class ThrowObjectAction extends AbstractGameAction {
         this.e = VFXContainer.throwEffect(tex, scale, target, color, bounceOff, true);
     }
 
+    public ThrowObjectAction(Texture tex, float scale, Hitbox source, Hitbox target, Color color, boolean bounceOff) {
+        this.e = VFXContainer.throwEffect(tex, scale, source, target, color, bounceOff, true);
+    }
+
+    public ThrowObjectAction(Texture tex, float scale, float sourceX, float sourceY, float targetX, float targetY, Color color, boolean bounceOff) {
+        this.e = VFXContainer.throwEffect(tex, scale, sourceX, sourceY, targetX, targetY, color, bounceOff, true);
+    }
+
     @Override
     public void update() {
         if (!spawned) {

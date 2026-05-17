@@ -3,6 +3,7 @@ package ChimeraMonsters.powers.interfaces;
 import ChimeraMonsters.ChimeraMonstersMod;
 import ChimeraMonsters.patches.CreatureRenderPatches;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -41,6 +42,10 @@ public interface RenderModifierPower {
     }
 
     default void render(SpriteBatch sb, TextureRegion tex, float offsetX, float offsetY, float scaleX, float scaleY, float angle) {
+        CreatureRenderPatches.render(sb, tex, offsetX, offsetY, scaleX, scaleY, angle);
+    }
+
+    default void render(SpriteBatch sb, Texture tex, float offsetX, float offsetY, float scaleX, float scaleY, float angle) {
         CreatureRenderPatches.render(sb, tex, offsetX, offsetY, scaleX, scaleY, angle);
     }
 
