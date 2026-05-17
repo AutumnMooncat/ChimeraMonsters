@@ -1,4 +1,4 @@
-package ChimeraMonsters.modifiers.rare;
+package ChimeraMonsters.modifiers.special;
 
 import ChimeraMonsters.ChimeraMonstersMod;
 import ChimeraMonsters.modifiers.AbstractMonsterModifier;
@@ -13,7 +13,7 @@ public class ThiefMod extends AbstractMonsterModifier {
 
     @Override
     public ModifierRarity getModRarity() {
-        return ModifierRarity.RARE;
+        return ModifierRarity.SPECIAL;
     }
 
     @Override
