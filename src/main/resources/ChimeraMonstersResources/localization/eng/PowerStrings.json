@@ -53,5 +53,14 @@
     "DESCRIPTIONS": [
       "This monster's attacks deal double damage and it takes double damage from your attacks."
     ]
+  },
+  "${ModID}:ExplodingPower": {
+    "NAME": "Explosive",
+    "DESCRIPTIONS": [
+      "Explodes in #b",
+      " turns, dealing #b",
+      " damage.",
+      "Explodes this turn, dealing #b"
+    ]
   }
 }

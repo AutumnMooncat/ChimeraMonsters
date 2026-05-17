@@ -65,5 +65,8 @@
   },
   "${ModID}:HexaghostMod": {
     "TEXT": ["", "aghost", "Has a powerful attack intent every 6 turns."]
+  },
+  "${ModID}:ExplodingMod": {
+    "TEXT": ["Exploding ", "", "Explodes after 3 turns, dealing #b[10/20/30] damage."]
   }
 }
