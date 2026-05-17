@@ -4,6 +4,7 @@ import ChimeraMonsters.ChimeraMonstersMod;
 import ChimeraMonsters.util.TextureLoader;
 import basemod.ReflectionHacks;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.megacrit.cardcrawl.core.AbstractCreature;
@@ -14,6 +15,8 @@ import com.megacrit.cardcrawl.vfx.combat.SilentGainPowerEffect;
 import java.util.ArrayList;
 
 public abstract class AbstractEasyPower extends AbstractPower {
+    protected Color redColor = new Color(1.0F, 0.0F, 0.0F, 1.0F);
+    protected Color greenColor = new Color(0.0F, 1.0F, 0.0F, 1.0F);
     private final ArrayList<AbstractGameEffect> array;
     private float flashTimer;
     private boolean flashing;
