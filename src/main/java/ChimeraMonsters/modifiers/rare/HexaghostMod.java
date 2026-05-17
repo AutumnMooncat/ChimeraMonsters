@@ -2,15 +2,11 @@ package ChimeraMonsters.modifiers.rare;
 
 import ChimeraMonsters.ChimeraMonstersMod;
 import ChimeraMonsters.modifiers.AbstractMonsterModifier;
-import ChimeraMonsters.powers.AwakeningPower;
 import ChimeraMonsters.powers.HexaghostPower;
-import ChimeraMonsters.util.matchers.SuperFieldAccessMatcher;
-import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
-import com.megacrit.cardcrawl.powers.UnawakenedPower;
 
 public class HexaghostMod extends AbstractMonsterModifier {
     public static final String ID = ChimeraMonstersMod.makeID(HexaghostMod.class.getSimpleName());

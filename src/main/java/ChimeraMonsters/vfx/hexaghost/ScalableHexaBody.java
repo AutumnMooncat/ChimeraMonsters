@@ -18,11 +18,11 @@ public class ScalableHexaBody {
     private static boolean initTex;
     public float targetRotationSpeed = 30.0F;
     private float rotationSpeed = 1.0F;
-    private BobEffect effect = new BobEffect(0.75F);
+    public BobEffect effect = new BobEffect(0.75F);
     private AbstractCreature m;
-    private float plasma1Angle = 0.0F;
-    private float plasma2Angle = 0.0F;
-    private float plasma3Angle = 0.0F;
+    public float plasma1Angle = 0.0F;
+    public float plasma2Angle = 0.0F;
+    public float plasma3Angle = 0.0F;
     private static final float bodyOffsetY;
     private float scale;
 

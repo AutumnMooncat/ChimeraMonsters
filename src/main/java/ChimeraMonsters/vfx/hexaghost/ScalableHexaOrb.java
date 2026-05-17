@@ -7,21 +7,23 @@ import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.MathHelper;
-import com.megacrit.cardcrawl.localization.MonsterStrings;
 import com.megacrit.cardcrawl.vfx.BobEffect;
 
 public class ScalableHexaOrb {
     public static final String ID = "HexaghostOrb";
     private BobEffect effect = new BobEffect(2.0F);
-    private float activateTimer;
+    public float activateTimer;
     public boolean activated = false;
     public boolean hidden = false;
     public boolean playedSfx = false;
     private Color color;
-    private float x;
-    private float y;
+    public float x;
+    public float y;
     private float particleTimer = 0.0F;
     private static final float PARTICLE_INTERVAL = 0.06F;
+    public boolean doActiveParticles = true;
+    public boolean doPassiveParticles = true;
+    public boolean doTriggerParticles = true;
     private float scale;
 
     public ScalableHexaOrb(float x, float y, int index, float scale) {
@@ -55,7 +57,9 @@ public class ScalableHexaOrb {
                 if (this.activateTimer < 0.0F) {// 67
                     if (!this.playedSfx) {// 68
                         this.playedSfx = true;// 69
-                        AbstractDungeon.effectsQueue.add(new ScalableIgniteEffect(this.x + oX, this.y + oY, scale));// 70
+                        if (doTriggerParticles) {
+                            AbstractDungeon.effectsQueue.add(new ScalableIgniteEffect(this.x + oX, this.y + oY, scale));// 70
+                        }
                         if (MathUtils.randomBoolean()) {// 71
                             CardCrawlGame.sound.play("GHOST_ORB_IGNITE_1", 0.3F);// 72
                         } else {
@@ -66,18 +70,22 @@ public class ScalableHexaOrb {
                     this.color.a = MathHelper.fadeLerpSnap(this.color.a, 1.0F);// 77
                     this.effect.update();// 78
                     this.effect.update();// 79
-                    this.particleTimer -= Gdx.graphics.getDeltaTime();// 80
-                    if (this.particleTimer < 0.0F) {// 81
-                        AbstractDungeon.effectList.add(new ScalableGhostlyFireEffect(this.x + oX + this.effect.y * 2.0F, this.y + oY + this.effect.y * 2.0F, scale));// 82
-                        this.particleTimer = 0.06F;// 84
+                    if (doActiveParticles) {
+                        this.particleTimer -= Gdx.graphics.getDeltaTime();// 80
+                        if (this.particleTimer < 0.0F) {// 81
+                            AbstractDungeon.effectList.add(new ScalableGhostlyFireEffect(this.x + oX + this.effect.y * 2.0F, this.y + oY + this.effect.y * 2.0F, scale));// 82
+                            this.particleTimer = 0.06F;// 84
+                        }
                     }
                 }
             } else {
                 this.effect.update();// 88
-                this.particleTimer -= Gdx.graphics.getDeltaTime();// 89
-                if (this.particleTimer < 0.0F) {// 90
-                    AbstractDungeon.effectList.add(new ScalableGhostlyWeakFireEffect(this.x + oX + this.effect.y * 2.0F, this.y + oY + this.effect.y * 2.0F, scale));// 91
-                    this.particleTimer = 0.06F;// 93
+                if (doActiveParticles) {
+                    this.particleTimer -= Gdx.graphics.getDeltaTime();// 89
+                    if (this.particleTimer < 0.0F) {// 90
+                        AbstractDungeon.effectList.add(new ScalableGhostlyWeakFireEffect(this.x + oX + this.effect.y * 2.0F, this.y + oY + this.effect.y * 2.0F, scale));// 91
+                        this.particleTimer = 0.06F;// 93
+                    }
                 }
             }
         } else {
