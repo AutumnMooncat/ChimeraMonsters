@@ -5,6 +5,7 @@ import ChimeraMonsters.actions.DoAction;
 import ChimeraMonsters.patches.ActionCapturePatch;
 import ChimeraMonsters.patches.MonsterEncounterPatches;
 import ChimeraMonsters.patches.MonsterFields;
+import ChimeraMonsters.patches.MoveManipulationPatches;
 import ChimeraMonsters.powers.interfaces.IntentInterceptingPower;
 import ChimeraMonsters.util.MonsterSpawnHelper;
 import com.megacrit.cardcrawl.actions.animations.AnimateShakeAction;
@@ -49,9 +50,8 @@ public class SplittingPower extends AbstractEasyPower implements IntentIntercept
         if (!wasActivated && activated && owner instanceof AbstractMonster) {
             flash();
             addToBot(new DoAction(() -> {
-                EnemyMoveInfo newMove = new EnemyMoveInfo(getMove(owner).nextMove, AbstractMonster.Intent.UNKNOWN, -1 , 0, false);
-                overrideMove(owner,newMove, true);
-                MonsterFields.interceptor.set(owner, this);
+                MoveManipulationPatches.removeAndResetInterceptor((AbstractMonster) owner);
+                MoveManipulationPatches.applyInterceptor((AbstractMonster) owner, this, getMove(owner));
             }));
         }
     }
