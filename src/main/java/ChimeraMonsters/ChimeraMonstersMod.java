@@ -652,6 +652,10 @@ public class ChimeraMonstersMod implements
         if (pages.isEmpty()) {
             pages.put(0, new ArrayList<>());
         }
+        if (deltaY > FULL_PAGE_Y) {
+            deltaY = 0;
+            pages.put(pages.size(), new ArrayList<>());
+        }
         int page = pages.size()-1;
         pages.get(page).add(elem);
         elem.setY(elem.getY() - deltaY);
@@ -660,10 +664,6 @@ public class ChimeraMonstersMod implements
         //elem.setX((elem.getX()*Settings.xScale + (page * Settings.WIDTH))/Settings.scale);
         if (decrement) {
             deltaY += SPACING_Y;
-            if (deltaY > FULL_PAGE_Y) {
-                deltaY = 0;
-                pages.put(page+1, new ArrayList<>());
-            }
         }
     }
 
