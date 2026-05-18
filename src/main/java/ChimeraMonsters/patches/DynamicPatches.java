@@ -21,6 +21,9 @@ public class DynamicPatches {
     public static class AbstractMonsterDynamicPatch {
         @SpireRawPatch
         public static void patch(CtBehavior ctBehavior) throws NotFoundException {
+            ChimeraMonstersMod.logger.info("");
+            ChimeraMonstersMod.logger.info("Starting AbstractMonster dynamic patch");
+            long start = System.currentTimeMillis();
             ClassFinder finder = new ClassFinder();
             finder.add(new File(Loader.STS_JAR));
 
@@ -66,6 +69,45 @@ public class DynamicPatches {
                     }
                 } catch (CannotCompileException ignored) {}
             }
+            long end = System.currentTimeMillis();
+            ChimeraMonstersMod.logger.info("AbstractMonster dynamic patch finished in {}ms", end-start);
         }
+
+        /*@SpireRawPatch
+        public static void test(CtBehavior ctBehavior) {
+            ChimeraMonstersMod.logger.info("Performing deep class scan");
+            long start = System.currentTimeMillis();
+            int classCount = 0, methodCount = 0, errorCount = 0;
+
+            ClassFinder finder = new ClassFinder();
+            finder.add(new File(Loader.STS_JAR));
+
+            for (ModInfo modInfo : Loader.MODINFOS) {
+                if (modInfo.jarURL != null) {
+                    try {
+                        finder.add(new File(modInfo.jarURL.toURI()));
+                    } catch (URISyntaxException ignored) {}
+                }
+            }
+
+            ArrayList<ClassInfo> foundClasses = new ArrayList<>();
+            finder.findClasses(foundClasses, null);
+
+            for (ClassInfo classInfo : foundClasses) {
+                try {
+                    CtClass ctClass = ctBehavior.getDeclaringClass().getClassPool().get(classInfo.getClassName());
+                    classCount++;
+                    CtMethod[] methods = ctClass.getDeclaredMethods();
+                    for (CtMethod m : methods) {
+                        methodCount++;
+                    }
+                } catch (NotFoundException e) {
+                    errorCount++;
+                }
+            }
+
+            long end = System.currentTimeMillis();
+            ChimeraMonstersMod.logger.info("Finished deep class scan, found {} classes and {} methods, threw {} exceptions, took {}ms", classCount, methodCount, errorCount, end-start);
+        }*/
     }
 }
