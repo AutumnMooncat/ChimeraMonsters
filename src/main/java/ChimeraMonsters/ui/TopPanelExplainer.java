@@ -57,6 +57,19 @@ public class TopPanelExplainer extends TopPanelItem {
         if (mods.isEmpty()) {
             return TEXT[1];
         }
-        return mods.stream().map(mod -> FormatHelper.prefixWords(mod.getModifierName(), "#y") + ": NL " + mod.getModifierDescription()).collect(Collectors.joining(" NL NL "));
+        return mods.stream().map(mod -> FormatHelper.prefixWords(mod.getModifierName(), getPrefix(mod)) + ": NL " + mod.getModifierDescription()).collect(Collectors.joining(" NL NL "));
+    }
+
+    private String getPrefix(AbstractMonsterModifier mod) {
+        switch (mod.getModRarity()) {
+            case SPECIAL:
+                return "#g";
+            case RARE:
+                return "#y";
+            case UNCOMMON:
+                return "#b";
+            default:
+                return "";
+        }
     }
 }
