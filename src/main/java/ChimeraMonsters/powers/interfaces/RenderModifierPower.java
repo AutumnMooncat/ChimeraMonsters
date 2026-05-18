@@ -25,6 +25,10 @@ public interface RenderModifierPower {
         return ret;
     }
 
+    default float animationRate() {
+        return 1f;
+    }
+
     default void render(SpriteBatch sb, TextureRegion tex) {
         CreatureRenderPatches.render(sb, tex, 0, 0, 1, 1, 0);
     }

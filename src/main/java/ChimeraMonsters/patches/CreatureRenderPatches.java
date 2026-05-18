@@ -6,6 +6,7 @@ import ChimeraMonsters.util.ImageHelper;
 import ChimeraMonsters.util.matchers.SuperFieldAccessMatcher;
 import basemod.ReflectionHacks;
 import basemod.abstracts.CustomMonster;
+import com.badlogic.gdx.backends.lwjgl.LwjglGraphics;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -33,6 +34,7 @@ public class CreatureRenderPatches {
     private static final FrameBuffer shaderBuffer = ImageHelper.createBuffer();
     private static FrameBuffer activeBuffer = frontBuffer;
     private static boolean capturing = false;
+    private static float timeFlux = 1f;
     private static final float[] transform = new float[5];
 
     public static float[] transformState() {
@@ -214,6 +216,12 @@ public class CreatureRenderPatches {
     public static class RenderTime {
         @SpirePrefixPatch
         public static void onAtStart(AbstractMonster __instance, SpriteBatch sb) {
+            timeFlux = 1f;
+            for (AbstractPower power : __instance.powers) {
+                if (power instanceof RenderModifierPower) {
+                    timeFlux *= ((RenderModifierPower) power).animationRate();
+                }
+            }
             Color orig = sb.getColor();
             sb.setColor(Color.WHITE);
             AbstractStance stance = MonsterFields.stance.get(__instance);
@@ -244,6 +252,7 @@ public class CreatureRenderPatches {
                 manager.render(sb);
             }
             sb.setColor(orig);
+            timeFlux = 1f;
         }
 
         public static class Locator extends SpireInsertLocator {
@@ -281,6 +290,14 @@ public class CreatureRenderPatches {
                 Matcher m = new Matcher.MethodCallMatcher(Hitbox.class, "render");
                 return LineFinder.findInOrder(ctBehavior, m);
             }
+        }
+    }
+
+    @SpirePatch(clz = LwjglGraphics.class, method = "getDeltaTime")
+    public static class TimeIsRelative {
+        @SpirePostfixPatch
+        public static float speedAdjustment(float result, LwjglGraphics self) {
+            return result * timeFlux;
         }
     }
 }
