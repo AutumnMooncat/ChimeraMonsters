@@ -10,7 +10,11 @@
       "Enable Modifier Tooltips",
       "Roll Attempts (Default 1):",
       "Show Analysis",
-      "Enable Shaders"
+      "Enable Shaders",
+      "Modified Fight Weight (Default 3):",
+      "Thematic Fight Weight (Default 2):",
+      "Curated Fight Weight (Default 1):",
+      "Unmodified Fight Wight (Default 0):"
     ],
     "EXTRA_TEXT": [
       "Chimera Monsters",
@@ -23,7 +27,12 @@
       " NL Rare Mod: #b",
       " NL NL #yNormal #yMonsters:",
       " NL NL #yElite #yMonsters:",
-      " NL NL #yBoss #yMonsters:"
+      " NL NL #yBoss #yMonsters:",
+      " NL Curated Fight: #b",
+      " NL Thematic Fight: #b",
+      " NL Modified Fight: #b",
+      " NL Unchanged Fight: #b",
+      " NL NL #yModified #yMonsters #yHave:"
     ]
   },
   "${ModID}:AbstractMonsterModifier": {

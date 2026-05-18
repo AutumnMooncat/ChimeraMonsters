@@ -18,30 +18,24 @@ public class FightModificationManager {
     public static String fightName = "";
 
     public static void rollFightModifiers(MonsterGroup monsterGroup) {
-        int curatedFightWeight = 25; //TODO: calculate/decide
-        int thematicWeight = 25; //TODO: calculate/decide
-        int randomNumber = AbstractDungeon.miscRng.random(99);
-        if (randomNumber<curatedFightWeight){
-            List<AbstractCuratedFight> validCuratedFights = ChimeraMonstersMod.curatedFightMap.values().stream().filter(fight -> fight.isMonsterGroupValid(monsterGroup)).collect(Collectors.toList());
-            if(!validCuratedFights.isEmpty()){
-                AbstractCuratedFight curatedFight = validCuratedFights.get(AbstractDungeon.miscRng.random(validCuratedFights.size()-1));
-                //TODO: do the thing
-                fightName= curatedFight.fightName(monsterGroup);
-            } else {
-                rollRandomModifiers(monsterGroup);
+        List<AbstractCuratedFight> validCurated = ChimeraMonstersMod.curatedFightMap.values().stream().filter(fight -> fight.isMonsterGroupValid(monsterGroup)).collect(Collectors.toList());
+        List<GroupMonsterModifier> validThematic = ChimeraMonstersMod.modMap.values().stream().filter(modifier -> modifier instanceof GroupMonsterModifier && ((GroupMonsterModifier) modifier).isMonsterGroupValid(monsterGroup)).map(modifier -> ((GroupMonsterModifier) modifier)).collect(Collectors.toList());
+        int curated = validCurated.isEmpty() ? 0 : ChimeraMonstersMod.curatedFightWeight;
+        int thematic = validThematic.isEmpty() ? 0 : ChimeraMonstersMod.thematicFightWeight;
+        int modified = ChimeraMonstersMod.modifiedFightWeight;
+        int unmodified = ChimeraMonstersMod.unmodifiedFightWeight;
+        int roll = AbstractDungeon.miscRng.random(curated + thematic + modified + unmodified - 1); //StS adds +1 to random call, so subtract 1
+        if ((roll -= curated) < 0) {
+            AbstractCuratedFight curatedFight = validCurated.get(AbstractDungeon.miscRng.random(validCurated.size() - 1));
+            //TODO: do the thing
+            fightName = curatedFight.fightName(monsterGroup);
+        } else if ((roll -= thematic) < 0) {
+            GroupMonsterModifier thematicModifier = validThematic.get(AbstractDungeon.miscRng.random(validThematic.size() - 1));
+            fightName = thematicModifier.fightName(monsterGroup);
+            for (AbstractMonster m : monsterGroup.monsters) {
+                ChimeraMonstersMod.applyModifier(m, thematicModifier);
             }
-        } else if (randomNumber<curatedFightWeight+thematicWeight){
-            List<GroupMonsterModifier> validThematicModifiers = ChimeraMonstersMod.modMap.values().stream().filter(modifier -> modifier instanceof GroupMonsterModifier && ((GroupMonsterModifier) modifier).isMonsterGroupValid(monsterGroup)).map(modifier -> ((GroupMonsterModifier) modifier)).collect(Collectors.toList());
-            if(!validThematicModifiers.isEmpty()){
-                GroupMonsterModifier thematicModifier = validThematicModifiers.get(AbstractDungeon.miscRng.random(validThematicModifiers.size()-1));
-                fightName= thematicModifier.fightName(monsterGroup);
-                for(AbstractMonster m : monsterGroup.monsters){
-                    ChimeraMonstersMod.applyModifier(m, thematicModifier);
-                }
-            } else {
-                rollRandomModifiers(monsterGroup);
-            }
-        } else {
+        } else if ((roll -= modified) < 0) {
             rollRandomModifiers(monsterGroup);
         }
     }

@@ -74,6 +74,18 @@ public class ChimeraMonstersMod implements
     public static final String MOD_PROBABILITY = "modChance";
     public static int modProbabilityPercent = 10;
 
+    public static final String MODIFIED_FIGHT_WEIGHT = "modifiedFightWeight";
+    public static int modifiedFightWeight = 3;
+
+    public static final String THEMATIC_FIGHT_WEIGHT = "thematicFightWeight";
+    public static int thematicFightWeight = 2;
+
+    public static final String CURATED_FIGHT_WEIGHT = "curatedFightWeight";
+    public static int curatedFightWeight = 1;
+
+    public static final String UNMODIFIED_FIGHT_WEIGHT = "unmodifiedFightWeight";
+    public static int unmodifiedFightWeight = 0;
+
     public static final String COMMON_WEIGHT = "commonWeight";
     public static int commonWeight = 4;
 
@@ -133,6 +145,10 @@ public class ChimeraMonstersMod implements
     public static String ROLL_ATTEMPTS_TEXT;
     public static String SHOW_ANALYSIS_TEXT;
     public static String ENABLE_SHADERS_TEXT;
+    public static String MODIFIED_WEIGHT_TEXT;
+    public static String UNMODIFIED_WEIGHT_TEXT;
+    public static String THEMATIC_WEIGHT_TEXT;
+    public static String CURATED_WEIGHT_TEXT;
     public static String[] EXTRA_TEXT;
     private static final String AUTHOR = "Mistress Autumn, Mindbomber";
 
@@ -180,6 +196,10 @@ public class ChimeraMonstersMod implements
         chimeraMonstersDefaultSettings.setProperty(ROLL_ATTEMPTS, String.valueOf(rollAttempts));
         chimeraMonstersDefaultSettings.setProperty(SHOW_BREAKDOWN, Boolean.toString(showBreakdown));
         chimeraMonstersDefaultSettings.setProperty(ENABLE_SHADERS, Boolean.toString(enableShaders));
+        chimeraMonstersDefaultSettings.setProperty(MODIFIED_FIGHT_WEIGHT, String.valueOf(modifiedFightWeight));
+        chimeraMonstersDefaultSettings.setProperty(UNMODIFIED_FIGHT_WEIGHT, String.valueOf(unmodifiedFightWeight));
+        chimeraMonstersDefaultSettings.setProperty(CURATED_FIGHT_WEIGHT, String.valueOf(curatedFightWeight));
+        chimeraMonstersDefaultSettings.setProperty(THEMATIC_FIGHT_WEIGHT, String.valueOf(thematicFightWeight));
         try {
             chimeraMonstersConfig = new SpireConfig(modID, FILE_NAME, chimeraMonstersDefaultSettings);
             chimeraMonstersCrossoverConfig = new SpireConfig(modID, CROSSOVER_FILE_NAME);
@@ -194,6 +214,10 @@ public class ChimeraMonstersMod implements
             rollAttempts = chimeraMonstersConfig.getInt(ROLL_ATTEMPTS);
             showBreakdown = chimeraMonstersConfig.getBool(SHOW_BREAKDOWN);
             enableShaders = chimeraMonstersConfig.getBool(ENABLE_SHADERS);
+            modifiedFightWeight = chimeraMonstersConfig.getInt(MODIFIED_FIGHT_WEIGHT);
+            unmodifiedFightWeight = chimeraMonstersConfig.getInt(UNMODIFIED_FIGHT_WEIGHT);
+            curatedFightWeight = chimeraMonstersConfig.getInt(CURATED_FIGHT_WEIGHT);
+            thematicFightWeight = chimeraMonstersConfig.getInt(THEMATIC_FIGHT_WEIGHT);
         } catch (IOException e) {
             logger.error("Chimera Monsters SpireConfig initialization failed:");
             e.printStackTrace();
@@ -380,6 +404,10 @@ public class ChimeraMonstersMod implements
         ROLL_ATTEMPTS_TEXT = TEXT[7];
         SHOW_ANALYSIS_TEXT = TEXT[8];
         ENABLE_SHADERS_TEXT = TEXT[9];
+        MODIFIED_WEIGHT_TEXT = TEXT[10];
+        THEMATIC_WEIGHT_TEXT = TEXT[11];
+        CURATED_WEIGHT_TEXT = TEXT[12];
+        UNMODIFIED_WEIGHT_TEXT = TEXT[13];
         // Create the Mod Menu
 
         // Load the Mod Badge
@@ -432,6 +460,54 @@ public class ChimeraMonstersMod implements
                 1, 3, chimeraMonstersConfig.getInt(ROLL_ATTEMPTS), "%.0f", settingsPanel, slider -> {
             chimeraMonstersConfig.setInt(ROLL_ATTEMPTS, Math.round(slider.getValue()));
             rollAttempts = Math.round(slider.getValue());
+            try {
+                chimeraMonstersConfig.save();} catch (IOException e) {e.printStackTrace();}
+        });
+
+        //Used for modified fight weight
+        ModLabel modifiedFightLabel = new ModLabel(MODIFIED_WEIGHT_TEXT, LAYOUT_X, LAYOUT_Y, Settings.CREAM_COLOR, FontHelper.charDescFont, settingsPanel, modLabel -> {});
+        ModMinMaxSlider modifiedFightSlider = new ModMinMaxSlider("",
+                LAYOUT_X + sliderOffset,
+                LAYOUT_Y + 7f,
+                0, 10, chimeraMonstersConfig.getInt(MODIFIED_FIGHT_WEIGHT), "%.0f", settingsPanel, slider -> {
+            chimeraMonstersConfig.setInt(MODIFIED_FIGHT_WEIGHT, Math.round(slider.getValue()));
+            modifiedFightWeight = Math.round(slider.getValue());
+            try {
+                chimeraMonstersConfig.save();} catch (IOException e) {e.printStackTrace();}
+        });
+
+        //Used for thematic fight weight
+        ModLabel thematicFightLabel = new ModLabel(THEMATIC_WEIGHT_TEXT, LAYOUT_X, LAYOUT_Y, Settings.CREAM_COLOR, FontHelper.charDescFont, settingsPanel, modLabel -> {});
+        ModMinMaxSlider thematicFightSlider = new ModMinMaxSlider("",
+                LAYOUT_X + sliderOffset,
+                LAYOUT_Y + 7f,
+                0, 10, chimeraMonstersConfig.getInt(THEMATIC_FIGHT_WEIGHT), "%.0f", settingsPanel, slider -> {
+            chimeraMonstersConfig.setInt(THEMATIC_FIGHT_WEIGHT, Math.round(slider.getValue()));
+            thematicFightWeight = Math.round(slider.getValue());
+            try {
+                chimeraMonstersConfig.save();} catch (IOException e) {e.printStackTrace();}
+        });
+
+        //Used for curated fight weight
+        ModLabel curatedFightLabel = new ModLabel(CURATED_WEIGHT_TEXT, LAYOUT_X, LAYOUT_Y, Settings.CREAM_COLOR, FontHelper.charDescFont, settingsPanel, modLabel -> {});
+        ModMinMaxSlider curatedFightSlider = new ModMinMaxSlider("",
+                LAYOUT_X + sliderOffset,
+                LAYOUT_Y + 7f,
+                0, 10, chimeraMonstersConfig.getInt(CURATED_FIGHT_WEIGHT), "%.0f", settingsPanel, slider -> {
+            chimeraMonstersConfig.setInt(CURATED_FIGHT_WEIGHT, Math.round(slider.getValue()));
+            curatedFightWeight = Math.round(slider.getValue());
+            try {
+                chimeraMonstersConfig.save();} catch (IOException e) {e.printStackTrace();}
+        });
+
+        //Used for unmodified fight weight
+        ModLabel unmodifiedFightLabel = new ModLabel(UNMODIFIED_WEIGHT_TEXT, LAYOUT_X, LAYOUT_Y, Settings.CREAM_COLOR, FontHelper.charDescFont, settingsPanel, modLabel -> {});
+        ModMinMaxSlider unmodifiedFightSlider = new ModMinMaxSlider("",
+                LAYOUT_X + sliderOffset,
+                LAYOUT_Y + 7f,
+                0, 10, chimeraMonstersConfig.getInt(UNMODIFIED_FIGHT_WEIGHT), "%.0f", settingsPanel, slider -> {
+            chimeraMonstersConfig.setInt(UNMODIFIED_FIGHT_WEIGHT, Math.round(slider.getValue()));
+            unmodifiedFightWeight = Math.round(slider.getValue());
             try {
                 chimeraMonstersConfig.save();} catch (IOException e) {e.printStackTrace();}
         });
@@ -504,6 +580,14 @@ public class ChimeraMonstersMod implements
 
         registerUIElement(dataButton, false);
         registerUIElement(enableModsButton);
+        registerUIElement(modifiedFightLabel, false);
+        registerUIElement(modifiedFightSlider);
+        registerUIElement(thematicFightLabel, false);
+        registerUIElement(thematicFightSlider);
+        registerUIElement(curatedFightLabel, false);
+        registerUIElement(curatedFightSlider);
+        registerUIElement(unmodifiedFightLabel, false);
+        registerUIElement(unmodifiedFightSlider);
         registerUIElement(probabilityLabel, false);
         registerUIElement(probabilitySlider);
         registerUIElement(attemptsLabel, false);
@@ -664,30 +748,49 @@ public class ChimeraMonstersMod implements
     private static String getProbabilityData() {
         StringBuilder sb = new StringBuilder();
         sb.append(EXTRA_TEXT[2]);
-        for (int i = 0 ; i <= rollAttempts ; i++) {
-            if (i == 1) {
-                sb.append(" NL #b").append(i).append(EXTRA_TEXT[3]).append(String.format("%.02f", getRollProbability(i))).append("%");
-            } else {
-                sb.append(" NL #b").append(i).append(EXTRA_TEXT[4]).append(String.format("%.02f", getRollProbability(i))).append("%");
+        if (modifiedFightWeight + thematicFightWeight + curatedFightWeight > 0) {
+            int fightSum = modifiedFightWeight + thematicFightWeight + curatedFightWeight + unmodifiedFightWeight;
+            if (modifiedFightWeight > 0) {
+                sb.append(EXTRA_TEXT[13]).append(String.format("%.02f", 100f * modifiedFightWeight / fightSum)).append("%");
             }
-        }
-        if (rarityBias == 0) {
-            sb.append(EXTRA_TEXT[5]).append(String.format("%.02f", getWeightProbability(AbstractMonsterModifier.ModifierRarity.COMMON))).append("%");
-            sb.append(EXTRA_TEXT[6]).append(String.format("%.02f", getWeightProbability(AbstractMonsterModifier.ModifierRarity.UNCOMMON))).append("%");
-            sb.append(EXTRA_TEXT[7]).append(String.format("%.02f", getWeightProbability(AbstractMonsterModifier.ModifierRarity.RARE))).append("%");
+            if (thematicFightWeight > 0) {
+                sb.append(EXTRA_TEXT[12]).append(String.format("%.02f", 100f * thematicFightWeight / fightSum)).append("%");
+            }
+            if (curatedFightWeight > 0) {
+                sb.append(EXTRA_TEXT[11]).append(String.format("%.02f", 100f * curatedFightWeight / fightSum)).append("%");
+            }
+            if (unmodifiedFightWeight > 0) {
+                sb.append(EXTRA_TEXT[14]).append(String.format("%.02f", 100f * unmodifiedFightWeight / fightSum)).append("%");
+            }
+            sb.append(EXTRA_TEXT[15]);
+            for (int i = 0 ; i <= rollAttempts ; i++) {
+                float chance = getRollProbability(i);
+                if (chance > 0f) {
+                    sb.append(" NL #b").append(i).append(EXTRA_TEXT[i == 1 ? 3 : 4]).append(String.format("%.02f", chance)).append("%");
+                }
+            }
+            if (modProbabilityPercent > 0f) {
+                if (rarityBias == 0) {
+                    sb.append(EXTRA_TEXT[5]).append(String.format("%.02f", getWeightProbability(AbstractMonsterModifier.ModifierRarity.COMMON))).append("%");
+                    sb.append(EXTRA_TEXT[6]).append(String.format("%.02f", getWeightProbability(AbstractMonsterModifier.ModifierRarity.UNCOMMON))).append("%");
+                    sb.append(EXTRA_TEXT[7]).append(String.format("%.02f", getWeightProbability(AbstractMonsterModifier.ModifierRarity.RARE))).append("%");
+                } else {
+                    sb.append(EXTRA_TEXT[8]);
+                    sb.append(EXTRA_TEXT[5]).append(String.format("%.02f", getBiasedWeightProbability(AbstractMonsterModifier.ModifierRarity.COMMON, true))).append("%");
+                    sb.append(EXTRA_TEXT[6]).append(String.format("%.02f", getBiasedWeightProbability(AbstractMonsterModifier.ModifierRarity.UNCOMMON, false))).append("%");
+                    sb.append(EXTRA_TEXT[7]).append(String.format("%.02f", getBiasedWeightProbability(AbstractMonsterModifier.ModifierRarity.RARE, false))).append("%");
+                    sb.append(EXTRA_TEXT[9]);
+                    sb.append(EXTRA_TEXT[5]).append(String.format("%.02f", getBiasedWeightProbability(AbstractMonsterModifier.ModifierRarity.COMMON, false))).append("%");
+                    sb.append(EXTRA_TEXT[6]).append(String.format("%.02f", getBiasedWeightProbability(AbstractMonsterModifier.ModifierRarity.UNCOMMON, true))).append("%");
+                    sb.append(EXTRA_TEXT[7]).append(String.format("%.02f", getBiasedWeightProbability(AbstractMonsterModifier.ModifierRarity.RARE, false))).append("%");
+                    sb.append(EXTRA_TEXT[10]);
+                    sb.append(EXTRA_TEXT[5]).append(String.format("%.02f", getBiasedWeightProbability(AbstractMonsterModifier.ModifierRarity.COMMON, false))).append("%");
+                    sb.append(EXTRA_TEXT[6]).append(String.format("%.02f", getBiasedWeightProbability(AbstractMonsterModifier.ModifierRarity.UNCOMMON, false))).append("%");
+                    sb.append(EXTRA_TEXT[7]).append(String.format("%.02f", getBiasedWeightProbability(AbstractMonsterModifier.ModifierRarity.RARE, true))).append("%");
+                }
+            }
         } else {
-            sb.append(EXTRA_TEXT[8]);
-            sb.append(EXTRA_TEXT[5]).append(String.format("%.02f", getBiasedWeightProbability(AbstractMonsterModifier.ModifierRarity.COMMON, true))).append("%");
-            sb.append(EXTRA_TEXT[6]).append(String.format("%.02f", getBiasedWeightProbability(AbstractMonsterModifier.ModifierRarity.UNCOMMON, false))).append("%");
-            sb.append(EXTRA_TEXT[7]).append(String.format("%.02f", getBiasedWeightProbability(AbstractMonsterModifier.ModifierRarity.RARE, false))).append("%");
-            sb.append(EXTRA_TEXT[9]);
-            sb.append(EXTRA_TEXT[5]).append(String.format("%.02f", getBiasedWeightProbability(AbstractMonsterModifier.ModifierRarity.COMMON, false))).append("%");
-            sb.append(EXTRA_TEXT[6]).append(String.format("%.02f", getBiasedWeightProbability(AbstractMonsterModifier.ModifierRarity.UNCOMMON, true))).append("%");
-            sb.append(EXTRA_TEXT[7]).append(String.format("%.02f", getBiasedWeightProbability(AbstractMonsterModifier.ModifierRarity.RARE, false))).append("%");
-            sb.append(EXTRA_TEXT[10]);
-            sb.append(EXTRA_TEXT[5]).append(String.format("%.02f", getBiasedWeightProbability(AbstractMonsterModifier.ModifierRarity.COMMON, false))).append("%");
-            sb.append(EXTRA_TEXT[6]).append(String.format("%.02f", getBiasedWeightProbability(AbstractMonsterModifier.ModifierRarity.UNCOMMON, false))).append("%");
-            sb.append(EXTRA_TEXT[7]).append(String.format("%.02f", getBiasedWeightProbability(AbstractMonsterModifier.ModifierRarity.RARE, true))).append("%");
+            sb.append(EXTRA_TEXT[14]).append(String.format("%.02f", 100f)).append("%");
         }
         return sb.toString();
     }
