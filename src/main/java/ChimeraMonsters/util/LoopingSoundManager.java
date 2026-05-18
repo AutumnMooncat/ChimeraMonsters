@@ -21,6 +21,10 @@ public class LoopingSoundManager implements StartGameSubscriber, PostBattleSubsc
         BaseMod.subscribe(this);
     }
 
+    public static void initialize() {
+        new LoopingSoundManager();
+    }
+
     public static final ArrayList<Pair<String, Long>> loopedSounds = new ArrayList<>();
 
     public static Pair<String, Long> addLoopedSound(String key) {
