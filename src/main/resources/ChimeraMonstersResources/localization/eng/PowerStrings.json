@@ -62,5 +62,11 @@
       " damage.",
       "Explodes this turn, dealing #b"
     ]
+  },
+  "${ModID}:AncientPower": {
+    "NAME": "Ancient",
+    "DESCRIPTIONS": [
+      "When attacked, loses #b"," #yStrength for the turn."
+    ]
   }
 }

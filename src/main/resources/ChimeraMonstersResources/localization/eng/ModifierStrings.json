@@ -68,5 +68,17 @@
   },
   "${ModID}:ExplodingMod": {
     "TEXT": ["Exploding ", "", "Explodes after 3 turns, dealing #b[10/20/30] damage."]
+  },
+  "${ModID}:ImpatientMod": {
+    "TEXT": ["Impatient ", "", "Has #yTime #yWarp."]
+  },
+  "${ModID}:InfestedMod": {
+    "TEXT": ["Infested ", "", "Applies #b2 #yVulnerable on death."]
+  },
+  "${ModID}:StickyMod": {
+    "TEXT": ["Sticky ", "", "Shuffles #b[1/2] #ySlimed into your discard pile on its attack turns."]
+  },
+  "${ModID}:AncientMod": {
+    "TEXT": ["Ancient ", "", "Has #b5 #yArtifact. Loses #yStength for the turn when attacked."]
   }
 }
