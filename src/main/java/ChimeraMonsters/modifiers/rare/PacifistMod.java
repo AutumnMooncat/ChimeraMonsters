@@ -34,7 +34,7 @@ public class PacifistMod extends AbstractMonsterModifier {
 
     @Override
     protected boolean validMonster(AbstractMonster monster, MonsterGroup context) {
-        return checkContext(context, multiCombat) && checkContext(context, onePerFight);
+        return checkContext(context, multiCombat) && checkContext(context, this, onePerFight);
     }
 
     @Override
