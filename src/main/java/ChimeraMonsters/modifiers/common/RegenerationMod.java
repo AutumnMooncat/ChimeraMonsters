@@ -8,7 +8,7 @@ import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
-import com.megacrit.cardcrawl.powers.RegenerateMonsterPower;
+import com.megacrit.cardcrawl.powers.*;
 
 public class RegenerationMod extends GroupMonsterModifier {
     public static final String ID = ChimeraMonstersMod.makeID(RegenerationMod.class.getSimpleName());
@@ -39,7 +39,7 @@ public class RegenerationMod extends GroupMonsterModifier {
 
     @Override
     protected boolean validMonster(AbstractMonster monster, MonsterGroup context) {
-        return true; //TODO: Regeneration Check
+        return !hasAnyAnywhere(monster, RegenerateMonsterPower.class, RegenPower.class);
     }
 
     @Override

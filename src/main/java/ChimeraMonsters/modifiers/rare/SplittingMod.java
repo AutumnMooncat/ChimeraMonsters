@@ -4,6 +4,8 @@ import ChimeraMonsters.ChimeraMonstersMod;
 import ChimeraMonsters.modifiers.AbstractMonsterModifier;
 import ChimeraMonsters.powers.BerserkerPower;
 import ChimeraMonsters.powers.SplittingPower;
+import ChimeraMonsters.util.matchers.SuperFieldAccessMatcher;
+import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
@@ -34,7 +36,8 @@ public class SplittingMod extends AbstractMonsterModifier {
 
     @Override
     protected boolean validMonster(AbstractMonster monster, MonsterGroup context) {
-        return monster.type == AbstractMonster.EnemyType.NORMAL;
+        return monster.type == AbstractMonster.EnemyType.NORMAL &&
+                !hasAnyAnywhere(monster, new SuperFieldAccessMatcher(AbstractCreature.class, "halfDead"));
     }
 
     @Override
