@@ -1,6 +1,6 @@
 package ChimeraMonsters.powers.interfaces;
 
-import ChimeraMonsters.patches.EnemyMoveInfoPatches;
+import ChimeraMonsters.patches.EnemyMoveInfoFields;
 import ChimeraMonsters.patches.MoveManipulationPatches;
 import com.badlogic.gdx.math.MathUtils;
 import com.megacrit.cardcrawl.blights.Spear;
@@ -94,7 +94,7 @@ public interface IntentInterceptingPower {
      * @param info The info to unpack for the intent.
      */
     default void setMove(AbstractCreature creature, EnemyMoveInfo info) {
-        setMove(creature, EnemyMoveInfoPatches.getName(info), info.nextMove, info.intent, info.baseDamage, info.multiplier, info.isMultiDamage);
+        setMove(creature, EnemyMoveInfoFields.name.get(info), info.nextMove, info.intent, info.baseDamage, info.multiplier, info.isMultiDamage);
     }
 
     /**

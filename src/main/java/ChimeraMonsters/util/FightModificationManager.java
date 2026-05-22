@@ -37,12 +37,13 @@ public class FightModificationManager {
             }
         } else if ((roll -= modified) < 0) {
             rollRandomModifiers(monsterGroup);
+            fightName = "";
         }
     }
 
     private static void rollRandomModifiers(MonsterGroup monsterGroup){
-        for(AbstractMonster m : monsterGroup.monsters) {
-           rollMonsterModifier(m, monsterGroup);
+        for (AbstractMonster m : monsterGroup.monsters) {
+            rollMonsterModifier(m, monsterGroup);
         }
         fightName="";
     }

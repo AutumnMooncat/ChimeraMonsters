@@ -159,7 +159,7 @@ public class MoveManipulationPatches {
                }
 
                moveField.set(creature, info);
-               ((AbstractMonster) creature).moveName = EnemyMoveInfoPatches.getName(info);
+               ((AbstractMonster) creature).moveName = EnemyMoveInfoFields.name.get(info);
                if (instantCreate) {
                    ((AbstractMonster) creature).createIntent();
                }
@@ -176,7 +176,7 @@ public class MoveManipulationPatches {
             EnemyMoveInfo lastMove = getMove(__instance);
             EnemyMoveInfo intendedMove = new EnemyMoveInfo(nextMove, intent, baseDamage, multiplier, isMultiDamage);
             MonsterFields.successfullyRolledMove.set(__instance, true);
-            EnemyMoveInfoPatches.setName(intendedMove, moveName);
+            EnemyMoveInfoFields.name.set(intendedMove, moveName);
             boolean shouldContinue = shouldSetMove(__instance, lastMove, intendedMove);
             EnemyMoveInfo currentInfo = getMove(__instance);
             if (currentInfo == lastMove) {
@@ -196,7 +196,7 @@ public class MoveManipulationPatches {
         @SpirePostfixPatch
         public static void setName(AbstractMonster __instance) {
             EnemyMoveInfo currentMove = getMove(__instance);
-            EnemyMoveInfoPatches.setName(currentMove, __instance.moveName);
+            EnemyMoveInfoFields.name.set(currentMove, __instance.moveName);
         }
     }
 
