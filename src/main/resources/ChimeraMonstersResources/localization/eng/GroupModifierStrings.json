@@ -1,0 +1,27 @@
+{
+  "${ModID}:AbstractMonsterGroupModifier": {
+    "TEXT": ["Monster Group", "Modifier"]
+  },
+  "${ModID}:AbstractThemedModifier": {
+    "TEXT": ["All monsters have %s."]
+  },
+  "${ModID}:ExampleGroupMod": {
+    "TEXT": ["Modifier name", "Modifier description"],
+    "EXTRA_TEXT": ["Anything else needed"]
+  },
+  "${ModID}:RejuvenatingSprings": {
+    "TEXT": ["Rejuvenating Springs"]
+  },
+  "${ModID}:Doppelings": {
+    "TEXT": ["Doppelings"]
+  },
+  "${ModID}:Shadelings": {
+    "TEXT": ["Shadelings"]
+  },
+  "${ModID}:DrawingAggro": {
+    "TEXT": ["Drawing Aggro"]
+  },
+  "${ModID}:Bloodlust": {
+    "TEXT": ["Bloodlust"]
+  }
+}

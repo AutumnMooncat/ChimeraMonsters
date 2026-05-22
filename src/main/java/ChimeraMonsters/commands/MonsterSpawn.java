@@ -1,7 +1,8 @@
 package ChimeraMonsters.commands;
 
-import ChimeraMonsters.ChimeraMonstersMod;
-import ChimeraMonsters.modifiers.AbstractMonsterModifier;
+import ChimeraMonsters.ChimeraMonstersController;
+import ChimeraMonsters.modifiers.AbstractModifier;
+import ChimeraMonsters.modifiers.monsters.AbstractMonsterModifier;
 import ChimeraMonsters.patches.MonsterFields;
 import basemod.DevConsole;
 import basemod.devcommands.ConsoleCommand;
@@ -20,14 +21,19 @@ public class MonsterSpawn extends ConsoleCommand {
 
     @Override
     public void execute(String[] tokens, int depth) {
-        if (ChimeraMonstersMod.modMap.containsKey(tokens[depth+1])) {
+        if (ChimeraMonstersController.modifierMap.containsKey(tokens[depth+1])) {
             String monsterID = tokens[depth];
             AbstractMonster monster = Monster.createMonster(monsterID);
             if (monster != null) {
-                AbstractMonsterModifier mod = ChimeraMonstersMod.modMap.get(tokens[depth+1]);
+                AbstractModifier<?> raw = ChimeraMonstersController.modifierMap.get(tokens[depth+1]);
+                if (!(raw instanceof AbstractMonsterModifier)) {
+                    DevConsole.log("Non-MonsterModifier cannot be applied to " + monsterID);
+                    return;
+                }
+                AbstractMonsterModifier mod = (AbstractMonsterModifier) raw;
                 if (mod.canApplyTo(monster, null)) {
                     DevConsole.log("spawning " + monsterID + " with " + mod.getClass().getSimpleName());
-                    ChimeraMonstersMod.applyModifier(monster, mod.makeCopy());
+                    ChimeraMonstersController.applyModifier(monster, mod.makeCopy());
                     MonsterFields.rolledModifiers.set(monster, true);
                     addAndPositionMonster(monster);
                 } else {

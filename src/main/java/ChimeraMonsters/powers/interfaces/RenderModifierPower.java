@@ -1,6 +1,6 @@
 package ChimeraMonsters.powers.interfaces;
 
-import ChimeraMonsters.ChimeraMonstersMod;
+import ChimeraMonsters.ChimeraMonstersConfig;
 import ChimeraMonsters.patches.CreatureRenderPatches;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -17,7 +17,7 @@ public interface RenderModifierPower {
     }
 
     default TextureRegion blitShader(SpriteBatch sb, TextureRegion tex, ShaderProgram sp) {
-        if (!ChimeraMonstersMod.enableShaders) {
+        if (!ChimeraMonstersConfig.enableShaders) {
             return tex;
         }
         TextureRegion ret = CreatureRenderPatches.blitShader(sb, sp);

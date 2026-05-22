@@ -1,7 +1,9 @@
 package ChimeraMonsters.commands;
 
+import ChimeraMonsters.ChimeraMonstersController;
 import ChimeraMonsters.ChimeraMonstersMod;
-import ChimeraMonsters.modifiers.AbstractMonsterModifier;
+import ChimeraMonsters.modifiers.AbstractModifier;
+import ChimeraMonsters.modifiers.monsters.AbstractMonsterModifier;
 import basemod.DevConsole;
 import basemod.devcommands.ConsoleCommand;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
@@ -29,8 +31,12 @@ public class MonsterPoll extends ConsoleCommand {
             } else {
                 DevConsole.log("Failed to get monster " + tokens[depth]);
             }
-        } else if (ChimeraMonstersMod.modMap.containsKey(tokens[depth])) {
-            AbstractMonsterModifier mod = ChimeraMonstersMod.modMap.get(tokens[depth]);
+        } else if (ChimeraMonstersController.modifierMap.containsKey(tokens[depth])) {
+            AbstractModifier<?> raw = ChimeraMonstersController.modifierMap.get(tokens[depth]);
+            if (!(raw instanceof AbstractMonsterModifier)) {
+                return;
+            }
+            AbstractMonsterModifier mod = (AbstractMonsterModifier) raw;
             ArrayList<String> validMonsters = Monster.getAllValidMonsters(mod, null);
             Collections.sort(validMonsters);
             DevConsole.log(validMonsters.size()+" valid monsters found. Dumping to logger.");

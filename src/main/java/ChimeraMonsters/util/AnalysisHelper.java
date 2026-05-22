@@ -1,6 +1,6 @@
 package ChimeraMonsters.util;
 
-import ChimeraMonsters.modifiers.AbstractMonsterModifier;
+import ChimeraMonsters.modifiers.monsters.AbstractMonsterModifier;
 import ChimeraMonsters.patches.MonsterFields;
 import ChimeraMonsters.util.analysis.ClassAnalyzer;
 import com.evacipated.cardcrawl.modthespire.lib.Matcher;

@@ -1,6 +1,6 @@
 package ChimeraMonsters.patches;
 
-import ChimeraMonsters.modifiers.AbstractMonsterModifier;
+import ChimeraMonsters.modifiers.monsters.AbstractMonsterModifier;
 import ChimeraMonsters.powers.interfaces.IntentInterceptingPower;
 import ChimeraMonsters.ui.HoveringCardManager;
 import com.evacipated.cardcrawl.modthespire.lib.SpireField;

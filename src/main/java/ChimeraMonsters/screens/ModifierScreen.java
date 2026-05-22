@@ -1,9 +1,14 @@
 package ChimeraMonsters.screens;
 
+import ChimeraMonsters.ChimeraMonstersConfig;
+import ChimeraMonsters.ChimeraMonstersController;
 import ChimeraMonsters.ChimeraMonstersMod;
+import ChimeraMonsters.ChimeraMonstersSettingsPanel;
 import ChimeraMonsters.cards.MonsterCard;
 import ChimeraMonsters.commands.Monster;
-import ChimeraMonsters.modifiers.AbstractMonsterModifier;
+import ChimeraMonsters.modifiers.AbstractModifier;
+import ChimeraMonsters.modifiers.groups.AbstractMonsterGroupModifier;
+import ChimeraMonsters.modifiers.monsters.AbstractMonsterModifier;
 import ChimeraMonsters.patches.MainMenuPatches;
 import ChimeraMonsters.ui.SettingsButton;
 import basemod.BaseMod;
@@ -76,9 +81,9 @@ public class ModifierScreen implements DropdownMenuListener, ScrollBarListener {
     private DropdownMenu rarityDropdown;
     private DropdownMenu augmentDropdown;
     private DropdownMenu characterDropdown;
-    private AbstractMonsterModifier.ModifierRarity rarityFilter;
+    private AbstractModifier.ModifierRarity rarityFilter;
     private String modIDFilter;
-    private HashMap<String, AbstractMonsterModifier.ModifierRarity> rarityMap = new HashMap<>();
+    private HashMap<String, AbstractModifier.ModifierRarity> rarityMap = new HashMap<>();
     private HashMap<String, String> modIDMap = new HashMap<>();
     private ScrollBar scrollBar;
     private Hitbox upgradeHb;
@@ -156,7 +161,7 @@ public class ModifierScreen implements DropdownMenuListener, ScrollBarListener {
                 refreshDropdownMenu(augmentDropdown);
             }
 
-            if (selectedAugment != null && selectedAugment.getModRarity() != AbstractMonsterModifier.ModifierRarity.SPECIAL) {
+            if (selectedAugment != null && selectedAugment.getModRarity() != AbstractModifier.ModifierRarity.SPECIAL) {
                 this.disableHb.update();
                 if (this.disableHb.hovered && InputHelper.justClickedLeft) {// 233
                     this.disableHb.clickStarted = true;// 234
@@ -166,7 +171,7 @@ public class ModifierScreen implements DropdownMenuListener, ScrollBarListener {
                     CInputActionSet.proceed.unpress();// 238
                     this.disableHb.clicked = false;// 239
                     modifierDisabled = !modifierDisabled;
-                    ChimeraMonstersMod.setModifierStatus(selectedAugment, modifierDisabled);
+                    ChimeraMonstersConfig.setModifierStatus(selectedAugment, modifierDisabled);
                 }
             }
 
@@ -258,10 +263,12 @@ public class ModifierScreen implements DropdownMenuListener, ScrollBarListener {
 
     public ArrayList<String> getModStrings() {
         ArrayList<String> ret = new ArrayList<>();
-        for (AbstractMonsterModifier a : ChimeraMonstersMod.crossoverMap.keySet()) {
-            String s = ChimeraMonstersMod.crossoverMap.get(a);
-            if (!ret.contains(s)) {
-                ret.add(s);
+        for (AbstractModifier<?> a : ChimeraMonstersMod.crossoverMap.keySet()) {
+            if (a instanceof AbstractMonsterModifier) {
+                String s = ChimeraMonstersMod.crossoverMap.get(a);
+                if (!ret.contains(s)) {
+                    ret.add(s);
+                }
             }
         }
         Collections.sort(ret);
@@ -272,7 +279,7 @@ public class ModifierScreen implements DropdownMenuListener, ScrollBarListener {
         ArrayList<String> ret = new ArrayList<>();
         ret.add(TEXT[6]);
         rarityMap.put(TEXT[6], null);
-        for (AbstractMonsterModifier.ModifierRarity r : AbstractMonsterModifier.ModifierRarity.values()) {
+        for (AbstractModifier.ModifierRarity r : AbstractModifier.ModifierRarity.values()) {
             ret.add(r.toString());
             rarityMap.put(r.toString(), r);
         }
@@ -282,16 +289,18 @@ public class ModifierScreen implements DropdownMenuListener, ScrollBarListener {
     public ArrayList<String> getModifierStrings() {
         ArrayList<String> ret = new ArrayList<>();
         augmentMap.clear();
-        for (String id : ChimeraMonstersMod.modMap.keySet()) {
-            AbstractMonsterModifier mod = ChimeraMonstersMod.modMap.get(id);
+        for (AbstractModifier<?> mod : ChimeraMonstersController.modifierMap.values()) {
+            if (!(mod instanceof AbstractMonsterModifier)) {
+                continue;
+            }
             if (rarityFilter == null || mod.getModRarity() == rarityFilter) {
                 if (ChimeraMonstersMod.crossoverMap.get(mod).equals(selectedModID)) {
-                    String s = (mod.getPrefix() + mod.getSuffix()).replace("  ", " ").trim();
+                    String s = mod.getModifierName();
                     if (s.isEmpty()) {
                         s = formatText(s);
                     }
                     ret.add(s);
-                    augmentMap.put(s, mod);
+                    augmentMap.put(s, (AbstractMonsterModifier) mod);
                 }
             }
         }
@@ -335,12 +344,12 @@ public class ModifierScreen implements DropdownMenuListener, ScrollBarListener {
                 return;
             }
             selectedAugment = augmentMap.get(s);
-            modifierDisabled = ChimeraMonstersMod.disabledModifiers.contains(selectedAugment);
+            modifierDisabled = ChimeraMonstersConfig.disabledModifiers.contains(selectedAugment);
             for (Map.Entry<String, AbstractMonster> entry : ChimeraMonstersMod.dummyMonsterMap.entrySet()) {
                 if (selectedAugment.canApplyTo(entry.getValue(), null)) {
                     AbstractMonster monster = Monster.createMonster(entry.getKey());
                     if (monster != null) {
-                        ChimeraMonstersMod.applyModifier(monster, selectedAugment);
+                        ChimeraMonstersController.applyModifier(monster, selectedAugment);
                         AbstractCard card = new MonsterCard(monster);
                         card.targetDrawScale = 0.75f;
                         validCards.addToBottom(card);
@@ -448,7 +457,7 @@ public class ModifierScreen implements DropdownMenuListener, ScrollBarListener {
         }
         this.upgradeHb.render(sb);// 1769
 
-        if (selectedAugment.getModRarity() != AbstractMonsterModifier.ModifierRarity.SPECIAL) {
+        if (selectedAugment.getModRarity() != AbstractModifier.ModifierRarity.SPECIAL) {
             sb.draw(ImageMaster.CHECKBOX, this.disableHb.cX - 80.0F * Settings.scale - 32.0F, this.disableHb.cY - 32.0F, 32.0F, 32.0F, 64.0F, 64.0F, Settings.scale, Settings.scale, 0.0F, 0, 0, 64, 64, false, false);// 1713
             if (this.disableHb.hovered) {// 1731
                 FontHelper.renderFont(sb, FontHelper.tipBodyFont, TEXT[8], this.disableHb.cX - 45.0F * Settings.scale, this.disableHb.cY + 10.0F * Settings.scale, Settings.RED_TEXT_COLOR);// 1732
@@ -527,7 +536,7 @@ public class ModifierScreen implements DropdownMenuListener, ScrollBarListener {
         try {
             Object o = ReflectionHacks.getPrivate(menu, DropdownMenu.class, "selectionBox");
             ReflectionHacks.privateMethod(DropdownMenu.class, "changeSelectionToRow", Class.forName(DropdownMenu.class.getName()+"$DropdownRow")).invoke(menu, o);
-            DropdownColoring.RowToColor.function.set(augmentDropdown, index -> ChimeraMonstersMod.disabledModifiers.contains(augmentMap.get(getDropdownText(augmentDropdown, index))) ? DISABLE_COLOR : null);
+            DropdownColoring.RowToColor.function.set(augmentDropdown, index -> ChimeraMonstersConfig.disabledModifiers.contains(augmentMap.get(getDropdownText(augmentDropdown, index))) ? DISABLE_COLOR : null);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -549,8 +558,8 @@ public class ModifierScreen implements DropdownMenuListener, ScrollBarListener {
     public static class GrabBadge {
         @SpireInsertPatch(locator = Locator.class, localvars = {"badge"})
         public static void plz(ModBadge badge) {
-            if (ChimeraMonstersMod.EXTRA_TEXT != null) {
-                if (ChimeraMonstersMod.EXTRA_TEXT[0].equals(ReflectionHacks.getPrivate(badge, ModBadge.class, "modName"))) {
+            if (ChimeraMonstersSettingsPanel.EXTRA_TEXT != null) {
+                if (ChimeraMonstersSettingsPanel.EXTRA_TEXT[0].equals(ReflectionHacks.getPrivate(badge, ModBadge.class, "modName"))) {
                     myBadge = badge;
                 }
             }

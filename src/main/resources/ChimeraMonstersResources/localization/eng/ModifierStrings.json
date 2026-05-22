@@ -1,4 +1,7 @@
 {
+  "${ModID}:AbstractMonsterModifier": {
+    "TEXT": ["Monster", "Modifier"]
+  },
   "${ModID}:ExampleMod": {
     "TEXT": ["Prefix name", "Suffix name", "Modifier description"],
     "EXTRA_TEXT": ["Anything else needed"]

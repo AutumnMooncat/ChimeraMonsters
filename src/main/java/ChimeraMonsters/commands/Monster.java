@@ -1,22 +1,16 @@
 package ChimeraMonsters.commands;
 
+import ChimeraMonsters.ChimeraMonstersController;
 import ChimeraMonsters.ChimeraMonstersMod;
-import ChimeraMonsters.modifiers.AbstractMonsterModifier;
+import ChimeraMonsters.modifiers.monsters.AbstractMonsterModifier;
 import basemod.BaseMod;
 import basemod.DevConsole;
 import basemod.devcommands.ConsoleCommand;
-import basemod.patches.whatmod.WhatMod;
-import com.evacipated.cardcrawl.modthespire.Loader;
-import com.evacipated.cardcrawl.modthespire.ModInfo;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.MonsterHelper;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
-import javassist.Modifier;
-import org.clapper.util.classutil.*;
 
-import java.io.File;
-import java.net.URISyntaxException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -53,11 +47,11 @@ public class Monster extends ConsoleCommand {
     }
 
     public static ArrayList<String> getValidMods(AbstractMonster monster, MonsterGroup context) {
-        return ChimeraMonstersMod.modMap.keySet().stream().filter(s -> ChimeraMonstersMod.modMap.get(s).canApplyTo(monster, context)).collect(Collectors.toCollection(ArrayList::new));
+        return ChimeraMonstersController.modifierMap.keySet().stream().filter(s -> ChimeraMonstersController.modifierMap.get(s) instanceof AbstractMonsterModifier && ((AbstractMonsterModifier) ChimeraMonstersController.modifierMap.get(s)).canApplyTo(monster, context)).collect(Collectors.toCollection(ArrayList::new));
     }
 
     public static ArrayList<String> getAllMods() {
-        return new ArrayList<>(ChimeraMonstersMod.modMap.keySet());
+        return new ArrayList<>(ChimeraMonstersController.modifierMap.keySet());
     }
 
     public static ArrayList<String> getMonsterOptionsFromRoom() {

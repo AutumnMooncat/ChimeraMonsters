@@ -1,7 +1,8 @@
 package ChimeraMonsters.commands;
 
-import ChimeraMonsters.ChimeraMonstersMod;
-import ChimeraMonsters.modifiers.AbstractMonsterModifier;
+import ChimeraMonsters.ChimeraMonstersController;
+import ChimeraMonsters.modifiers.AbstractModifier;
+import ChimeraMonsters.modifiers.monsters.AbstractMonsterModifier;
 import basemod.DevConsole;
 import basemod.devcommands.ConsoleCommand;
 import basemod.helpers.ConvertHelper;
@@ -19,9 +20,14 @@ public class MonsterApply extends ConsoleCommand {
 
     @Override
     public void execute(String[] tokens, int depth) {
-        if (ChimeraMonstersMod.modMap.containsKey(tokens[depth+1])) {
+        if (ChimeraMonstersController.modifierMap.containsKey(tokens[depth+1])) {
             String monsterID = tokens[depth];
-            AbstractMonsterModifier mod = ChimeraMonstersMod.modMap.get(tokens[depth+1]);
+            AbstractModifier<?> raw = ChimeraMonstersController.modifierMap.get(tokens[depth+1]);
+            if (!(raw instanceof AbstractMonsterModifier)) {
+                DevConsole.log("Non-MonsterModifier cannot be applied to " + monsterID);
+                return;
+            }
+            AbstractMonsterModifier mod = (AbstractMonsterModifier) raw;
             int index = 0;
             if (tokens.length > depth + 2 && ConvertHelper.tryParseInt(tokens[depth + 2]) != null) {
                 index = ConvertHelper.tryParseInt(tokens[depth + 2], 0);
@@ -29,10 +35,10 @@ public class MonsterApply extends ConsoleCommand {
             AbstractMonster found = Monster.getMonsterFromRoom(monsterID, index);
             if (found != null) {
                 if (mod.canApplyTo(found, AbstractDungeon.getMonsters())) {
-                    DevConsole.log("adding " + mod.getClass().getSimpleName() + " to " + monsterID);
-                    ChimeraMonstersMod.applyModifier(found, mod.makeCopy());
+                    DevConsole.log("adding " + raw.getClass().getSimpleName() + " to " + monsterID);
+                    ChimeraMonstersController.applyModifier(found, mod);
                 } else {
-                    DevConsole.log(mod.getClass().getSimpleName() + " cannot be applied to " + monsterID);
+                    DevConsole.log(raw.getClass().getSimpleName() + " cannot be applied to " + monsterID);
                 }
             } else {
                 if (tokens.length > depth + 2 && ConvertHelper.tryParseInt(tokens[depth + 2]) != null) {
