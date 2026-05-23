@@ -99,7 +99,7 @@ public class ChimeraMonstersSettingsPanel {
         // Monster Settings
         makePageBreak();
         makeHeader(getNextText());
-        sliderOffset = getSliderPosition(labelStrings.subList(textIndex, textIndex + 5));
+        sliderOffset = getSliderPosition(labelStrings.subList(textIndex, textIndex + 6));
         // Percent chance to apply modifier
         makeSlider(getNextText(), ChimeraMonstersConfig.IntSetting.MOD_CHANCE, sliderOffset, 0, 100);
         // Roll amount
@@ -116,7 +116,7 @@ public class ChimeraMonstersSettingsPanel {
         // Fight Settings
         makePageBreak();
         makeHeader(getNextText());
-        sliderOffset = getSliderPosition(labelStrings.subList(textIndex, textIndex + 3));
+        sliderOffset = getSliderPosition(labelStrings.subList(textIndex, textIndex + 4));
         // Enhanced weight
         makeSlider(getNextText(), ChimeraMonstersConfig.IntSetting.ENHANCED_WEIGHT, sliderOffset, 0, 10);
         // Themed weight
@@ -159,6 +159,7 @@ public class ChimeraMonstersSettingsPanel {
 
         // New section for disabling entire crossover content
         makePageBreak();
+        makeHeader(getNextText());
         ChimeraMonstersMod.onSetupSettingsPanel(crossoverUIStrings.TEXT[0]);
     }
 
