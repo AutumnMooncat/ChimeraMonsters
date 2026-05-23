@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.function.Consumer;
 
 public class ChimeraMonstersSettingsPanel {
     public static ModPanel settingsPanel;
@@ -29,6 +28,7 @@ public class ChimeraMonstersSettingsPanel {
     public static UIStrings crossoverUIStrings;
     public static String[] TEXT;
     public static String[] EXTRA_TEXT;
+    private static int textIndex = 1;
     public static final HashMap<String, String> crossoverLabelMap = new HashMap<>();
 
     private static final String BADGE_IMAGE = "ChimeraMonstersResources/images/Badge.png";
@@ -82,199 +82,53 @@ public class ChimeraMonstersSettingsPanel {
         Texture badgeTexture = TextureLoader.getTexture(BADGE_IMAGE);
         BaseMod.registerModBadge(badgeTexture, EXTRA_TEXT[0], AUTHOR, EXTRA_TEXT[1], settingsPanel);
 
-        //Get the longest slider text for positioning
+        // Get the longest slider text for positioning
         ArrayList<String> labelStrings = new ArrayList<>(Arrays.asList(TEXT));
-        float sliderOffset = getSliderPosition(labelStrings.subList(1,5));
-        labelStrings.clear();
+        float sliderOffset;
 
-        //Show data?
+        // General Settings
         makeDataViewer();
-        /*ModLabeledToggleTooltipButton dataButton = new ModLabeledToggleTooltipButton(SHOW_ANALYSIS_TEXT, getProbabilityData(), LAYOUT_X + 830f, LAYOUT_Y - 10f, Settings.CREAM_COLOR, FontHelper.charDescFont,
-                ChimeraMonstersConfig.chimeraMonstersConfig.getBool(ChimeraMonstersConfig.SHOW_BREAKDOWN), settingsPanel, panel -> panel.tooltip = getProbabilityData(), (button) -> {
-            ChimeraMonstersConfig.chimeraMonstersConfig.setBool(ChimeraMonstersConfig.SHOW_BREAKDOWN, button.enabled);
-            ChimeraMonstersConfig.showBreakdown = button.enabled;
-            try {
-                ChimeraMonstersConfig.chimeraMonstersConfig.save();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
-        registerUIElement(dataButton, false);*/
+        makeHeader(getNextText());
+        // Enable mod
+        makeToggler(getNextText(), ChimeraMonstersConfig.BoolSetting.ENABLE_MOD);
+        // Enable shaders
+        makeToggler(getNextText(), ChimeraMonstersConfig.BoolSetting.ENABLE_SHADERS);
+        // Enable tips
+        makeToggler(getNextText(), ChimeraMonstersConfig.BoolSetting.ENABLE_TOOLTIPS);
 
-        //Enable or disable the mod entirely.
-        makeToggler(ENABLE_TEXT, ChimeraMonstersConfig.ENABLE_MODS_SETTING, b -> ChimeraMonstersConfig.enableMods = b);
-        /*ModLabeledToggleButton enableModsButton = new ModLabeledToggleButton(ENABLE_TEXT,LAYOUT_X - 40f, LAYOUT_Y - 10f, Settings.CREAM_COLOR, FontHelper.charDescFont,
-                ChimeraMonstersConfig.chimeraMonstersConfig.getBool(ChimeraMonstersConfig.ENABLE_MODS_SETTING), settingsPanel, (label) -> {}, (button) -> {
-            ChimeraMonstersConfig.chimeraMonstersConfig.setBool(ChimeraMonstersConfig.ENABLE_MODS_SETTING, button.enabled);
-            ChimeraMonstersConfig.enableMods = button.enabled;
-            try {
-                ChimeraMonstersConfig.chimeraMonstersConfig.save();} catch (IOException e) {e.printStackTrace();}
-        });*/
+        // Monster Settings
+        makePageBreak();
+        makeHeader(getNextText());
+        sliderOffset = getSliderPosition(labelStrings.subList(textIndex, textIndex + 5));
+        // Percent chance to apply modifier
+        makeSlider(getNextText(), ChimeraMonstersConfig.IntSetting.MOD_CHANCE, sliderOffset, 0, 100);
+        // Roll amount
+        makeSlider(getNextText(), ChimeraMonstersConfig.IntSetting.ROLL_ATTEMPTS, sliderOffset, 1, 3);
+        // Common mod weight
+        makeSlider(getNextText(), ChimeraMonstersConfig.IntSetting.COMMON_WEIGHT, sliderOffset, 0, 10);
+        // Uncommon mod weight
+        makeSlider(getNextText(), ChimeraMonstersConfig.IntSetting.UNCOMMON_WEIGHT, sliderOffset, 0, 10);
+        // Rare mod weight
+        makeSlider(getNextText(), ChimeraMonstersConfig.IntSetting.RARE_WEIGHT, sliderOffset, 0, 10);
+        // Rarity bias
+        makeSlider(getNextText(), ChimeraMonstersConfig.IntSetting.RARITY_BIAS, sliderOffset, 0, 10);
 
-        //Used for probability of a mod being applied
-        ModLabel probabilityLabel = new ModLabel(MOD_CHANCE_TEXT, LAYOUT_X, LAYOUT_Y, Settings.CREAM_COLOR, FontHelper.charDescFont, settingsPanel, modLabel -> {});
-        ModMinMaxSlider probabilitySlider = new ModMinMaxSlider("",
-                LAYOUT_X + sliderOffset,
-                LAYOUT_Y + 7f,
-                0, 100, ChimeraMonstersConfig.chimeraMonstersConfig.getInt(ChimeraMonstersConfig.MOD_PROBABILITY), "%.0f", settingsPanel, slider -> {
-            ChimeraMonstersConfig.chimeraMonstersConfig.setInt(ChimeraMonstersConfig.MOD_PROBABILITY, Math.round(slider.getValue()));
-            ChimeraMonstersConfig.modProbabilityPercent = Math.round(slider.getValue());
-            try {
-                ChimeraMonstersConfig.chimeraMonstersConfig.save();} catch (IOException e) {e.printStackTrace();}
-        });
-
-        //Used for roll attempts
-        ModLabel attemptsLabel = new ModLabel(ROLL_ATTEMPTS_TEXT, LAYOUT_X, LAYOUT_Y, Settings.CREAM_COLOR, FontHelper.charDescFont, settingsPanel, modLabel -> {});
-        ModMinMaxSlider attemptsSlider = new ModMinMaxSlider("",
-                LAYOUT_X + sliderOffset,
-                LAYOUT_Y + 7f,
-                1, 3, ChimeraMonstersConfig.chimeraMonstersConfig.getInt(ChimeraMonstersConfig.ROLL_ATTEMPTS), "%.0f", settingsPanel, slider -> {
-            ChimeraMonstersConfig.chimeraMonstersConfig.setInt(ChimeraMonstersConfig.ROLL_ATTEMPTS, Math.round(slider.getValue()));
-            ChimeraMonstersConfig.rollAttempts = Math.round(slider.getValue());
-            try {
-                ChimeraMonstersConfig.chimeraMonstersConfig.save();} catch (IOException e) {e.printStackTrace();}
-        });
-
-        //Used for modified fight weight
-        ModLabel modifiedFightLabel = new ModLabel(MODIFIED_WEIGHT_TEXT, LAYOUT_X, LAYOUT_Y, Settings.CREAM_COLOR, FontHelper.charDescFont, settingsPanel, modLabel -> {});
-        ModMinMaxSlider modifiedFightSlider = new ModMinMaxSlider("",
-                LAYOUT_X + sliderOffset,
-                LAYOUT_Y + 7f,
-                0, 10, ChimeraMonstersConfig.chimeraMonstersConfig.getInt(ChimeraMonstersConfig.MODIFIED_FIGHT_WEIGHT), "%.0f", settingsPanel, slider -> {
-            ChimeraMonstersConfig.chimeraMonstersConfig.setInt(ChimeraMonstersConfig.MODIFIED_FIGHT_WEIGHT, Math.round(slider.getValue()));
-            ChimeraMonstersConfig.modifiedFightWeight = Math.round(slider.getValue());
-            try {
-                ChimeraMonstersConfig.chimeraMonstersConfig.save();} catch (IOException e) {e.printStackTrace();}
-        });
-        makeSlider(MODIFIED_WEIGHT_TEXT, ChimeraMonstersConfig.MODIFIED_FIGHT_WEIGHT, sliderOffset, 0, 10, i -> ChimeraMonstersConfig.modifiedFightWeight = i);
-
-        //Used for thematic fight weight
-        ModLabel thematicFightLabel = new ModLabel(THEMATIC_WEIGHT_TEXT, LAYOUT_X, LAYOUT_Y, Settings.CREAM_COLOR, FontHelper.charDescFont, settingsPanel, modLabel -> {});
-        ModMinMaxSlider thematicFightSlider = new ModMinMaxSlider("",
-                LAYOUT_X + sliderOffset,
-                LAYOUT_Y + 7f,
-                0, 10, ChimeraMonstersConfig.chimeraMonstersConfig.getInt(ChimeraMonstersConfig.THEMED_FIGHT_WEIGHT), "%.0f", settingsPanel, slider -> {
-            ChimeraMonstersConfig.chimeraMonstersConfig.setInt(ChimeraMonstersConfig.THEMED_FIGHT_WEIGHT, Math.round(slider.getValue()));
-            ChimeraMonstersConfig.themedFightWeight = Math.round(slider.getValue());
-            try {
-                ChimeraMonstersConfig.chimeraMonstersConfig.save();} catch (IOException e) {e.printStackTrace();}
-        });
-
-        //Used for curated fight weight
-        ModLabel deviantFightLabel = new ModLabel(DEVIANT_WEIGHT_TEXT, LAYOUT_X, LAYOUT_Y, Settings.CREAM_COLOR, FontHelper.charDescFont, settingsPanel, modLabel -> {});
-        ModMinMaxSlider deviantFightSlider = new ModMinMaxSlider("",
-                LAYOUT_X + sliderOffset,
-                LAYOUT_Y + 7f,
-                0, 10, ChimeraMonstersConfig.chimeraMonstersConfig.getInt(ChimeraMonstersConfig.CURATED_FIGHT_WEIGHT), "%.0f", settingsPanel, slider -> {
-            ChimeraMonstersConfig.chimeraMonstersConfig.setInt(ChimeraMonstersConfig.CURATED_FIGHT_WEIGHT, Math.round(slider.getValue()));
-            ChimeraMonstersConfig.curatedFightWeight = Math.round(slider.getValue());
-            try {
-                ChimeraMonstersConfig.chimeraMonstersConfig.save();} catch (IOException e) {e.printStackTrace();}
-        });
-
-        //Used for unmodified fight weight
-        ModLabel unmodifiedFightLabel = new ModLabel(UNMODIFIED_WEIGHT_TEXT, LAYOUT_X, LAYOUT_Y, Settings.CREAM_COLOR, FontHelper.charDescFont, settingsPanel, modLabel -> {});
-        ModMinMaxSlider unmodifiedFightSlider = new ModMinMaxSlider("",
-                LAYOUT_X + sliderOffset,
-                LAYOUT_Y + 7f,
-                0, 10, ChimeraMonstersConfig.chimeraMonstersConfig.getInt(ChimeraMonstersConfig.UNMODIFIED_FIGHT_WEIGHT), "%.0f", settingsPanel, slider -> {
-            ChimeraMonstersConfig.chimeraMonstersConfig.setInt(ChimeraMonstersConfig.UNMODIFIED_FIGHT_WEIGHT, Math.round(slider.getValue()));
-            ChimeraMonstersConfig.unmodifiedFightWeight = Math.round(slider.getValue());
-            try {
-                ChimeraMonstersConfig.chimeraMonstersConfig.save();} catch (IOException e) {e.printStackTrace();}
-        });
-
-        //Used for common mod weight
-        ModLabel commonLabel = new ModLabel(COMMON_WEIGHT_TEXT, LAYOUT_X, LAYOUT_Y, Settings.CREAM_COLOR, FontHelper.charDescFont, settingsPanel, modLabel -> {});
-        ModMinMaxSlider commonSlider = new ModMinMaxSlider("",
-                LAYOUT_X + sliderOffset,
-                LAYOUT_Y + 7f,
-                0, 10, ChimeraMonstersConfig.chimeraMonstersConfig.getInt(ChimeraMonstersConfig.COMMON_WEIGHT), "%.0f", settingsPanel, slider -> {
-            ChimeraMonstersConfig.chimeraMonstersConfig.setInt(ChimeraMonstersConfig.COMMON_WEIGHT, Math.round(slider.getValue()));
-            ChimeraMonstersConfig.commonWeight = Math.round(slider.getValue());
-            try {
-                ChimeraMonstersConfig.chimeraMonstersConfig.save();} catch (IOException e) {e.printStackTrace();}
-        });
-
-        //Used for uncommon mod weight
-        ModLabel uncommonLabel = new ModLabel(UNCOMMON_WEIGHT_TEXT, LAYOUT_X, LAYOUT_Y, Settings.CREAM_COLOR, FontHelper.charDescFont, settingsPanel, modLabel -> {});
-        ModMinMaxSlider uncommonSlider = new ModMinMaxSlider("",
-                LAYOUT_X + sliderOffset,
-                LAYOUT_Y + 7f,
-                0, 10, ChimeraMonstersConfig.chimeraMonstersConfig.getInt(ChimeraMonstersConfig.UNCOMMON_WEIGHT), "%.0f", settingsPanel, slider -> {
-            ChimeraMonstersConfig.chimeraMonstersConfig.setInt(ChimeraMonstersConfig.UNCOMMON_WEIGHT, Math.round(slider.getValue()));
-            ChimeraMonstersConfig.uncommonWeight = Math.round(slider.getValue());
-            try {
-                ChimeraMonstersConfig.chimeraMonstersConfig.save();} catch (IOException e) {e.printStackTrace();}
-        });
-
-        //Used for rare mod weight
-        ModLabel rareLabel = new ModLabel(RARE_WEIGHT_TEXT, LAYOUT_X, LAYOUT_Y, Settings.CREAM_COLOR, FontHelper.charDescFont, settingsPanel, modLabel -> {});
-        ModMinMaxSlider rareSlider = new ModMinMaxSlider("",
-                LAYOUT_X + sliderOffset,
-                LAYOUT_Y + 7f,
-                0, 10, ChimeraMonstersConfig.chimeraMonstersConfig.getInt(ChimeraMonstersConfig.RARE_WEIGHT), "%.0f", settingsPanel, slider -> {
-            ChimeraMonstersConfig.chimeraMonstersConfig.setInt(ChimeraMonstersConfig.RARE_WEIGHT, Math.round(slider.getValue()));
-            ChimeraMonstersConfig.rareWeight = Math.round(slider.getValue());
-            try {
-                ChimeraMonstersConfig.chimeraMonstersConfig.save();} catch (IOException e) {e.printStackTrace();}
-        });
-
-        //Used for bias weight
-        ModLabel biasLabel = new ModLabel(WEIGHT_BIAS_TEXT, LAYOUT_X, LAYOUT_Y, Settings.CREAM_COLOR, FontHelper.charDescFont, settingsPanel, modLabel -> {});
-        ModMinMaxSlider biasSlider = new ModMinMaxSlider("",
-                LAYOUT_X + sliderOffset,
-                LAYOUT_Y + 7f,
-                0, 5, ChimeraMonstersConfig.chimeraMonstersConfig.getInt(ChimeraMonstersConfig.RARITY_BIAS), "%.0f", settingsPanel, slider -> {
-            ChimeraMonstersConfig.chimeraMonstersConfig.setInt(ChimeraMonstersConfig.RARITY_BIAS, Math.round(slider.getValue()));
-            ChimeraMonstersConfig.rarityBias = Math.round(slider.getValue());
-            try {
-                ChimeraMonstersConfig.chimeraMonstersConfig.save();} catch (IOException e) {e.printStackTrace();}
-        });
-
-        //Used enable tooltips
-        ModLabeledToggleButton enableTooltipsButton = new ModLabeledToggleButton(ENABLE_TIPS_TEXT,LAYOUT_X - 40f, LAYOUT_Y - 10f, Settings.CREAM_COLOR, FontHelper.charDescFont,
-                ChimeraMonstersConfig.chimeraMonstersConfig.getBool(ChimeraMonstersConfig.ENABLE_TOOLTIPS), settingsPanel, (label) -> {}, (button) -> {
-            ChimeraMonstersConfig.chimeraMonstersConfig.setBool(ChimeraMonstersConfig.ENABLE_TOOLTIPS, button.enabled);
-            ChimeraMonstersConfig.enableTooltips = button.enabled;
-            try {
-                ChimeraMonstersConfig.chimeraMonstersConfig.save();} catch (IOException e) {e.printStackTrace();}
-        });
-
-        //Used enable shaders
-        ModLabeledToggleButton enableShadersButton = new ModLabeledToggleButton(ENABLE_SHADERS_TEXT,LAYOUT_X - 40f, LAYOUT_Y - 10f, Settings.CREAM_COLOR, FontHelper.charDescFont,
-                ChimeraMonstersConfig.chimeraMonstersConfig.getBool(ChimeraMonstersConfig.ENABLE_SHADERS), settingsPanel, (label) -> {}, (button) -> {
-            ChimeraMonstersConfig.chimeraMonstersConfig.setBool(ChimeraMonstersConfig.ENABLE_SHADERS, button.enabled);
-            ChimeraMonstersConfig.enableTooltips = button.enabled;
-            try {
-                ChimeraMonstersConfig.chimeraMonstersConfig.save();} catch (IOException e) {e.printStackTrace();}
-        });
+        // Fight Settings
+        makePageBreak();
+        makeHeader(getNextText());
+        sliderOffset = getSliderPosition(labelStrings.subList(textIndex, textIndex + 3));
+        // Enhanced weight
+        makeSlider(getNextText(), ChimeraMonstersConfig.IntSetting.ENHANCED_WEIGHT, sliderOffset, 0, 10);
+        // Themed weight
+        makeSlider(getNextText(), ChimeraMonstersConfig.IntSetting.THEMED_WEIGHT, sliderOffset, 0, 10);
+        // Curated weight
+        makeSlider(getNextText(), ChimeraMonstersConfig.IntSetting.CURATED_WEIGHT, sliderOffset, 0, 10);
+        // Vanilla weight
+        makeSlider(getNextText(), ChimeraMonstersConfig.IntSetting.VANILLA_WEIGHT, sliderOffset, 0, 10);
 
 
-        //registerUIElement(enableModsButton);
-        //registerUIElement(modifiedFightLabel, false);
-        //registerUIElement(modifiedFightSlider);
-        registerUIElement(thematicFightLabel, false);
-        registerUIElement(thematicFightSlider);
-        registerUIElement(deviantFightLabel, false);
-        registerUIElement(deviantFightSlider);
-        registerUIElement(unmodifiedFightLabel, false);
-        registerUIElement(unmodifiedFightSlider);
-        registerUIElement(probabilityLabel, false);
-        registerUIElement(probabilitySlider);
-        registerUIElement(attemptsLabel, false);
-        registerUIElement(attemptsSlider);
-        registerUIElement(commonLabel, false);
-        registerUIElement(commonSlider);
-        registerUIElement(uncommonLabel, false);
-        registerUIElement(uncommonSlider);
-        registerUIElement(rareLabel, false);
-        registerUIElement(rareSlider);
-        registerUIElement(biasLabel, false);
-        registerUIElement(biasSlider);
-        registerUIElement(enableTooltipsButton);
-        registerUIElement(enableShadersButton);
 
+        // Menu control
         CenteredModLabel pageLabel = new CenteredModLabel(crossoverUIStrings.TEXT[1], Settings.WIDTH/2f/Settings.xScale, LAYOUT_Y + 70f, settingsPanel, l -> {
             l.text = crossoverUIStrings.TEXT[1] + " " + (currentPage + 1) + "/" + (pages.size());
         });
@@ -302,7 +156,14 @@ public class ChimeraMonstersSettingsPanel {
         settingsPanel.addUIElement(rightButton);
 
         ChimeraMonstersMod.logger.info("Done loading badge Image and mod options");
+
+        // New section for disabling entire crossover content
+        makePageBreak();
         ChimeraMonstersMod.onSetupSettingsPanel(crossoverUIStrings.TEXT[0]);
+    }
+
+    public static String getNextText() {
+        return TEXT[textIndex++];
     }
 
     public static void makeHeader(String text) {
@@ -310,39 +171,22 @@ public class ChimeraMonstersSettingsPanel {
     }
 
     public static void makeDataViewer() {
-        ModLabeledToggleTooltipButton dataButton = new ModLabeledToggleTooltipButton(TEXT[8], getProbabilityData(), LAYOUT_X + 830f, LAYOUT_Y - 10f, Settings.CREAM_COLOR, FontHelper.charDescFont,
-                ChimeraMonstersConfig.chimeraMonstersConfig.getBool(ChimeraMonstersConfig.SHOW_BREAKDOWN), settingsPanel, panel -> panel.tooltip = getProbabilityData(), (button) -> {
-            ChimeraMonstersConfig.chimeraMonstersConfig.setBool(ChimeraMonstersConfig.SHOW_BREAKDOWN, button.enabled);
-            ChimeraMonstersConfig.showBreakdown = button.enabled;
-            try {
-                ChimeraMonstersConfig.chimeraMonstersConfig.save();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
-        registerUIElement(dataButton, false);
+        ModLabeledToggleTooltipButton dataButton = new ModLabeledToggleTooltipButton(TEXT[0], getProbabilityData(), LAYOUT_X + 830f, LAYOUT_Y - 10f, Settings.CREAM_COLOR, FontHelper.charDescFont,
+                ChimeraMonstersConfig.BoolSetting.SHOW_BREAKDOWN.getVal(), settingsPanel, panel -> panel.tooltip = getProbabilityData(), (button) -> ChimeraMonstersConfig.BoolSetting.SHOW_BREAKDOWN.setVal(button.enabled));
+        settingsPanel.addUIElement(dataButton);
     }
 
-    public static void makeToggler(String text, String key, Consumer<Boolean> callback) {
+    public static void makeToggler(String text, ChimeraMonstersConfig.BoolSetting setting) {
         registerUIElement(new ModLabeledToggleButton(text,LAYOUT_X - 40f, LAYOUT_Y - 10f, Settings.CREAM_COLOR, FontHelper.charDescFont,
-                ChimeraMonstersConfig.chimeraMonstersConfig.getBool(key), settingsPanel, (label) -> {}, (button) -> {
-            ChimeraMonstersConfig.chimeraMonstersConfig.setBool(key, button.enabled);
-            callback.accept(button.enabled);
-            try {ChimeraMonstersConfig.chimeraMonstersConfig.save();} catch (IOException e) {e.printStackTrace();}
-        }));
+                setting.getVal(), settingsPanel, (label) -> {}, (button) -> setting.setVal(button.enabled)));
     }
 
-    public static void makeSlider(String text, String key, float sliderXOffset, int min, int max, Consumer<Integer> callback) {
+    public static void makeSlider(String text, ChimeraMonstersConfig.IntSetting setting, float sliderXOffset, int min, int max) {
         registerUIElement(new ModLabel(text, LAYOUT_X, LAYOUT_Y, Settings.CREAM_COLOR,
                         FontHelper.charDescFont, settingsPanel, modLabel -> {}), false);
-        registerUIElement(new ModMinMaxSlider("",
-                LAYOUT_X + sliderXOffset,
-                LAYOUT_Y + 7f,
-                min, max, ChimeraMonstersConfig.chimeraMonstersConfig.getInt(key), "%.0f", settingsPanel, slider -> {
-            ChimeraMonstersConfig.chimeraMonstersConfig.setInt(key, Math.round(slider.getValue()));
-            callback.accept(Math.round(slider.getValue()));
-            try {ChimeraMonstersConfig.chimeraMonstersConfig.save();} catch (IOException e) {e.printStackTrace();}
-        }));
+        registerUIElement(new ModMinMaxSlider("", LAYOUT_X + sliderXOffset, LAYOUT_Y + 7f,
+                min, max, setting.getVal(), "%.0f", settingsPanel,
+                slider -> setting.setVal(Math.round(slider.getValue()))));
     }
 
     public static void makeModToggler(String modID, String labelText) {
@@ -421,7 +265,9 @@ public class ChimeraMonstersSettingsPanel {
     }
 
     private static float getRollProbability(int exactly) {
-        return (float) ((Math.pow(ChimeraMonstersConfig.modProbabilityPercent/100f, exactly) * Math.pow(1- ChimeraMonstersConfig.modProbabilityPercent/100f, ChimeraMonstersConfig.rollAttempts-exactly)) * 100f * combination(ChimeraMonstersConfig.rollAttempts, exactly));
+        int percent = ChimeraMonstersConfig.IntSetting.MOD_CHANCE.getVal();
+        int rolls = ChimeraMonstersConfig.IntSetting.ROLL_ATTEMPTS.getVal();
+        return (float) ((Math.pow(percent/100f, exactly) * Math.pow(1-percent/100f, rolls-exactly)) * 100f * combination(rolls, exactly));
     }
 
     private static int combination(int total, int choose) {
@@ -436,16 +282,21 @@ public class ChimeraMonstersSettingsPanel {
     }
 
     private static float getBiasedWeightProbability(AbstractMonsterModifier.ModifierRarity r, boolean matches) {
-        if (ChimeraMonstersConfig.commonWeight + ChimeraMonstersConfig.uncommonWeight + ChimeraMonstersConfig.rareWeight + ChimeraMonstersConfig.rarityBias == 0) {
+        int common = ChimeraMonstersConfig.IntSetting.COMMON_WEIGHT.getVal();
+        int uncommon = ChimeraMonstersConfig.IntSetting.UNCOMMON_WEIGHT.getVal();
+        int rare = ChimeraMonstersConfig.IntSetting.RARE_WEIGHT.getVal();
+        int bias = ChimeraMonstersConfig.IntSetting.RARITY_BIAS.getVal();
+        int total = common + uncommon + rare + bias;
+        if (total == 0) {
             return 0;
         }
         switch (r) {
             case COMMON:
-                return 100 * ((float) ChimeraMonstersConfig.commonWeight + (matches ? ChimeraMonstersConfig.rarityBias : 0)) / (ChimeraMonstersConfig.commonWeight + ChimeraMonstersConfig.uncommonWeight + ChimeraMonstersConfig.rareWeight + ChimeraMonstersConfig.rarityBias);
+                return 100 * ((float) common + (matches ? bias : 0)) / total;
             case UNCOMMON:
-                return 100 * ((float) ChimeraMonstersConfig.uncommonWeight + (matches ? ChimeraMonstersConfig.rarityBias : 0)) / (ChimeraMonstersConfig.commonWeight + ChimeraMonstersConfig.uncommonWeight + ChimeraMonstersConfig.rareWeight + ChimeraMonstersConfig.rarityBias);
+                return 100 * ((float) uncommon + (matches ? bias : 0)) / total;
             case RARE:
-                return 100 * ((float) ChimeraMonstersConfig.rareWeight + (matches ? ChimeraMonstersConfig.rarityBias : 0)) / (ChimeraMonstersConfig.commonWeight + ChimeraMonstersConfig.uncommonWeight + ChimeraMonstersConfig.rareWeight + ChimeraMonstersConfig.rarityBias);
+                return 100 * ((float) rare + (matches ? bias : 0)) / total;
             case SPECIAL:
                 return 0;
         }
@@ -453,16 +304,20 @@ public class ChimeraMonstersSettingsPanel {
     }
 
     private static float getWeightProbability(AbstractMonsterModifier.ModifierRarity r) {
-        if (ChimeraMonstersConfig.commonWeight + ChimeraMonstersConfig.uncommonWeight + ChimeraMonstersConfig.rareWeight == 0) {
+        int common = ChimeraMonstersConfig.IntSetting.COMMON_WEIGHT.getVal();
+        int uncommon = ChimeraMonstersConfig.IntSetting.UNCOMMON_WEIGHT.getVal();
+        int rare = ChimeraMonstersConfig.IntSetting.RARE_WEIGHT.getVal();
+        int total = common + uncommon + rare;
+        if (total == 0) {
             return 0;
         }
         switch (r) {
             case COMMON:
-                return 100 * ((float) ChimeraMonstersConfig.commonWeight) / (ChimeraMonstersConfig.commonWeight + ChimeraMonstersConfig.uncommonWeight + ChimeraMonstersConfig.rareWeight);
+                return 100 * ((float) common) / total;
             case UNCOMMON:
-                return 100 * ((float) ChimeraMonstersConfig.uncommonWeight) / (ChimeraMonstersConfig.commonWeight + ChimeraMonstersConfig.uncommonWeight + ChimeraMonstersConfig.rareWeight);
+                return 100 * ((float) uncommon) / total;
             case RARE:
-                return 100 * ((float) ChimeraMonstersConfig.rareWeight) / (ChimeraMonstersConfig.commonWeight + ChimeraMonstersConfig.uncommonWeight + ChimeraMonstersConfig.rareWeight);
+                return 100 * ((float) rare) / total;
             case SPECIAL:
                 return 0;
         }
@@ -472,29 +327,33 @@ public class ChimeraMonstersSettingsPanel {
     private static String getProbabilityData() {
         StringBuilder sb = new StringBuilder();
         sb.append(EXTRA_TEXT[2]);
-        if (ChimeraMonstersConfig.modifiedFightWeight + ChimeraMonstersConfig.themedFightWeight + ChimeraMonstersConfig.curatedFightWeight > 0) {
-            int fightSum = ChimeraMonstersConfig.modifiedFightWeight + ChimeraMonstersConfig.themedFightWeight + ChimeraMonstersConfig.curatedFightWeight + ChimeraMonstersConfig.unmodifiedFightWeight;
-            if (ChimeraMonstersConfig.modifiedFightWeight > 0) {
-                sb.append(EXTRA_TEXT[13]).append(String.format("%.02f", 100f * ChimeraMonstersConfig.modifiedFightWeight / fightSum)).append("%");
+        int enhanced = ChimeraMonstersConfig.IntSetting.ENHANCED_WEIGHT.getVal();
+        int themed = ChimeraMonstersConfig.IntSetting.THEMED_WEIGHT.getVal();
+        int curated = ChimeraMonstersConfig.IntSetting.CURATED_WEIGHT.getVal();
+        int vanilla = ChimeraMonstersConfig.IntSetting.VANILLA_WEIGHT.getVal();
+        if (enhanced + themed + curated > 0) {
+            int fightSum = enhanced + themed + curated + vanilla;
+            if (enhanced > 0) {
+                sb.append(EXTRA_TEXT[13]).append(String.format("%.02f", 100f * enhanced / fightSum)).append("%");
             }
-            if (ChimeraMonstersConfig.themedFightWeight > 0) {
-                sb.append(EXTRA_TEXT[12]).append(String.format("%.02f", 100f * ChimeraMonstersConfig.themedFightWeight / fightSum)).append("%");
+            if (themed > 0) {
+                sb.append(EXTRA_TEXT[12]).append(String.format("%.02f", 100f * themed / fightSum)).append("%");
             }
-            if (ChimeraMonstersConfig.curatedFightWeight > 0) {
-                sb.append(EXTRA_TEXT[11]).append(String.format("%.02f", 100f * ChimeraMonstersConfig.curatedFightWeight / fightSum)).append("%");
+            if (curated > 0) {
+                sb.append(EXTRA_TEXT[11]).append(String.format("%.02f", 100f * curated / fightSum)).append("%");
             }
-            if (ChimeraMonstersConfig.unmodifiedFightWeight > 0) {
-                sb.append(EXTRA_TEXT[14]).append(String.format("%.02f", 100f * ChimeraMonstersConfig.unmodifiedFightWeight / fightSum)).append("%");
+            if (vanilla > 0) {
+                sb.append(EXTRA_TEXT[14]).append(String.format("%.02f", 100f * vanilla / fightSum)).append("%");
             }
             sb.append(EXTRA_TEXT[15]);
-            for (int i = 0; i <= ChimeraMonstersConfig.rollAttempts ; i++) {
+            for (int i = 0; i <= ChimeraMonstersConfig.IntSetting.ROLL_ATTEMPTS.getVal() ; i++) {
                 float chance = getRollProbability(i);
                 if (chance > 0f) {
                     sb.append(" NL #b").append(i).append(EXTRA_TEXT[i == 1 ? 3 : 4]).append(String.format("%.02f", chance)).append("%");
                 }
             }
-            if (ChimeraMonstersConfig.modProbabilityPercent > 0f) {
-                if (ChimeraMonstersConfig.rarityBias == 0) {
+            if (ChimeraMonstersConfig.IntSetting.MOD_CHANCE.getVal() > 0f) {
+                if (ChimeraMonstersConfig.IntSetting.RARITY_BIAS.getVal() == 0) {
                     sb.append(EXTRA_TEXT[5]).append(String.format("%.02f", getWeightProbability(AbstractMonsterModifier.ModifierRarity.COMMON))).append("%");
                     sb.append(EXTRA_TEXT[6]).append(String.format("%.02f", getWeightProbability(AbstractMonsterModifier.ModifierRarity.UNCOMMON))).append("%");
                     sb.append(EXTRA_TEXT[7]).append(String.format("%.02f", getWeightProbability(AbstractMonsterModifier.ModifierRarity.RARE))).append("%");

@@ -22,10 +22,10 @@ public class FightModificationManager {
     public static void rollFightModifiers(MonsterGroup monsterGroup) {
         List<AbstractCuratedModifier> validCurated = new ArrayList<>();
         List<AbstractThemedModifier> validThemed = new ArrayList<>();
-        int curated = validCurated.isEmpty() ? 0 : ChimeraMonstersConfig.curatedFightWeight;
-        int thematic = validThemed.isEmpty() ? 0 : ChimeraMonstersConfig.themedFightWeight;
-        int modified = ChimeraMonstersConfig.modifiedFightWeight;
-        int unmodified = ChimeraMonstersConfig.unmodifiedFightWeight;
+        int curated = validCurated.isEmpty() ? 0 : ChimeraMonstersConfig.IntSetting.CURATED_WEIGHT.getVal();
+        int thematic = validThemed.isEmpty() ? 0 : ChimeraMonstersConfig.IntSetting.THEMED_WEIGHT.getVal();
+        int modified = ChimeraMonstersConfig.IntSetting.ENHANCED_WEIGHT.getVal();
+        int unmodified = ChimeraMonstersConfig.IntSetting.VANILLA_WEIGHT.getVal();
         int roll = AbstractDungeon.miscRng.random(curated + thematic + modified + unmodified - 1); //StS adds +1 to random call, so subtract 1
         if ((roll -= curated) < 0 && !validCurated.isEmpty()) {
             AbstractCuratedModifier curatedFight = validCurated.get(AbstractDungeon.miscRng.random(validCurated.size() - 1));
@@ -48,9 +48,9 @@ public class FightModificationManager {
     }
 
     public static void rollMonsterModifier(AbstractMonster monster, MonsterGroup context) {
-        if (ChimeraMonstersConfig.enableMods && !MonsterFields.rolledModifiers.get(monster) && (ChimeraMonstersConfig.commonWeight + ChimeraMonstersConfig.uncommonWeight + ChimeraMonstersConfig.rareWeight + ChimeraMonstersConfig.rarityBias != 0)) {
-            for (int i = 0; i < ChimeraMonstersConfig.rollAttempts ; i++) {
-                if (AbstractDungeon.miscRng.random(99) < ChimeraMonstersConfig.modProbabilityPercent) {
+        if (ChimeraMonstersConfig.BoolSetting.ENABLE_MOD.getVal() && !MonsterFields.rolledModifiers.get(monster) && (ChimeraMonstersConfig.IntSetting.COMMON_WEIGHT.getVal() + ChimeraMonstersConfig.IntSetting.UNCOMMON_WEIGHT.getVal() + ChimeraMonstersConfig.IntSetting.RARE_WEIGHT.getVal() + ChimeraMonstersConfig.IntSetting.RARITY_BIAS.getVal() != 0)) {
+            for (int i = 0; i < ChimeraMonstersConfig.IntSetting.ROLL_ATTEMPTS.getVal() ; i++) {
+                if (AbstractDungeon.miscRng.random(99) < ChimeraMonstersConfig.IntSetting.MOD_CHANCE.getVal()) {
                     applyWeightedMonsterModifier(monster, context, rollRarity(monster.type));
                 }
             }
@@ -59,19 +59,20 @@ public class FightModificationManager {
     }
 
     public static AbstractModifier.ModifierRarity rollRarity(AbstractMonster.EnemyType type) {
-        int c = ChimeraMonstersConfig.commonWeight;
-        int u = ChimeraMonstersConfig.uncommonWeight;
-        int r = ChimeraMonstersConfig.rareWeight;
+        int c = ChimeraMonstersConfig.IntSetting.COMMON_WEIGHT.getVal();
+        int u = ChimeraMonstersConfig.IntSetting.UNCOMMON_WEIGHT.getVal();
+        int r = ChimeraMonstersConfig.IntSetting.RARE_WEIGHT.getVal();
+        int b = ChimeraMonstersConfig.IntSetting.RARITY_BIAS.getVal();
         if (type != null) {
             switch (type) {
                 case NORMAL:
-                    c += ChimeraMonstersConfig.rarityBias;
+                    c += b;
                     break;
                 case ELITE:
-                    u += ChimeraMonstersConfig.rarityBias;
+                    u += b;
                     break;
                 case BOSS:
-                    r += ChimeraMonstersConfig.rarityBias;
+                    r += b;
                     break;
             }
         }

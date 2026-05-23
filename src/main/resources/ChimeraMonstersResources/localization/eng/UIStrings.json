@@ -1,16 +1,22 @@
 {
   "${ModID}:ModConfigs": {
     "TEXT": [
+      "Show Analysis",
+
+      "General Settings",
       "Enable Monster Augments",
+      "Enable Shaders",
+      "Enable Modifier Tooltips",
+
+      "Monster Settings",
       "Mod Percent Chance (Default 10):",
+      "Roll Attempts (Default 1):",
       "Common Mod Weight (Default 4):",
       "Uncommon Mod Weight (Default 3):",
       "Rare Mod Weight (Default 2):",
       "Monster Type Weight Bias (Default 1):",
-      "Enable Modifier Tooltips",
-      "Roll Attempts (Default 1):",
-      "Show Analysis",
-      "Enable Shaders",
+
+      "Fight Settings",
       "Modified Fight Weight (Default 3):",
       "Themed Fight Weight (Default 2):",
       "Curated Fight Weight (Default 1):",

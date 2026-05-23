@@ -17,7 +17,7 @@ public interface RenderModifierPower {
     }
 
     default TextureRegion blitShader(SpriteBatch sb, TextureRegion tex, ShaderProgram sp) {
-        if (!ChimeraMonstersConfig.enableShaders) {
+        if (!ChimeraMonstersConfig.BoolSetting.ENABLE_SHADERS.getVal()) {
             return tex;
         }
         TextureRegion ret = CreatureRenderPatches.blitShader(sb, sp);

@@ -33,7 +33,7 @@ public class ChimeraMonstersController {
         AbstractMonsterModifier copy = mod.makeCopy();
         if (CardCrawlGame.isInARun()) {
             copy.applyTo(monster);
-            if (ChimeraMonstersConfig.enableTooltips) {
+            if (ChimeraMonstersConfig.BoolSetting.ENABLE_TOOLTIPS.getVal()) {
                 monster.powers.add(new ModifierExplainerPower(monster, copy.getModifierName(), copy.getModifierDescription()));
             }
             if (!explainerPresent) {
