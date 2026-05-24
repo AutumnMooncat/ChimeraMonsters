@@ -1,5 +1,6 @@
 package ChimeraMonsters.ui;
 
+import ChimeraMonsters.util.TipBuffer;
 import basemod.ModLabeledToggleButton;
 import basemod.ModPanel;
 import basemod.ModToggleButton;
@@ -20,16 +21,18 @@ public class ModLabeledToggleTooltipButton extends ModLabeledToggleButton {
 
     @Override
     public void render(SpriteBatch sb) {
-        this.toggle.render(sb);// 41
-        this.text.render(sb);// 42
-        if (this.toggle.enabled) {// 44
-            HeaderlessTip.renderHeaderlessTip(toggle.getX()*Settings.scale + 00.0F*Settings.scale, toggle.getY()*Settings.scale - 35.0F*Settings.scale, this.tooltip);
-        }
+        this.toggle.render(sb);
+        this.text.render(sb);
     }
 
     @Override
     public void update() {
         updateFunc.accept(this);
         super.update();
+        if (this.toggle.enabled) {
+            TipBuffer.renderWith(sb -> {
+                HeaderlessTip.renderHeaderlessTip(toggle.getX()*Settings.scale + 00.0F*Settings.scale, toggle.getY()*Settings.scale - 35.0F*Settings.scale, this.tooltip);
+            });
+        }
     }
 }

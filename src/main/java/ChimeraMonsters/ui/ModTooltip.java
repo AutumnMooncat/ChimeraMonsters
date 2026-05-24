@@ -1,5 +1,6 @@
 package ChimeraMonsters.ui;
 
+import ChimeraMonsters.util.TipBuffer;
 import basemod.IUIElement;
 import basemod.ModPanel;
 import basemod.patches.com.megacrit.cardcrawl.helpers.TipHelper.HeaderlessTip;
@@ -24,13 +25,14 @@ public class ModTooltip implements IUIElement {
     }
 
     @Override
-    public void render(SpriteBatch spriteBatch) {
-        HeaderlessTip.renderHeaderlessTip(x + 60.0F * Settings.scale, y - 50.0F * Settings.scale, this.text);
-    }
+    public void render(SpriteBatch spriteBatch) {}
 
     @Override
     public void update() {
         updateFunc.accept(this);
+        TipBuffer.renderWith(sb -> {
+            HeaderlessTip.renderHeaderlessTip(x + 60.0F * Settings.scale, y - 50.0F * Settings.scale, this.text);
+        });
     }
 
     @Override

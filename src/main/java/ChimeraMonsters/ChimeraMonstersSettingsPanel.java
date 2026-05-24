@@ -3,6 +3,7 @@ package ChimeraMonsters;
 import ChimeraMonsters.modifiers.monsters.AbstractMonsterModifier;
 import ChimeraMonsters.ui.BiggerModButton;
 import ChimeraMonsters.ui.CenteredModLabel;
+import ChimeraMonsters.ui.ModHoverTipLabel;
 import ChimeraMonsters.ui.ModLabeledToggleTooltipButton;
 import ChimeraMonsters.util.TextureLoader;
 import basemod.*;
@@ -18,7 +19,6 @@ import javassist.CtBehavior;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -42,8 +42,12 @@ public class ChimeraMonstersSettingsPanel {
     private static float currentY = 0;
     private static int currentPage = 0;
 
+    private static final ArrayList<String> textToBalance = new ArrayList<>();
+    private static final ArrayList<ModMinMaxSlider> slidersToBalance = new ArrayList<>();
+
     private static void setupSettingsPanel() {
         ChimeraMonstersMod.logger.info("Loading badge image and mod options");
+        // Create the Mod Menu
         settingsPanel = new ModPanel();
         float aspectRatio = (float) Settings.WIDTH/(float)Settings.HEIGHT;
         float sixteenByNine = 1920f/1080f;
@@ -55,76 +59,57 @@ public class ChimeraMonstersSettingsPanel {
             LAYOUT_Y *= 1.8888f - aspectRatio/2f;
         }
 
-
-        //Grab the strings
+        // Grab the strings
         uiStrings = CardCrawlGame.languagePack.getUIString(ChimeraMonstersMod.makeID("ModConfigs"));
         crossoverUIStrings = CardCrawlGame.languagePack.getUIString(ChimeraMonstersMod.makeID("CrossoverConfig"));
         EXTRA_TEXT = uiStrings.EXTRA_TEXT;
         TEXT = uiStrings.TEXT;
 
-        String ENABLE_TEXT = TEXT[0];
-        String MOD_CHANCE_TEXT = TEXT[1];
-        String COMMON_WEIGHT_TEXT = TEXT[2];
-        String UNCOMMON_WEIGHT_TEXT = TEXT[3];
-        String RARE_WEIGHT_TEXT = TEXT[4];
-        String WEIGHT_BIAS_TEXT = TEXT[5];
-        String ENABLE_TIPS_TEXT = TEXT[6];
-        String ROLL_ATTEMPTS_TEXT = TEXT[7];
-        String SHOW_ANALYSIS_TEXT = TEXT[8];
-        String ENABLE_SHADERS_TEXT = TEXT[9];
-        String MODIFIED_WEIGHT_TEXT = TEXT[10];
-        String THEMATIC_WEIGHT_TEXT = TEXT[11];
-        String DEVIANT_WEIGHT_TEXT = TEXT[12];
-        String UNMODIFIED_WEIGHT_TEXT = TEXT[13];
-        // Create the Mod Menu
-
         // Load the Mod Badge
         Texture badgeTexture = TextureLoader.getTexture(BADGE_IMAGE);
         BaseMod.registerModBadge(badgeTexture, EXTRA_TEXT[0], AUTHOR, EXTRA_TEXT[1], settingsPanel);
 
-        // Get the longest slider text for positioning
-        ArrayList<String> labelStrings = new ArrayList<>(Arrays.asList(TEXT));
-        float sliderOffset;
+
 
         // General Settings
         makeDataViewer();
         makeHeader(getNextText());
         // Enable mod
-        makeToggler(getNextText(), ChimeraMonstersConfig.BoolSetting.ENABLE_MOD);
+        makeToggler(getNextText(), getNextText(), ChimeraMonstersConfig.BoolSetting.ENABLE_MOD);
         // Enable shaders
-        makeToggler(getNextText(), ChimeraMonstersConfig.BoolSetting.ENABLE_SHADERS);
+        makeToggler(getNextText(), getNextText(), ChimeraMonstersConfig.BoolSetting.ENABLE_SHADERS);
         // Enable tips
-        makeToggler(getNextText(), ChimeraMonstersConfig.BoolSetting.ENABLE_TOOLTIPS);
+        makeToggler(getNextText(), getNextText(), ChimeraMonstersConfig.BoolSetting.ENABLE_TOOLTIPS);
 
         // Monster Settings
         makePageBreak();
         makeHeader(getNextText());
-        sliderOffset = getSliderPosition(labelStrings.subList(textIndex, textIndex + 6));
         // Percent chance to apply modifier
-        makeSlider(getNextText(), ChimeraMonstersConfig.IntSetting.MOD_CHANCE, sliderOffset, 0, 100);
+        makeSlider(getNextText(), getNextText(), ChimeraMonstersConfig.IntSetting.MOD_CHANCE, null, 0, 100, "%.0f%%");
         // Roll amount
-        makeSlider(getNextText(), ChimeraMonstersConfig.IntSetting.ROLL_ATTEMPTS, sliderOffset, 1, 3);
+        makeSlider(getNextText(), getNextText(), ChimeraMonstersConfig.IntSetting.ROLL_ATTEMPTS, 1, 3);
         // Common mod weight
-        makeSlider(getNextText(), ChimeraMonstersConfig.IntSetting.COMMON_WEIGHT, sliderOffset, 0, 10);
+        makeSlider(getNextText(), getNextText(), ChimeraMonstersConfig.IntSetting.COMMON_WEIGHT, 0, 10);
         // Uncommon mod weight
-        makeSlider(getNextText(), ChimeraMonstersConfig.IntSetting.UNCOMMON_WEIGHT, sliderOffset, 0, 10);
+        makeSlider(getNextText(), getNextText(), ChimeraMonstersConfig.IntSetting.UNCOMMON_WEIGHT, 0, 10);
         // Rare mod weight
-        makeSlider(getNextText(), ChimeraMonstersConfig.IntSetting.RARE_WEIGHT, sliderOffset, 0, 10);
+        makeSlider(getNextText(), getNextText(), ChimeraMonstersConfig.IntSetting.RARE_WEIGHT, 0, 10);
         // Rarity bias
-        makeSlider(getNextText(), ChimeraMonstersConfig.IntSetting.RARITY_BIAS, sliderOffset, 0, 10);
+        makeSlider(getNextText(), getNextText(), ChimeraMonstersConfig.IntSetting.RARITY_BIAS, 0, 10);
+        balanceSliders();
 
         // Fight Settings
         makePageBreak();
         makeHeader(getNextText());
-        sliderOffset = getSliderPosition(labelStrings.subList(textIndex, textIndex + 4));
         // Enhanced weight
-        makeSlider(getNextText(), ChimeraMonstersConfig.IntSetting.ENHANCED_WEIGHT, sliderOffset, 0, 10);
+        makeSlider(getNextText(), getNextText(), ChimeraMonstersConfig.IntSetting.ENHANCED_WEIGHT, 0, 10);
         // Themed weight
-        makeSlider(getNextText(), ChimeraMonstersConfig.IntSetting.THEMED_WEIGHT, sliderOffset, 0, 10);
+        makeSlider(getNextText(), getNextText(), ChimeraMonstersConfig.IntSetting.THEMED_WEIGHT, 0, 10);
         // Curated weight
-        makeSlider(getNextText(), ChimeraMonstersConfig.IntSetting.CURATED_WEIGHT, sliderOffset, 0, 10);
+        makeSlider(getNextText(), getNextText(), ChimeraMonstersConfig.IntSetting.CURATED_WEIGHT, 0, 10);
         // Vanilla weight
-        makeSlider(getNextText(), ChimeraMonstersConfig.IntSetting.VANILLA_WEIGHT, sliderOffset, 0, 10);
+        makeSlider(getNextText(), getNextText(), ChimeraMonstersConfig.IntSetting.VANILLA_WEIGHT, 0, 10);
+        balanceSliders();
 
 
 
@@ -158,6 +143,8 @@ public class ChimeraMonstersSettingsPanel {
         ChimeraMonstersMod.logger.info("Done loading badge Image and mod options");
 
         // New section for disabling entire crossover content
+        textToBalance.clear();
+        slidersToBalance.clear();
         makePageBreak();
         makeHeader(getNextText());
         ChimeraMonstersMod.onSetupSettingsPanel(crossoverUIStrings.TEXT[0]);
@@ -178,16 +165,62 @@ public class ChimeraMonstersSettingsPanel {
     }
 
     public static void makeToggler(String text, ChimeraMonstersConfig.BoolSetting setting) {
-        registerUIElement(new ModLabeledToggleButton(text,LAYOUT_X - 40f, LAYOUT_Y - 10f, Settings.CREAM_COLOR, FontHelper.charDescFont,
+        makeToggler(text, null, setting);
+    }
+
+    public static void makeToggler(String text, String tip, ChimeraMonstersConfig.BoolSetting setting) {
+        if (tip != null) {
+            tip = String.format(tip, setting.getDefault());
+        }
+        registerUIElement(new ModLabeledToggleButton(text, tip, LAYOUT_X - 40f, LAYOUT_Y - 10f, Settings.CREAM_COLOR, FontHelper.charDescFont,
                 setting.getVal(), settingsPanel, (label) -> {}, (button) -> setting.setVal(button.enabled)));
     }
 
-    public static void makeSlider(String text, ChimeraMonstersConfig.IntSetting setting, float sliderXOffset, int min, int max) {
-        registerUIElement(new ModLabel(text, LAYOUT_X, LAYOUT_Y, Settings.CREAM_COLOR,
-                        FontHelper.charDescFont, settingsPanel, modLabel -> {}), false);
-        registerUIElement(new ModMinMaxSlider("", LAYOUT_X + sliderXOffset, LAYOUT_Y + 7f,
-                min, max, setting.getVal(), "%.0f", settingsPanel,
-                slider -> setting.setVal(Math.round(slider.getValue()))));
+    public static void makeSlider(String text, ChimeraMonstersConfig.IntSetting setting, Float sliderXOffset, int min, int max) {
+        makeSlider(text, null, setting, sliderXOffset, min, max);
+    }
+
+    public static void makeSlider(String text, String tip, ChimeraMonstersConfig.IntSetting setting, Float sliderXOffset, int min, int max) {
+        makeSlider(text, tip, setting, sliderXOffset, min, max, "%.0f");
+    }
+
+    public static void makeSlider(String text, String tip, ChimeraMonstersConfig.IntSetting setting, Float sliderXOffset, int min, int max, String format) {
+        if (tip != null) {
+            tip = String.format(tip, setting.getDefault());
+            registerUIElement(new ModHoverTipLabel(text, tip, LAYOUT_X, LAYOUT_Y, Settings.CREAM_COLOR,
+                    FontHelper.charDescFont, settingsPanel, modLabel -> {}), false);
+        } else {
+            registerUIElement(new ModLabel(text, LAYOUT_X, LAYOUT_Y, Settings.CREAM_COLOR,
+                    FontHelper.charDescFont, settingsPanel, modLabel -> {}), false);
+        }
+
+        ModMinMaxSlider slider = new ModMinMaxSlider("", LAYOUT_X, LAYOUT_Y + 7f,
+                min, max, setting.getVal(), format, settingsPanel,
+                s -> setting.setVal(Math.round(s.getValue())));
+        if (sliderXOffset != null) {
+            slider.setX(LAYOUT_X + sliderXOffset);
+        } else {
+            textToBalance.add(text);
+            slidersToBalance.add(slider);
+        }
+        registerUIElement(slider);
+    }
+
+    public static void makeSlider(String text, ChimeraMonstersConfig.IntSetting setting, int min, int max) {
+        makeSlider(text, null, setting, null, min, max);
+    }
+
+    public static void makeSlider(String text, String tip, ChimeraMonstersConfig.IntSetting setting, int min, int max) {
+        makeSlider(text, tip, setting, null, min, max);
+    }
+
+    public static void balanceSliders() {
+        float sliderX = getSliderPosition(textToBalance);
+        for (ModMinMaxSlider slider : slidersToBalance) {
+            slider.setX(slider.getX() + sliderX);
+        }
+        textToBalance.clear();
+        slidersToBalance.clear();
     }
 
     public static void makeModToggler(String modID, String labelText) {

@@ -35,11 +35,17 @@ public class ChimeraMonstersConfig {
         SHOW_BREAKDOWN("showBreakdown", true);
 
         private final String key;
+        private final boolean defaultVal;
         private boolean val;
 
         BoolSetting(String key, boolean val) {
             this.key = key;
+            this.defaultVal = val;
             this.val = val;
+        }
+
+        public Boolean getDefault() {
+            return defaultVal;
         }
 
         @Override
@@ -60,7 +66,7 @@ public class ChimeraMonstersConfig {
     }
 
     public enum IntSetting implements TypedSetting<Integer> {
-        MOD_CHANCE("modChance", 10),
+        MOD_CHANCE("modChance", 50),
         ROLL_ATTEMPTS("rollAttempts", 1),
         COMMON_WEIGHT("commonWeight", 4),
         UNCOMMON_WEIGHT("uncommonWeight", 3),
@@ -72,11 +78,17 @@ public class ChimeraMonstersConfig {
         VANILLA_WEIGHT("unmodifiedFightWeight", 0);
 
         private final String key;
+        private final int defaultVal;
         private int val;
 
         IntSetting(String key, int val) {
             this.key = key;
+            this.defaultVal = val;
             this.val = val;
+        }
+
+        public Integer getDefault() {
+            return defaultVal;
         }
 
         @Override
