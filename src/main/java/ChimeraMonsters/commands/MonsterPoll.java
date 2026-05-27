@@ -2,7 +2,7 @@ package ChimeraMonsters.commands;
 
 import ChimeraMonsters.ChimeraMonstersController;
 import ChimeraMonsters.ChimeraMonstersMod;
-import ChimeraMonsters.modifiers.AbstractModifier;
+import ChimeraMonsters.modifiers.Modifier;
 import ChimeraMonsters.modifiers.monsters.AbstractMonsterModifier;
 import basemod.DevConsole;
 import basemod.devcommands.ConsoleCommand;
@@ -32,7 +32,7 @@ public class MonsterPoll extends ConsoleCommand {
                 DevConsole.log("Failed to get monster " + tokens[depth]);
             }
         } else if (ChimeraMonstersController.modifierMap.containsKey(tokens[depth])) {
-            AbstractModifier<?> raw = ChimeraMonstersController.modifierMap.get(tokens[depth]);
+            Modifier<?> raw = ChimeraMonstersController.modifierMap.get(tokens[depth]);
             if (!(raw instanceof AbstractMonsterModifier)) {
                 return;
             }

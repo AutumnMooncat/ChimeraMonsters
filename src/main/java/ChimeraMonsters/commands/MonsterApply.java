@@ -1,7 +1,7 @@
 package ChimeraMonsters.commands;
 
 import ChimeraMonsters.ChimeraMonstersController;
-import ChimeraMonsters.modifiers.AbstractModifier;
+import ChimeraMonsters.modifiers.Modifier;
 import ChimeraMonsters.modifiers.monsters.AbstractMonsterModifier;
 import basemod.DevConsole;
 import basemod.devcommands.ConsoleCommand;
@@ -22,7 +22,7 @@ public class MonsterApply extends ConsoleCommand {
     public void execute(String[] tokens, int depth) {
         if (ChimeraMonstersController.modifierMap.containsKey(tokens[depth+1])) {
             String monsterID = tokens[depth];
-            AbstractModifier<?> raw = ChimeraMonstersController.modifierMap.get(tokens[depth+1]);
+            Modifier<?> raw = ChimeraMonstersController.modifierMap.get(tokens[depth+1]);
             if (!(raw instanceof AbstractMonsterModifier)) {
                 DevConsole.log("Non-MonsterModifier cannot be applied to " + monsterID);
                 return;

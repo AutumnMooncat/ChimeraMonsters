@@ -1,6 +1,6 @@
 package ChimeraMonsters;
 
-import ChimeraMonsters.modifiers.monsters.AbstractMonsterModifier;
+import ChimeraMonsters.modifiers.Modifier;
 import ChimeraMonsters.ui.BiggerModButton;
 import ChimeraMonsters.ui.CenteredModLabel;
 import ChimeraMonsters.ui.ModHoverTipLabel;
@@ -101,6 +101,16 @@ public class ChimeraMonstersSettingsPanel {
         // Fight Settings
         makePageBreak();
         makeHeader(getNextText());
+        // Percent chance for fight addon
+        makeSlider(getNextText(), getNextText(), ChimeraMonstersConfig.IntSetting.ADDON_CHANCE, null, 0, 100, "%.0f%%");
+        // Themed Addons
+        makeToggler(getNextText(), getNextText(), ChimeraMonstersConfig.BoolSetting.ADDON_IN_THEMED);
+        // Curated Addons
+        makeToggler(getNextText(), getNextText(), ChimeraMonstersConfig.BoolSetting.ADDON_IN_CURATED);
+        // Enhance Themed
+        makeToggler(getNextText(), getNextText(), ChimeraMonstersConfig.BoolSetting.ENHANCE_IN_THEMED);
+        // Enhance Curated
+        makeToggler(getNextText(), getNextText(), ChimeraMonstersConfig.BoolSetting.ENHANCE_IN_CURATED);
         // Enhanced weight
         makeSlider(getNextText(), getNextText(), ChimeraMonstersConfig.IntSetting.ENHANCED_WEIGHT, 0, 10);
         // Themed weight
@@ -315,7 +325,7 @@ public class ChimeraMonstersSettingsPanel {
         return x * factorial(x-1);
     }
 
-    private static float getBiasedWeightProbability(AbstractMonsterModifier.ModifierRarity r, boolean matches) {
+    private static float getBiasedWeightProbability(Modifier.ModifierRarity r, boolean matches) {
         int common = ChimeraMonstersConfig.IntSetting.COMMON_WEIGHT.getVal();
         int uncommon = ChimeraMonstersConfig.IntSetting.UNCOMMON_WEIGHT.getVal();
         int rare = ChimeraMonstersConfig.IntSetting.RARE_WEIGHT.getVal();
@@ -337,7 +347,7 @@ public class ChimeraMonstersSettingsPanel {
         return 0;
     }
 
-    private static float getWeightProbability(AbstractMonsterModifier.ModifierRarity r) {
+    private static float getWeightProbability(Modifier.ModifierRarity r) {
         int common = ChimeraMonstersConfig.IntSetting.COMMON_WEIGHT.getVal();
         int uncommon = ChimeraMonstersConfig.IntSetting.UNCOMMON_WEIGHT.getVal();
         int rare = ChimeraMonstersConfig.IntSetting.RARE_WEIGHT.getVal();
@@ -388,22 +398,22 @@ public class ChimeraMonstersSettingsPanel {
             }
             if (ChimeraMonstersConfig.IntSetting.MOD_CHANCE.getVal() > 0f) {
                 if (ChimeraMonstersConfig.IntSetting.RARITY_BIAS.getVal() == 0) {
-                    sb.append(EXTRA_TEXT[5]).append(String.format("%.02f", getWeightProbability(AbstractMonsterModifier.ModifierRarity.COMMON))).append("%");
-                    sb.append(EXTRA_TEXT[6]).append(String.format("%.02f", getWeightProbability(AbstractMonsterModifier.ModifierRarity.UNCOMMON))).append("%");
-                    sb.append(EXTRA_TEXT[7]).append(String.format("%.02f", getWeightProbability(AbstractMonsterModifier.ModifierRarity.RARE))).append("%");
+                    sb.append(EXTRA_TEXT[5]).append(String.format("%.02f", getWeightProbability(Modifier.ModifierRarity.COMMON))).append("%");
+                    sb.append(EXTRA_TEXT[6]).append(String.format("%.02f", getWeightProbability(Modifier.ModifierRarity.UNCOMMON))).append("%");
+                    sb.append(EXTRA_TEXT[7]).append(String.format("%.02f", getWeightProbability(Modifier.ModifierRarity.RARE))).append("%");
                 } else {
                     sb.append(EXTRA_TEXT[8]);
-                    sb.append(EXTRA_TEXT[5]).append(String.format("%.02f", getBiasedWeightProbability(AbstractMonsterModifier.ModifierRarity.COMMON, true))).append("%");
-                    sb.append(EXTRA_TEXT[6]).append(String.format("%.02f", getBiasedWeightProbability(AbstractMonsterModifier.ModifierRarity.UNCOMMON, false))).append("%");
-                    sb.append(EXTRA_TEXT[7]).append(String.format("%.02f", getBiasedWeightProbability(AbstractMonsterModifier.ModifierRarity.RARE, false))).append("%");
+                    sb.append(EXTRA_TEXT[5]).append(String.format("%.02f", getBiasedWeightProbability(Modifier.ModifierRarity.COMMON, true))).append("%");
+                    sb.append(EXTRA_TEXT[6]).append(String.format("%.02f", getBiasedWeightProbability(Modifier.ModifierRarity.UNCOMMON, false))).append("%");
+                    sb.append(EXTRA_TEXT[7]).append(String.format("%.02f", getBiasedWeightProbability(Modifier.ModifierRarity.RARE, false))).append("%");
                     sb.append(EXTRA_TEXT[9]);
-                    sb.append(EXTRA_TEXT[5]).append(String.format("%.02f", getBiasedWeightProbability(AbstractMonsterModifier.ModifierRarity.COMMON, false))).append("%");
-                    sb.append(EXTRA_TEXT[6]).append(String.format("%.02f", getBiasedWeightProbability(AbstractMonsterModifier.ModifierRarity.UNCOMMON, true))).append("%");
-                    sb.append(EXTRA_TEXT[7]).append(String.format("%.02f", getBiasedWeightProbability(AbstractMonsterModifier.ModifierRarity.RARE, false))).append("%");
+                    sb.append(EXTRA_TEXT[5]).append(String.format("%.02f", getBiasedWeightProbability(Modifier.ModifierRarity.COMMON, false))).append("%");
+                    sb.append(EXTRA_TEXT[6]).append(String.format("%.02f", getBiasedWeightProbability(Modifier.ModifierRarity.UNCOMMON, true))).append("%");
+                    sb.append(EXTRA_TEXT[7]).append(String.format("%.02f", getBiasedWeightProbability(Modifier.ModifierRarity.RARE, false))).append("%");
                     sb.append(EXTRA_TEXT[10]);
-                    sb.append(EXTRA_TEXT[5]).append(String.format("%.02f", getBiasedWeightProbability(AbstractMonsterModifier.ModifierRarity.COMMON, false))).append("%");
-                    sb.append(EXTRA_TEXT[6]).append(String.format("%.02f", getBiasedWeightProbability(AbstractMonsterModifier.ModifierRarity.UNCOMMON, false))).append("%");
-                    sb.append(EXTRA_TEXT[7]).append(String.format("%.02f", getBiasedWeightProbability(AbstractMonsterModifier.ModifierRarity.RARE, true))).append("%");
+                    sb.append(EXTRA_TEXT[5]).append(String.format("%.02f", getBiasedWeightProbability(Modifier.ModifierRarity.COMMON, false))).append("%");
+                    sb.append(EXTRA_TEXT[6]).append(String.format("%.02f", getBiasedWeightProbability(Modifier.ModifierRarity.UNCOMMON, false))).append("%");
+                    sb.append(EXTRA_TEXT[7]).append(String.format("%.02f", getBiasedWeightProbability(Modifier.ModifierRarity.RARE, true))).append("%");
                 }
             }
         } else {

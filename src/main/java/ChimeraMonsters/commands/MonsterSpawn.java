@@ -1,7 +1,7 @@
 package ChimeraMonsters.commands;
 
 import ChimeraMonsters.ChimeraMonstersController;
-import ChimeraMonsters.modifiers.AbstractModifier;
+import ChimeraMonsters.modifiers.Modifier;
 import ChimeraMonsters.modifiers.monsters.AbstractMonsterModifier;
 import ChimeraMonsters.patches.MonsterFields;
 import basemod.DevConsole;
@@ -25,7 +25,7 @@ public class MonsterSpawn extends ConsoleCommand {
             String monsterID = tokens[depth];
             AbstractMonster monster = Monster.createMonster(monsterID);
             if (monster != null) {
-                AbstractModifier<?> raw = ChimeraMonstersController.modifierMap.get(tokens[depth+1]);
+                Modifier<?> raw = ChimeraMonstersController.modifierMap.get(tokens[depth+1]);
                 if (!(raw instanceof AbstractMonsterModifier)) {
                     DevConsole.log("Non-MonsterModifier cannot be applied to " + monsterID);
                     return;

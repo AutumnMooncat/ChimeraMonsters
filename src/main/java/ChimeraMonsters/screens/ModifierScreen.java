@@ -6,8 +6,7 @@ import ChimeraMonsters.ChimeraMonstersMod;
 import ChimeraMonsters.ChimeraMonstersSettingsPanel;
 import ChimeraMonsters.cards.MonsterCard;
 import ChimeraMonsters.commands.Monster;
-import ChimeraMonsters.modifiers.AbstractModifier;
-import ChimeraMonsters.modifiers.groups.AbstractMonsterGroupModifier;
+import ChimeraMonsters.modifiers.Modifier;
 import ChimeraMonsters.modifiers.monsters.AbstractMonsterModifier;
 import ChimeraMonsters.patches.MainMenuPatches;
 import ChimeraMonsters.ui.SettingsButton;
@@ -81,9 +80,9 @@ public class ModifierScreen implements DropdownMenuListener, ScrollBarListener {
     private DropdownMenu rarityDropdown;
     private DropdownMenu augmentDropdown;
     private DropdownMenu characterDropdown;
-    private AbstractModifier.ModifierRarity rarityFilter;
+    private Modifier.ModifierRarity rarityFilter;
     private String modIDFilter;
-    private HashMap<String, AbstractModifier.ModifierRarity> rarityMap = new HashMap<>();
+    private HashMap<String, Modifier.ModifierRarity> rarityMap = new HashMap<>();
     private HashMap<String, String> modIDMap = new HashMap<>();
     private ScrollBar scrollBar;
     private Hitbox upgradeHb;
@@ -161,7 +160,7 @@ public class ModifierScreen implements DropdownMenuListener, ScrollBarListener {
                 refreshDropdownMenu(augmentDropdown);
             }
 
-            if (selectedAugment != null && selectedAugment.getModRarity() != AbstractModifier.ModifierRarity.SPECIAL) {
+            if (selectedAugment != null && selectedAugment.getModRarity() != Modifier.ModifierRarity.SPECIAL) {
                 this.disableHb.update();
                 if (this.disableHb.hovered && InputHelper.justClickedLeft) {// 233
                     this.disableHb.clickStarted = true;// 234
@@ -263,7 +262,7 @@ public class ModifierScreen implements DropdownMenuListener, ScrollBarListener {
 
     public ArrayList<String> getModStrings() {
         ArrayList<String> ret = new ArrayList<>();
-        for (AbstractModifier<?> a : ChimeraMonstersMod.crossoverMap.keySet()) {
+        for (Modifier<?> a : ChimeraMonstersMod.crossoverMap.keySet()) {
             if (a instanceof AbstractMonsterModifier) {
                 String s = ChimeraMonstersMod.crossoverMap.get(a);
                 if (!ret.contains(s)) {
@@ -279,7 +278,7 @@ public class ModifierScreen implements DropdownMenuListener, ScrollBarListener {
         ArrayList<String> ret = new ArrayList<>();
         ret.add(TEXT[6]);
         rarityMap.put(TEXT[6], null);
-        for (AbstractModifier.ModifierRarity r : AbstractModifier.ModifierRarity.values()) {
+        for (Modifier.ModifierRarity r : Modifier.ModifierRarity.values()) {
             ret.add(r.toString());
             rarityMap.put(r.toString(), r);
         }
@@ -289,7 +288,7 @@ public class ModifierScreen implements DropdownMenuListener, ScrollBarListener {
     public ArrayList<String> getModifierStrings() {
         ArrayList<String> ret = new ArrayList<>();
         augmentMap.clear();
-        for (AbstractModifier<?> mod : ChimeraMonstersController.modifierMap.values()) {
+        for (Modifier<?> mod : ChimeraMonstersController.modifierMap.values()) {
             if (!(mod instanceof AbstractMonsterModifier)) {
                 continue;
             }
@@ -457,7 +456,7 @@ public class ModifierScreen implements DropdownMenuListener, ScrollBarListener {
         }
         this.upgradeHb.render(sb);// 1769
 
-        if (selectedAugment.getModRarity() != AbstractModifier.ModifierRarity.SPECIAL) {
+        if (selectedAugment.getModRarity() != Modifier.ModifierRarity.SPECIAL) {
             sb.draw(ImageMaster.CHECKBOX, this.disableHb.cX - 80.0F * Settings.scale - 32.0F, this.disableHb.cY - 32.0F, 32.0F, 32.0F, 64.0F, 64.0F, Settings.scale, Settings.scale, 0.0F, 0, 0, 64, 64, false, false);// 1713
             if (this.disableHb.hovered) {// 1731
                 FontHelper.renderFont(sb, FontHelper.tipBodyFont, TEXT[8], this.disableHb.cX - 45.0F * Settings.scale, this.disableHb.cY + 10.0F * Settings.scale, Settings.RED_TEXT_COLOR);// 1732

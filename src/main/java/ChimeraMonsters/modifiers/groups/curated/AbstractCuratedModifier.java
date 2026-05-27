@@ -6,9 +6,4 @@ public abstract class AbstractCuratedModifier extends AbstractMonsterGroupModifi
     public AbstractCuratedModifier(String ID) {
         super(ID);
     }
-
-    @Override
-    public ModifierRarity getModRarity() {
-        return ModifierRarity.SPECIAL;
-    }
 }

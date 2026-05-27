@@ -2,7 +2,7 @@ package ChimeraMonsters.modifiers.monsters;
 
 import ChimeraMonsters.ChimeraMonstersConfig;
 import ChimeraMonsters.ChimeraMonstersMod;
-import ChimeraMonsters.modifiers.AbstractModifier;
+import ChimeraMonsters.modifiers.Modifier;
 import ChimeraMonsters.patches.MonsterFields;
 import ChimeraMonsters.util.AscensionScaling;
 import ChimeraMonsters.util.AnalysisHelper;
@@ -12,7 +12,7 @@ import com.megacrit.cardcrawl.localization.UIStrings;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
 
-public abstract class AbstractMonsterModifier extends AbstractModifier<AbstractMonster> implements AscensionScaling, AnalysisHelper, MonsterManipulator {
+public abstract class AbstractMonsterModifier implements Modifier<AbstractMonster>, AscensionScaling, AnalysisHelper, MonsterManipulator {
     private static final String[] BASE_TEXT = CardCrawlGame.languagePack.getUIString(ChimeraMonstersMod.makeID(AbstractMonsterModifier.class.getSimpleName())).TEXT;
     protected String modifierID;
     protected UIStrings uiStrings;

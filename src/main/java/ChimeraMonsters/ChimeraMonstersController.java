@@ -1,6 +1,8 @@
 package ChimeraMonsters;
 
-import ChimeraMonsters.modifiers.AbstractModifier;
+import ChimeraMonsters.modifiers.Modifier;
+import ChimeraMonsters.modifiers.groups.addon.AbstractAddonModifier;
+import ChimeraMonsters.modifiers.groups.curated.AbstractCuratedModifier;
 import ChimeraMonsters.modifiers.groups.themed.AbstractThemedModifier;
 import ChimeraMonsters.modifiers.monsters.AbstractMonsterModifier;
 import ChimeraMonsters.patches.MonsterFields;
@@ -15,6 +17,7 @@ import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,9 +25,11 @@ import java.util.stream.Stream;
 
 public class ChimeraMonstersController {
     //Mod Lists
-    public static final HashMap<AbstractModifier.ModifierRarity, ArrayList<AbstractMonsterModifier>> monsterMods = new HashMap<>();
-    public static final HashMap<AbstractModifier.ModifierRarity, ArrayList<AbstractThemedModifier>> thematicGroupMods = new HashMap<>();
-    public static final HashMap<String, AbstractModifier<?>> modifierMap = new HashMap<>();
+    public static final HashMap<Modifier.ModifierRarity, ArrayList<AbstractMonsterModifier>> monsterMods = new HashMap<>();
+    public static final HashMap<Modifier.ModifierRarity, ArrayList<AbstractThemedModifier>> themedMods = new HashMap<>();
+    public static final HashMap<Modifier.ModifierRarity, ArrayList<AbstractCuratedModifier>> curatedMods = new HashMap<>();
+    public static final HashMap<Modifier.ModifierRarity, ArrayList<AbstractAddonModifier>> addonMods = new HashMap<>();
+    public static final HashMap<String, Modifier<?>> modifierMap = new HashMap<>();
 
     public static TopPanelExplainer explainer;
     public static boolean explainerPresent;
@@ -48,8 +53,8 @@ public class ChimeraMonstersController {
         MonsterFields.receivedModifiers.get(monster).add(copy);
     }
 
-    public static List<AbstractModifier<?>> currentCombatModifiers() {
-        List<AbstractModifier<?>> mods = new ArrayList<>();
+    public static List<Modifier<?>> currentCombatModifiers() {
+        List<Modifier<?>> mods = new ArrayList<>();
         if (Wiz.isInCombat()) {
             Wiz.forAllMonstersLiving(mon ->
                     mods.addAll(MonsterFields.receivedModifiers.get(mon)
@@ -62,48 +67,96 @@ public class ChimeraMonstersController {
     }
 
     public static boolean canReceiveModifier(AbstractMonster monster, MonsterGroup context) {
-        if (getValidMonsterModsOfRarity(monster, context, AbstractModifier.ModifierRarity.COMMON).findAny().isPresent()) {
+        if (getValidMonsterModsOfRarity(monster, context, Modifier.ModifierRarity.COMMON).findAny().isPresent()) {
             return true;
         }
-        if (getValidMonsterModsOfRarity(monster, context, AbstractModifier.ModifierRarity.UNCOMMON).findAny().isPresent()) {
+        if (getValidMonsterModsOfRarity(monster, context, Modifier.ModifierRarity.UNCOMMON).findAny().isPresent()) {
             return true;
         }
-        if (getValidMonsterModsOfRarity(monster, context, AbstractModifier.ModifierRarity.RARE).findAny().isPresent()) {
+        if (getValidMonsterModsOfRarity(monster, context, Modifier.ModifierRarity.RARE).findAny().isPresent()) {
             return true;
         }
         return false;
     }
 
     public static boolean canReceiveModifier(MonsterGroup group) {
-        if (getValidThematicModsOfRarity(group, AbstractModifier.ModifierRarity.COMMON).findAny().isPresent()) {
+        if (getValidThemedModsOfRarity(group, Modifier.ModifierRarity.COMMON).findAny().isPresent()) {
             return true;
         }
-        if (getValidThematicModsOfRarity(group, AbstractModifier.ModifierRarity.UNCOMMON).findAny().isPresent()) {
+        if (getValidThemedModsOfRarity(group, Modifier.ModifierRarity.UNCOMMON).findAny().isPresent()) {
             return true;
         }
-        if (getValidThematicModsOfRarity(group, AbstractModifier.ModifierRarity.RARE).findAny().isPresent()) {
+        if (getValidThemedModsOfRarity(group, Modifier.ModifierRarity.RARE).findAny().isPresent()) {
             return true;
         }
         return false;
     }
 
-    public static Stream<AbstractMonsterModifier> getMonsterModsOfRarity(AbstractModifier.ModifierRarity rarity) {
+    public static Stream<AbstractMonsterModifier> getMonsterMods() {
+        return monsterMods.values().stream().flatMap(Collection::stream).filter(ChimeraMonstersConfig::isModifierEnabled);
+    }
+
+    public static Stream<AbstractMonsterModifier> getValidMonsterMods(AbstractMonster mon, MonsterGroup context) {
+        return getMonsterMods().filter(mod -> mod.canApplyTo(mon, context));
+    }
+
+    public static Stream<AbstractMonsterModifier> getMonsterModsOfRarity(Modifier.ModifierRarity rarity) {
         return monsterMods.get(rarity).stream().filter(ChimeraMonstersConfig::isModifierEnabled);
     }
 
-    public static Stream<AbstractMonsterModifier> getValidMonsterModsOfRarity(AbstractMonster mon, MonsterGroup context, AbstractModifier.ModifierRarity rarity) {
+    public static Stream<AbstractMonsterModifier> getValidMonsterModsOfRarity(AbstractMonster mon, MonsterGroup context, Modifier.ModifierRarity rarity) {
         return getMonsterModsOfRarity(rarity).filter(mod -> mod.canApplyTo(mon, context));
     }
 
-    public static Stream<AbstractThemedModifier> getThematicModsOfRarity(AbstractModifier.ModifierRarity rarity) {
-        return thematicGroupMods.get(rarity).stream().filter(ChimeraMonstersConfig::isModifierEnabled);
+    public static Stream<AbstractThemedModifier> getThemedMods() {
+        return themedMods.values().stream().flatMap(Collection::stream).filter(ChimeraMonstersConfig::isModifierEnabled);
     }
 
-    public static Stream<AbstractThemedModifier> getValidThematicModsOfRarity(MonsterGroup group, AbstractModifier.ModifierRarity rarity) {
-        return getThematicModsOfRarity(rarity).filter(mod -> mod.canApplyTo(group));
+    public static Stream<AbstractThemedModifier> getValidThemedMods(MonsterGroup group) {
+        return getThemedMods().filter(mod -> mod.canApplyTo(group));
     }
 
-    public static void handleRegistry(AbstractModifier<?> modifier) {
+    public static Stream<AbstractThemedModifier> getThemedModsOfRarity(Modifier.ModifierRarity rarity) {
+        return themedMods.get(rarity).stream().filter(ChimeraMonstersConfig::isModifierEnabled);
+    }
+
+    public static Stream<AbstractThemedModifier> getValidThemedModsOfRarity(MonsterGroup group, Modifier.ModifierRarity rarity) {
+        return getThemedModsOfRarity(rarity).filter(mod -> mod.canApplyTo(group));
+    }
+
+    public static Stream<AbstractCuratedModifier> getCuratedMods() {
+        return curatedMods.values().stream().flatMap(Collection::stream).filter(ChimeraMonstersConfig::isModifierEnabled);
+    }
+
+    public static Stream<AbstractCuratedModifier> getValidCuratedMods(MonsterGroup group) {
+        return getCuratedMods().filter(mod -> mod.canApplyTo(group));
+    }
+
+    public static Stream<AbstractCuratedModifier> getCuratedModsOfRarity(Modifier.ModifierRarity rarity) {
+        return curatedMods.get(rarity).stream().filter(ChimeraMonstersConfig::isModifierEnabled);
+    }
+
+    public static Stream<AbstractCuratedModifier> getValidCuratedModsOfRarity(MonsterGroup group, Modifier.ModifierRarity rarity) {
+        return getCuratedModsOfRarity(rarity).filter(mod -> mod.canApplyTo(group));
+    }
+
+    public static Stream<AbstractAddonModifier> getAddonMods() {
+        return addonMods.values().stream().flatMap(Collection::stream).filter(ChimeraMonstersConfig::isModifierEnabled);
+    }
+
+    public static Stream<AbstractAddonModifier> getValidAddonMods(MonsterGroup group) {
+        return getAddonMods().filter(mod -> mod.canApplyTo(group));
+    }
+
+    public static Stream<AbstractAddonModifier> getAddonModsOfRarity(Modifier.ModifierRarity rarity) {
+        return addonMods.get(rarity).stream().filter(ChimeraMonstersConfig::isModifierEnabled);
+    }
+
+    public static Stream<AbstractAddonModifier> getValidAddonModsOfRarity(MonsterGroup group, Modifier.ModifierRarity rarity) {
+        return getAddonModsOfRarity(rarity).filter(mod -> mod.canApplyTo(group));
+    }
+
+    public static void handleRegistry(Modifier<?> modifier) {
         if (!modifier.identifier().isEmpty()) {
             modifierMap.put(modifier.identifier(), modifier);
         } else {
@@ -115,10 +168,20 @@ public class ChimeraMonstersController {
             }
             monsterMods.get(modifier.getModRarity()).add((AbstractMonsterModifier) modifier);
         } else if (modifier instanceof AbstractThemedModifier) {
-            if (!thematicGroupMods.containsKey(modifier.getModRarity())) {
-                thematicGroupMods.put(modifier.getModRarity(), new ArrayList<>());
+            if (!themedMods.containsKey(modifier.getModRarity())) {
+                themedMods.put(modifier.getModRarity(), new ArrayList<>());
             }
-            thematicGroupMods.get(modifier.getModRarity()).add((AbstractThemedModifier) modifier);
+            themedMods.get(modifier.getModRarity()).add((AbstractThemedModifier) modifier);
+        } else if (modifier instanceof AbstractCuratedModifier) {
+            if (!curatedMods.containsKey(modifier.getModRarity())) {
+                curatedMods.put(modifier.getModRarity(), new ArrayList<>());
+            }
+            curatedMods.get(modifier.getModRarity()).add((AbstractCuratedModifier) modifier);
+        } else if (modifier instanceof AbstractAddonModifier) {
+            if (!addonMods.containsKey(modifier.getModRarity())) {
+                addonMods.put(modifier.getModRarity(), new ArrayList<>());
+            }
+            addonMods.get(modifier.getModRarity()).add((AbstractAddonModifier) modifier);
         }
     }
 }

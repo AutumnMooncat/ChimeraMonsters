@@ -2,7 +2,7 @@ package ChimeraMonsters.ui;
 
 import ChimeraMonsters.ChimeraMonstersController;
 import ChimeraMonsters.ChimeraMonstersMod;
-import ChimeraMonsters.modifiers.AbstractModifier;
+import ChimeraMonsters.modifiers.Modifier;
 import ChimeraMonsters.util.FormatHelper;
 import ChimeraMonsters.util.TextureLoader;
 import basemod.TopPanelItem;
@@ -54,14 +54,14 @@ public class TopPanelExplainer extends TopPanelItem {
     }
 
     private String assembleString() {
-        List<AbstractModifier<?>> mods = ChimeraMonstersController.currentCombatModifiers();
+        List<Modifier<?>> mods = ChimeraMonstersController.currentCombatModifiers();
         if (mods.isEmpty()) {
             return TEXT[1];
         }
         return mods.stream().map(mod -> FormatHelper.prefixWords(mod.getModifierName(), getPrefix(mod)) + ": NL " + mod.getModifierDescription()).collect(Collectors.joining(" NL NL "));
     }
 
-    private String getPrefix(AbstractModifier<?> mod) {
+    private String getPrefix(Modifier<?> mod) {
         switch (mod.getModRarity()) {
             case SPECIAL:
                 return "#g";

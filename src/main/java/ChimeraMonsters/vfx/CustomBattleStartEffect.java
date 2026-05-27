@@ -22,39 +22,39 @@ import com.megacrit.cardcrawl.vfx.UpgradeShineParticleEffect;
 
 
 public class CustomBattleStartEffect extends AbstractGameEffect {
-    private static final UIStrings uiStrings;
-    public static final String[] TEXT;
+    private static final UIStrings uiStrings = CardCrawlGame.languagePack.getUIString("BattleStartEffect");
+    public static final String[] TEXT = uiStrings.TEXT;
     private static final float EFFECT_DUR = 7.0F;
-    private static final float HEIGHT_DIV_2;
-    private static final float WIDTH_DIV_2;
+    private static final float HEIGHT_DIV_2 = (float)Settings.HEIGHT / 2.0F;
+    private static final float WIDTH_DIV_2 = (float)Settings.WIDTH / 2.0F;
     private boolean surpriseAttack;
     private boolean soundPlayed = false;
     private boolean bossFight = false;
     private Color bgColor;
-    private static final float TARGET_HEIGHT;
+    private static final float TARGET_HEIGHT = 150.0F * Settings.scale;
     private static final float BG_RECT_EXPAND_SPEED = 3.0F;
     private float currentHeight = 0.0F;
     private String battleStartMessage;
-    private static final String BATTLE_START_MSG;
-    public static final String PLAYER_TURN_MSG;
-    public static final String ENEMY_TURN_MSG;
-    public static final String TURN_TXT;
+    private static final String BATTLE_START_MSG = TEXT[0];
+    public static final String PLAYER_TURN_MSG = TEXT[1];
+    public static final String ENEMY_TURN_MSG = TEXT[2];
+    public static final String TURN_TXT = TEXT[3];
     private String turnMsg;
     private static final float TEXT_FADE_SPEED = 5.0F;
-    private static final float MAIN_MSG_OFFSET_Y;
-    private static final float TURN_MSG_OFFSET_Y;
+    private static final float MAIN_MSG_OFFSET_Y = 20.0F * Settings.scale;
+    private static final float TURN_MSG_OFFSET_Y = -30.0F * Settings.scale;
     private Color turnMessageColor = new Color(0.7F, 0.7F, 0.7F, 0.0F);
     private float timer1 = 1.0F;
     private float timer2 = 1.0F;
-    private static final float MSG_VANISH_X;
+    private static final float MSG_VANISH_X = (float)(-Settings.WIDTH) * 0.25F;
     private float firstMessageX;
     private float secondMessageX;
     private boolean showHb;
     private static TextureAtlas.AtlasRegion img;
     private static final float SWORD_ANIM_TIME = 0.5F;
     private float swordTimer;
-    private static final float SWORD_START_X;
-    private static final float SWORD_DEST_X;
+    private static final float SWORD_START_X = -50.0F * Settings.scale;
+    private static final float SWORD_DEST_X = (float)Settings.WIDTH / 2.0F + 0.0F * Settings.scale;
     private float swordX;
     private float swordY;
     private float swordAngle;
@@ -133,19 +133,14 @@ public class CustomBattleStartEffect extends AbstractGameEffect {
             }
 
             this.firstMessageX = Interpolation.pow2In.apply(this.firstMessageX, MSG_VANISH_X, 1.0F - this.timer1);
-        } else if (this.duration < 3.0F && this.timer2 != 0.0F) {
+            this.secondMessageX = Interpolation.pow2In.apply(this.secondMessageX, WIDTH_DIV_2, 1.0F - this.timer2);
+        }
+        if (this.duration < 4.0F) {
             if (!this.soundPlayed) {
                 CardCrawlGame.sound.play("TURN_EFFECT");
                 AbstractDungeon.getMonsters().showIntent();
                 this.soundPlayed = true;
             }
-
-            this.timer2 -= Gdx.graphics.getDeltaTime();
-            if (this.timer2 < 0.0F) {
-                this.timer2 = 0.0F;
-            }
-
-            this.secondMessageX = Interpolation.pow2In.apply(this.secondMessageX, WIDTH_DIV_2, 1.0F - this.timer2);
         }
 
         if (this.duration > 2.0F) {
@@ -210,30 +205,11 @@ public class CustomBattleStartEffect extends AbstractGameEffect {
 
     }
 
-    public void dispose() {
-    }
+    public void dispose() {}
 
     private void renderSwords(SpriteBatch sb) {
         sb.setColor(this.swordColor);
         sb.draw(img, (float)Settings.WIDTH - this.swordX - (float)img.packedWidth / 2.0F + this.firstMessageX - (float)Settings.WIDTH / 2.0F, this.swordY, (float)img.packedWidth / 2.0F, (float)img.packedHeight / 2.0F, (float)img.packedWidth, (float)img.packedHeight, -this.scale, -this.scale, -this.swordAngle + 180.0F);
         sb.draw(img, this.swordX - (float)img.packedWidth / 2.0F + this.firstMessageX - (float)Settings.WIDTH / 2.0F, this.swordY, (float)img.packedWidth / 2.0F, (float)img.packedHeight / 2.0F, (float)img.packedWidth, (float)img.packedHeight, this.scale, this.scale, this.swordAngle);
-    }
-
-    static {
-        uiStrings = CardCrawlGame.languagePack.getUIString("BattleStartEffect");
-        TEXT = uiStrings.TEXT;
-        HEIGHT_DIV_2 = (float)Settings.HEIGHT / 2.0F;
-        WIDTH_DIV_2 = (float)Settings.WIDTH / 2.0F;
-        TARGET_HEIGHT = 150.0F * Settings.scale;
-        BATTLE_START_MSG = TEXT[0];
-        PLAYER_TURN_MSG = TEXT[1];
-        ENEMY_TURN_MSG = TEXT[2];
-        TURN_TXT = TEXT[3];
-        MAIN_MSG_OFFSET_Y = 20.0F * Settings.scale;
-        TURN_MSG_OFFSET_Y = -30.0F * Settings.scale;
-        MSG_VANISH_X = (float)(-Settings.WIDTH) * 0.25F;
-        img = null;
-        SWORD_START_X = -50.0F * Settings.scale;
-        SWORD_DEST_X = (float)Settings.WIDTH / 2.0F + 0.0F * Settings.scale;
     }
 }

@@ -1,8 +1,7 @@
 package ChimeraMonsters;
 
 import ChimeraMonsters.commands.Monster;
-import ChimeraMonsters.modifiers.AbstractModifier;
-import ChimeraMonsters.modifiers.monsters.AbstractMonsterModifier;
+import ChimeraMonsters.modifiers.Modifier;
 import ChimeraMonsters.ui.TopPanelExplainer;
 import ChimeraMonsters.util.KeywordManager;
 import basemod.*;
@@ -29,7 +28,6 @@ import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.Predicate;
@@ -42,7 +40,7 @@ public class ChimeraMonstersMod implements
         OnStartBattleSubscriber,
         PostRenderSubscriber {
     public static final Logger logger = LogManager.getLogger(ChimeraMonstersMod.class.getName());
-    public static final HashMap<AbstractModifier<?>, String> crossoverMap = new HashMap<>();
+    public static final HashMap<Modifier<?>, String> crossoverMap = new HashMap<>();
     public static final HashMap<String, Integer> crossoverSizeMap = new HashMap<>();
     private static String modID;
 
@@ -81,7 +79,7 @@ public class ChimeraMonstersMod implements
         logger.info("Loaded config for modID: "+modID);
     }
 
-    public static void registerModifier(AbstractModifier<?> a, String modID) {
+    public static void registerModifier(Modifier<?> a, String modID) {
         if (!ChimeraMonstersConfig.crossoverEnableMap.containsKey(modID)) {
             logger.warn("Modifier "+a+" with modID "+modID+" does not match any registered configs, Chimera Monsters can not manage the spawning of this mod! Please call registerMod with your ID to set up a config.");
         }
@@ -156,7 +154,7 @@ public class ChimeraMonstersMod implements
         registerMod(modID, label);
         new AutoAdd(modID)
                 .packageFilter("ChimeraMonsters.modifiers")
-                .any(AbstractModifier.class, (info, modifier) -> registerModifier(modifier, modID));
+                .any(Modifier.class, (info, modifier) -> registerModifier(modifier, modID));
         logger.info("Done loading monster modifiers");
     }
 
