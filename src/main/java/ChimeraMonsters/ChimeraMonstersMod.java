@@ -2,6 +2,8 @@ package ChimeraMonsters;
 
 import ChimeraMonsters.commands.Monster;
 import ChimeraMonsters.modifiers.Modifier;
+import ChimeraMonsters.modifiers.groups.AbstractMonsterGroupModifier;
+import ChimeraMonsters.modifiers.monsters.AbstractMonsterModifier;
 import ChimeraMonsters.ui.TopPanelExplainer;
 import ChimeraMonsters.util.KeywordManager;
 import basemod.*;
@@ -152,9 +154,13 @@ public class ChimeraMonstersMod implements
         logger.info("Loading monster modifiers...");
 
         registerMod(modID, label);
+        // TODO - Modifier.class cant be auto added given its an interface, we can find all classes which implement it or just add them manually
         new AutoAdd(modID)
                 .packageFilter("ChimeraMonsters.modifiers")
-                .any(Modifier.class, (info, modifier) -> registerModifier(modifier, modID));
+                .any(AbstractMonsterModifier.class, (info, modifier) -> registerModifier(modifier, modID));
+        new AutoAdd(modID)
+                .packageFilter("ChimeraMonsters.modifiers")
+                .any(AbstractMonsterGroupModifier.class, (info, modifier) -> registerModifier(modifier, modID));
         logger.info("Done loading monster modifiers");
     }
 

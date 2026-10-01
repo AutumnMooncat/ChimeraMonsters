@@ -1,6 +1,7 @@
 package ChimeraMonsters.patches;
 
 import ChimeraMonsters.powers.interfaces.MonsterPreventPlayingCardsPower;
+import ChimeraMonsters.util.Wiz;
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
@@ -12,6 +13,9 @@ public class CanPlayPatches {
     public static class ModifierCanPlayCard {
         @SpirePrefixPatch
         public static SpireReturn<Boolean> check(AbstractCard __instance) {
+            if (!Wiz.isInCombat()) {
+                return SpireReturn.Continue();
+            }
             for (AbstractMonster monster : AbstractDungeon.getMonsters().monsters) {
                 for (AbstractPower power : monster.powers) {
                     if (power instanceof MonsterPreventPlayingCardsPower) {
@@ -29,6 +33,9 @@ public class CanPlayPatches {
     public static class ModifierCanUseCard {
         @SpirePostfixPatch
         public static boolean check(AbstractCard __instance, AbstractMonster m, boolean __result) {
+            if (!Wiz.isInCombat()) {
+                return __result;
+            }
             for (AbstractMonster monster : AbstractDungeon.getMonsters().monsters) {
                 for (AbstractPower power : monster.powers) {
                     if (power instanceof MonsterPreventPlayingCardsPower) {
