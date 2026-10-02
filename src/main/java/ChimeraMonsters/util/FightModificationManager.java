@@ -8,6 +8,7 @@ import ChimeraMonsters.modifiers.groups.curated.AbstractCuratedModifier;
 import ChimeraMonsters.modifiers.groups.themed.AbstractThemedModifier;
 import ChimeraMonsters.modifiers.monsters.AbstractMonsterModifier;
 import ChimeraMonsters.patches.MonsterFields;
+import ChimeraMonsters.patches.MonsterGroupFields;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
@@ -18,9 +19,10 @@ import java.util.stream.Stream;
 
 public class FightModificationManager {
 
-    public static String fightName = "";
-
     public static void rollFightModifiers(MonsterGroup monsterGroup) {
+        if (MonsterGroupFields.rolledModifiers.get(monsterGroup)) {
+            return;
+        }
         List<AbstractCuratedModifier> validCurated = ChimeraMonstersController.getValidCuratedMods(monsterGroup).collect(Collectors.toList());
         List<AbstractThemedModifier> validThemed = ChimeraMonstersController.getValidThemedMods(monsterGroup).collect(Collectors.toList());
         int curated = validCurated.isEmpty() ? 0 : ChimeraMonstersConfig.IntSetting.CURATED_WEIGHT.getVal();
@@ -28,7 +30,6 @@ public class FightModificationManager {
         int modified = ChimeraMonstersConfig.IntSetting.ENHANCED_WEIGHT.getVal();
         int unmodified = ChimeraMonstersConfig.IntSetting.VANILLA_WEIGHT.getVal();
         if (curated + thematic + modified == 0) {
-            fightName = "";
             return;
         }
         int roll = AbstractDungeon.miscRng.random(curated + thematic + modified + unmodified - 1); //StS adds +1 to random call, so subtract 1
@@ -37,7 +38,7 @@ public class FightModificationManager {
             if (curatedMod == null) {
                 return;
             }
-            fightName = curatedMod.getModifierName();
+            MonsterGroupFields.fightName.set(monsterGroup, curatedMod.getModifierName());
             curatedMod.applyTo(monsterGroup);
             if (ChimeraMonstersConfig.BoolSetting.ENHANCE_IN_CURATED.getVal()) {
                 rollRandomModifiers(monsterGroup);
@@ -50,7 +51,7 @@ public class FightModificationManager {
             if (themedMod == null) {
                 return;
             }
-            fightName = themedMod.getModifierName();
+            MonsterGroupFields.fightName.set(monsterGroup, themedMod.getModifierName());
             themedMod.applyTo(monsterGroup);
             if (ChimeraMonstersConfig.BoolSetting.ENHANCE_IN_THEMED.getVal()) {
                 rollRandomModifiers(monsterGroup);
@@ -59,10 +60,10 @@ public class FightModificationManager {
                 rollAddon(monsterGroup);
             }
         } else if ((roll -= modified) < 0) {
-            fightName = "";
             rollRandomModifiers(monsterGroup);
             rollAddon(monsterGroup);
         }
+        MonsterGroupFields.rolledModifiers.set(monsterGroup, true);
     }
 
     public static void rollAddon(MonsterGroup monsterGroup) {

@@ -22,8 +22,13 @@ public class StartOfCombatPatches {
         }
     }
 
-    public static String getBattleStartText(){
-        return FightModificationManager.fightName.equals("") ? CardCrawlGame.languagePack.getUIString("BattleStartEffect").TEXT[0] : FightModificationManager.fightName;
+    public static String getBattleStartText() {
+        String normal = CardCrawlGame.languagePack.getUIString("BattleStartEffect").TEXT[0];
+        String customName = "";
+        if (AbstractDungeon.currMapNode != null && AbstractDungeon.getCurrRoom() != null && AbstractDungeon.getCurrRoom().monsters != null) {
+            customName = MonsterGroupFields.fightName.get(AbstractDungeon.getCurrRoom().monsters);
+        }
+        return customName.isEmpty() ? normal : customName;
     }
 
     @SpirePatch2(clz = BattleStartEffect.class, method = SpirePatch.CONSTRUCTOR)

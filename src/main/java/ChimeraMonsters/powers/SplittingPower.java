@@ -2,10 +2,7 @@ package ChimeraMonsters.powers;
 
 import ChimeraMonsters.ChimeraMonstersMod;
 import ChimeraMonsters.actions.DoAction;
-import ChimeraMonsters.patches.ActionCapturePatch;
-import ChimeraMonsters.patches.MonsterEncounterPatches;
-import ChimeraMonsters.patches.MonsterFields;
-import ChimeraMonsters.patches.MoveManipulationPatches;
+import ChimeraMonsters.patches.*;
 import ChimeraMonsters.powers.interfaces.IntentInterceptingPower;
 import ChimeraMonsters.util.MonsterSpawnHelper;
 import com.megacrit.cardcrawl.actions.animations.AnimateShakeAction;
@@ -80,7 +77,7 @@ public class SplittingPower extends AbstractEasyPower implements IntentIntercept
             AbstractDungeon.actionManager.addToBottom(new WaitAction(1.0F));
             AbstractDungeon.actionManager.addToBottom(new SFXAction("SLIME_SPLIT"));
 
-            ArrayList<AbstractMonster> splitMonsters = MonsterSpawnHelper.getSplitMonsters((AbstractMonster) owner, MonsterEncounterPatches.MonsterEncounterIDFields.encounterField.get(AbstractDungeon.getCurrRoom().monsters));
+            ArrayList<AbstractMonster> splitMonsters = MonsterSpawnHelper.getSplitMonsters((AbstractMonster) owner, MonsterGroupFields.encounterID.get(AbstractDungeon.getCurrRoom().monsters));
             for (AbstractMonster splitMonster : splitMonsters) {
                 AbstractDungeon.actionManager.addToBottom(new SpawnMonsterAction(splitMonster, false));
             }
