@@ -18,6 +18,8 @@ import com.google.gson.Gson;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.MonsterHelper;
+import com.megacrit.cardcrawl.localization.EventStrings;
+import com.megacrit.cardcrawl.localization.MonsterStrings;
 import com.megacrit.cardcrawl.localization.PowerStrings;
 import com.megacrit.cardcrawl.localization.UIStrings;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
@@ -202,6 +204,8 @@ public class ChimeraMonstersMod implements
         loadLocalizedStrings(UIStrings.class, "ModifierStrings");
         loadLocalizedStrings(UIStrings.class, "GroupModifierStrings");
         loadLocalizedStrings(PowerStrings.class, "PowerStrings");
+        loadLocalizedStrings(EventStrings.class, "EventStrings");
+        loadLocalizedStrings(MonsterStrings.class, "MonsterStrings");
         logger.info("Done editing strings");
     }
     

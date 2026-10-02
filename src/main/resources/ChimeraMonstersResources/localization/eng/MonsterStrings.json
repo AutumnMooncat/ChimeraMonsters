@@ -1,0 +1,7 @@
+{
+  "${ModID}:ExampleMonster": {
+    "MOVES": [""],
+    "NAME": "",
+    "DIALOG": [""]
+  }
+}

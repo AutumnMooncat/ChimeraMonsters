@@ -1,0 +1,7 @@
+{
+  "${ModID}:ExampleEvent": {
+    "NAME": "",
+    "DESCRIPTIONS": [""],
+    "OPTIONS": [""]
+  }
+}
