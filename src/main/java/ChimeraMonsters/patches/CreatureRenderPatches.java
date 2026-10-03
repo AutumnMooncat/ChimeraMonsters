@@ -1,8 +1,10 @@
 package ChimeraMonsters.patches;
 
+import ChimeraMonsters.monsters.You;
 import ChimeraMonsters.powers.interfaces.RenderModifierPower;
 import ChimeraMonsters.ui.HoveringCardManager;
 import ChimeraMonsters.util.ImageHelper;
+import ChimeraMonsters.util.Wiz;
 import ChimeraMonsters.util.matchers.SuperFieldAccessMatcher;
 import basemod.ReflectionHacks;
 import basemod.abstracts.CustomMonster;
@@ -19,6 +21,7 @@ import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.core.Settings;
+import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.orbs.AbstractOrb;
@@ -27,23 +30,38 @@ import com.megacrit.cardcrawl.stances.AbstractStance;
 import javassist.CtBehavior;
 
 import java.util.ArrayList;
+import java.util.WeakHashMap;
 
 public class CreatureRenderPatches {
     private static final FrameBuffer frontBuffer = ImageHelper.createBuffer();
     private static final FrameBuffer backBuffer = ImageHelper.createBuffer();
     private static final FrameBuffer shaderBuffer = ImageHelper.createBuffer();
+    private static final WeakHashMap<AbstractCreature, FrameBuffer> referenceBuffers = new WeakHashMap<>();
+    private static final WeakHashMap<AbstractCreature, float[]> referenceTransforms = new WeakHashMap<>();
     private static FrameBuffer activeBuffer = frontBuffer;
     private static boolean capturing = false;
     private static float timeFlux = 1f;
     private static final float[] transform = new float[5];
 
-    public static float[] transformState() {
+    public static float[] currentTransform() {
         return transform.clone();
+    }
+
+    public static TextureRegion referenceTex(AbstractCreature requested) {
+        FrameBuffer refBuffer = referenceBuffers.get(requested);
+        if (refBuffer == null) {
+            return null;
+        }
+        return ImageHelper.getBufferTexture(refBuffer);
+    }
+
+    public static float[] referenceTransform(AbstractCreature requested) {
+        return referenceTransforms.get(requested);
     }
 
     private static void beginCapture(AbstractCreature __instance, SpriteBatch sb) {
         capturing = false;
-        if (__instance.powers.stream().anyMatch(p -> p instanceof RenderModifierPower)) {
+        if (shouldCapture(__instance)) {
             capturing = true;
             prepareTransform(__instance);
             startBuffer(sb);
@@ -54,16 +72,50 @@ public class CreatureRenderPatches {
         if (capturing) {
             endBuffer(sb);
             sb.end();
-            for (AbstractPower power : __instance.powers) {
-                if (power instanceof RenderModifierPower) {
-                    blit((RenderModifierPower) power);
-                }
-            }
+            performModifications(__instance);
+            TextureRegion tex = ImageHelper.getBufferTexture(activeBuffer);
+            storeReference(__instance, tex);
             sb.begin();
-            draw(sb, ImageHelper.getBufferTexture(activeBuffer));
+            draw(sb, tex);
             undoTransform(__instance);
             capturing = false;
         }
+    }
+
+    // TODO - Allow modification from other sources like vfx or other creatures?
+    private static void performModifications(AbstractCreature __instance) {
+        for (AbstractPower power : __instance.powers) {
+            if (power instanceof RenderModifierPower) {
+                blit((RenderModifierPower) power);
+            }
+        }
+    }
+
+    // TODO - Proper handling with interface
+    private static boolean shouldCapture(AbstractCreature __instance) {
+        if (__instance.powers.stream().anyMatch(p -> p instanceof RenderModifierPower)) {
+            return true;
+        }
+        if (__instance == AbstractDungeon.player && Wiz.isInCombat() && AbstractDungeon.getCurrRoom().monsters.monsters.stream().anyMatch(mon -> mon instanceof You)) {
+            return true;
+        }
+        return false;
+    }
+
+    private static void storeReference(AbstractCreature __instance, TextureRegion tex) {
+        if (!referenceBuffers.containsKey(__instance)) {
+            referenceBuffers.put(__instance, ImageHelper.createBuffer());
+        }
+        referenceTransforms.put(__instance, currentTransform());
+        FrameBuffer reference = referenceBuffers.get(__instance);
+        SpriteBatch temp = new SpriteBatch();
+        ImageHelper.beginBuffer(reference);
+        temp.begin();
+        temp.setBlendFunction(GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA);
+        temp.draw(tex, 0, 0);
+        temp.end();
+        temp.dispose();
+        reference.end();
     }
 
     private static void blit(RenderModifierPower renderer) {
@@ -266,17 +318,17 @@ public class CreatureRenderPatches {
 
     @SpirePatch2(clz = AbstractPlayer.class, method = "render")
     public static class RenderTimePlayer {
+        @SpireInsertPatch(locator = OnLocator.class)
+        public static void onBeforeImage(AbstractPlayer __instance, SpriteBatch sb) {
+            beginCapture(__instance, sb);
+        }
+
+        @SpireInsertPatch(locator = OffLocator.class)
+        public static void offBeforeHitbox(AbstractPlayer __instance, SpriteBatch sb) {
+            endCapture(__instance, sb);
+        }
+
         public static class OnLocator extends SpireInsertLocator {
-            @SpireInsertPatch(locator = OnLocator.class)
-            public static void onBeforeImage(AbstractPlayer __instance, SpriteBatch sb) {
-                beginCapture(__instance, sb);
-            }
-
-            @SpireInsertPatch(locator = OffLocator.class)
-            public static void offBeforeHitbox(AbstractPlayer __instance, SpriteBatch sb) {
-                endCapture(__instance, sb);
-            }
-
             @Override
             public int[] Locate(CtBehavior ctBehavior) throws Exception {
                 Matcher m = new Matcher.FieldAccessMatcher(AbstractPlayer.class, "renderCorpse");

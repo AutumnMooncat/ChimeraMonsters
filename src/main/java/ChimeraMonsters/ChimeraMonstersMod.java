@@ -4,6 +4,9 @@ import ChimeraMonsters.commands.Monster;
 import ChimeraMonsters.modifiers.Modifier;
 import ChimeraMonsters.modifiers.groups.AbstractMonsterGroupModifier;
 import ChimeraMonsters.modifiers.monsters.AbstractMonsterModifier;
+import ChimeraMonsters.monsters.You;
+import ChimeraMonsters.patches.MonsterGroupFields;
+import ChimeraMonsters.patches.events.FaceTraderPatches;
 import ChimeraMonsters.ui.TopPanelExplainer;
 import ChimeraMonsters.util.KeywordManager;
 import basemod.*;
@@ -101,6 +104,16 @@ public class ChimeraMonstersMod implements
         ChimeraMonstersConfig.customBanChecks.put(modifierID, ChimeraMonstersConfig.customBanChecks.getOrDefault(modifierID, c -> false).or(banIf));
     }
 
+    // TODO - AutoAdd style if we make enough to not just list them here
+    public static void registerEncounters() {
+        BaseMod.addMonster(FaceTraderPatches.ID, () -> {
+            MonsterGroup group = new MonsterGroup(new You());
+            MonsterGroupFields.fightName.set(group, FaceTraderPatches.STRINGS.NAME);
+            MonsterGroupFields.rolledModifiers.set(group, true);
+            return group;
+        });
+    }
+
     public static void setModID(String ID) {
         modID = ID;
     }
@@ -139,6 +152,10 @@ public class ChimeraMonstersMod implements
     
     @Override
     public void receivePostInitialize() {
+        logger.info("Adding new encounters");
+        registerEncounters();
+        logger.info("Done adding new encounters");
+
         logger.info("Setting up dev commands");
         ConsoleCommand.addCommand("monstermod", Monster.class);
         logger.info("Done setting up dev commands");

@@ -3,5 +3,13 @@
     "NAME": "",
     "DESCRIPTIONS": [""],
     "OPTIONS": [""]
+  },
+  "${ModID}:BrandNewYou": {
+    "NAME": "Brand New You",
+    "DESCRIPTIONS": ["You hesitate as your @broken@ memories slowly ~piece~ ~together.~ NL It's becoming clearer... you think know this person. NL Of course you do. @They're@ @you!@ NL You watch in horror as your gaunt form ~contorts~ to match your own. NL NL @\"NO!@ @YOU@ @CAN'T!@ @YOU!\"@ NL NL Your sudden @scream@ startles you, and you draw your weapon when you begin to draw your weapon."],
+    "OPTIONS": [
+      "[Remember] #rFace #rYourself",
+      "[Fight!]"
+    ]
   }
 }

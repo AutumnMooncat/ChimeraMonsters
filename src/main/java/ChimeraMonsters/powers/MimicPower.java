@@ -6,13 +6,8 @@ import ChimeraMonsters.actions.TimedVFXAction;
 import ChimeraMonsters.patches.CreatureRenderPatches;
 import ChimeraMonsters.powers.interfaces.MonsterCantDiePower;
 import ChimeraMonsters.powers.interfaces.RenderModifierPower;
-import ChimeraMonsters.util.ShaderCompiler;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.megacrit.cardcrawl.actions.animations.VFXAction;
-import com.megacrit.cardcrawl.cards.DamageInfo;
 import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
@@ -43,7 +38,7 @@ public class MimicPower extends AbstractInternalLogicPower implements RenderModi
             disguise.drawX = Settings.WIDTH/2f;
             disguise.drawY = Settings.HEIGHT/2f;
             disguise.animX = 0;
-            disguise.animY = -CreatureRenderPatches.transformState()[4];
+            disguise.animY = -CreatureRenderPatches.currentTransform()[4];
             disguise.render(sb);
         }
     }

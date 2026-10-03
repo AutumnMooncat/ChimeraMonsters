@@ -3,5 +3,10 @@
     "MOVES": [""],
     "NAME": "",
     "DIALOG": [""]
+  },
+  "${ModID}:You": {
+    "MOVES": ["Anger","Envy","Sadness","Panic"],
+    "NAME": "You",
+    "DIALOG": [""]
   }
 }
