@@ -2,16 +2,20 @@ package ChimeraMonsters.powers;
 
 import ChimeraMonsters.ChimeraMonstersMod;
 import ChimeraMonsters.powers.interfaces.RenderModifierPower;
+import ChimeraMonsters.vfx.stance.GenericStanceAuraEffect;
+import ChimeraMonsters.vfx.stance.GenericWrathParticle;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
 import com.megacrit.cardcrawl.actions.common.LoseHPAction;
 import com.megacrit.cardcrawl.actions.common.ReducePowerAction;
 import com.megacrit.cardcrawl.cards.DamageInfo;
 import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
+import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.localization.PowerStrings;
 
 public class HoverPower extends AbstractEasyPower implements RenderModifierPower {
@@ -19,14 +23,11 @@ public class HoverPower extends AbstractEasyPower implements RenderModifierPower
     private static final PowerStrings powerStrings = CardCrawlGame.languagePack.getPowerStrings(POWER_ID);
     public static final String NAME = powerStrings.NAME;
     public static final String[] DESCRIPTIONS = powerStrings.DESCRIPTIONS;
+    private float particleTimer;
     private float timePassed;
-
-    public static final Texture KITE = new Texture(ChimeraMonstersMod.getModID() + "Resources/images/modifiers/HoveringKite.png");
-    public static final TextureRegion kite_region = new TextureRegion(KITE);
 
     public HoverPower(AbstractCreature owner, int amount) {
         super(POWER_ID, NAME, PowerType.BUFF, false, owner, amount);
-        timePassed = 0f;
         priority=-20;
 
     }
@@ -62,13 +63,15 @@ public class HoverPower extends AbstractEasyPower implements RenderModifierPower
 
     @Override
     public void onRender(SpriteBatch sb, TextureRegion tex) {
+        particleTimer -= Gdx.graphics.getDeltaTime();
         timePassed += Gdx.graphics.getDeltaTime();
         Color origColor = sb.getColor();
         sb.setColor(Color.WHITE);
+        if (particleTimer <= 0) {
+            particleTimer = 0.05f;
+            AbstractDungeon.effectsQueue.add(new GenericWrathParticle(Color.WHITE, owner.hb, 0, 150f));
+        }
         render(sb, tex, (float) (50 * Math.sin(timePassed)), 150f + (float) (50 * Math.sin(timePassed)), 1f, 15);
-        //renderRescale(sb, kite_region, (Settings.WIDTH/2)-(kite_region.getRegionWidth()/2)+(float)(50 * Math.sin(timePassed)), (Settings.HEIGHT/2) + 150f+ (float) (50 * Math.sin(timePassed)), 1f, 15);
-        renderRescale(sb, kite_region, (float)(150 * Math.sin(timePassed+0.75f)), 250f+ (float) (50 * Math.sin(timePassed)), 1f, 15);
-
         sb.setColor(origColor);
     }
 }

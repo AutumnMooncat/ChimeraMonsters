@@ -24,6 +24,10 @@ public class GenericWrathParticle extends AbstractGameEffect implements CustomLi
     }
 
     public GenericWrathParticle(Color c, Hitbox hb) {
+        this(c,hb,0,0);
+    }
+
+    public GenericWrathParticle (Color c, Hitbox hb, float offsetX, float offsetY){
         this.img = ImageMaster.GLOW_SPARK;// 20
         this.duration = MathUtils.random(1.3F, 1.8F);// 21
         this.scale = MathUtils.random(0.6F, 1.0F) * Settings.scale;// 22
@@ -34,9 +38,11 @@ public class GenericWrathParticle extends AbstractGameEffect implements CustomLi
         this.y = hb.cY + MathUtils.random(-hb.height / 2.0F - -10.0F * Settings.scale, hb.height / 2.0F - 10.0F * Settings.scale);// 30
         this.x -= (float)this.img.packedWidth / 2.0F;// 34
         this.y -= (float)this.img.packedHeight / 2.0F;// 35
+        this.x += offsetX;
+        this.y += offsetY;
         this.renderBehind = MathUtils.randomBoolean(0.2F + (this.scale - 0.5F));// 36
         this.rotation = MathUtils.random(-8.0F, 8.0F);// 37
-    }// 38
+    }
 
     public void update() {
         if (this.duration > this.dur_div2) {// 42

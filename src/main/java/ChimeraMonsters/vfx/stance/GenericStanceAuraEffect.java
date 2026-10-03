@@ -33,6 +33,10 @@ public class GenericStanceAuraEffect extends AbstractGameEffect implements Custo
     }
 
     public GenericStanceAuraEffect(Color c, Hitbox hb) {
+        this(c,hb,0,0);
+    }
+
+    public GenericStanceAuraEffect(Color c, Hitbox hb, float offsetX, float offsetY) {
         this.img = ImageMaster.EXHAUST_L;
         this.duration = 2.0F;
         this.scale = MathUtils.random(2.7F, 2.5F) * Settings.scale;
@@ -42,6 +46,8 @@ public class GenericStanceAuraEffect extends AbstractGameEffect implements Custo
         this.y = hb.cY + MathUtils.random(-hb.height / 16.0F, hb.height / 12.0F);
         this.x -= (float)this.img.packedWidth / 2.0F;
         this.y -= (float)this.img.packedHeight / 2.0F;
+        this.x += offsetX;
+        this.y += offsetY;
         switcher = !switcher;
         this.rotation = MathUtils.random(360.0F);
         if (switcher) {
