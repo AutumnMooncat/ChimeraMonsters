@@ -21,10 +21,15 @@ public class GenericDivinityChangeParticle extends AbstractGameEffect implements
     private float distOffset;
     private float scaleOffset;
 
+    public static Color originalColor() {
+        return Color.PINK.cpy();
+    }
+
     public GenericDivinityChangeParticle(Color color, float x, float y) {
         this.img = ImageMaster.STRIKE_LINE;// 15
         this.startingDuration = 0.5F;// 19
         this.duration = this.startingDuration;// 20
+        // Doesnt need 0 alpha like the others
         this.color = color.cpy();// 21
         this.rotation = MathUtils.random(360.0F);// 22
         this.oX = x - (float)this.img.packedWidth / 2.0F + MathUtils.random(-10.0F, 10.0F) * Settings.scale;// 23

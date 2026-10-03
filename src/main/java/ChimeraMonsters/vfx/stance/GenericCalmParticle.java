@@ -28,6 +28,7 @@ public class GenericCalmParticle extends AbstractGameEffect implements CustomLig
         this.scale = MathUtils.random(0.6F, 1.2F) * Settings.scale;// 19
         this.dur_div2 = this.duration / 2.0F;// 20
         this.color = c.cpy();
+        this.color.a = 0f;
         this.vX = MathUtils.random(-300.0F, -50.0F) * Settings.scale;// 22
         this.vY = MathUtils.random(-200.0F, -100.0F) * Settings.scale;// 23
         this.x = x + MathUtils.random(100.0F, 160.0F) * Settings.scale - 32.0F;// 24

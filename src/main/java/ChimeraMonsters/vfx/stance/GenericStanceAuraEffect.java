@@ -37,6 +37,7 @@ public class GenericStanceAuraEffect extends AbstractGameEffect implements Custo
         this.duration = 2.0F;
         this.scale = MathUtils.random(2.7F, 2.5F) * Settings.scale;
         this.color = c.cpy();
+        this.color.a = 0f;
         this.x = hb.cX + MathUtils.random(-hb.width / 16.0F, hb.width / 16.0F);
         this.y = hb.cY + MathUtils.random(-hb.height / 16.0F, hb.height / 12.0F);
         this.x -= (float)this.img.packedWidth / 2.0F;

@@ -33,6 +33,7 @@ public class GenericDivinityParticle extends AbstractGameEffect implements Custo
         this.scale *= Settings.scale;// 25
         this.dur_div2 = this.duration / 2.0F;// 27
         this.color = c.cpy();// 28
+        this.color.a = 0f;
         this.x = hb.cX + MathUtils.random(-hb.width / 2.0F - 50.0F * Settings.scale, hb.width / 2.0F + 50.0F * Settings.scale);// 30
         this.y = hb.cY + MathUtils.random(-hb.height / 2.0F + 10.0F * Settings.scale, hb.height / 2.0F - 20.0F * Settings.scale);// 34
         this.renderBehind = MathUtils.randomBoolean();// 38

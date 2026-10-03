@@ -29,6 +29,7 @@ public class GenericWrathParticle extends AbstractGameEffect implements CustomLi
         this.scale = MathUtils.random(0.6F, 1.0F) * Settings.scale;// 22
         this.dur_div2 = this.duration / 2.0F;// 23
         this.color = c.cpy();// 24
+        this.color.a = 0f;
         this.x = hb.cX + MathUtils.random(-hb.width / 2.0F - 30.0F * Settings.scale, hb.width / 2.0F + 30.0F * Settings.scale);// 26
         this.y = hb.cY + MathUtils.random(-hb.height / 2.0F - -10.0F * Settings.scale, hb.height / 2.0F - 10.0F * Settings.scale);// 30
         this.x -= (float)this.img.packedWidth / 2.0F;// 34
