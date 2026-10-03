@@ -1,7 +1,9 @@
 package ChimeraMonsters.vfx.hexaghost;
 
+import ChimeraMonsters.patches.CreatureRenderPatches;
 import ChimeraMonsters.util.TextureLoader;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.core.AbstractCreature;
@@ -49,14 +51,13 @@ public class ScalableHexaBody {
     }// 50
 
     public void render(SpriteBatch sb) {
-        //sb.setColor(this.m.tint.color);// 53
-        sb.draw(plasma3, this.m.drawX - 256.0F + this.m.animX + 12.0F * Settings.scale * scale, this.m.drawY + this.m.animY + this.effect.y * 2.0F - 256.0F + bodyOffsetY * scale, 256.0F, 256.0F, 512.0F, 512.0F, Settings.scale * 0.95F * scale, Settings.scale * 0.95F * scale, this.plasma3Angle, 0, 0, 512, 512, false, false);// 54
-        sb.draw(plasma2, this.m.drawX - 256.0F + this.m.animX + 6.0F * Settings.scale * scale, this.m.drawY + this.m.animY + this.effect.y - 256.0F + bodyOffsetY * scale, 256.0F, 256.0F, 512.0F, 512.0F, Settings.scale * scale, Settings.scale * scale, this.plasma2Angle, 0, 0, 512, 512, false, false);// 71
-        sb.draw(plasma1, this.m.drawX - 256.0F + this.m.animX, this.m.drawY + this.m.animY + this.effect.y * 0.5F - 256.0F + bodyOffsetY * scale, 256.0F, 256.0F, 512.0F, 512.0F, Settings.scale * scale, Settings.scale * scale, this.plasma1Angle, 0, 0, 512, 512, false, false);// 88
-        sb.draw(shadow, this.m.drawX - 256.0F + this.m.animX + 12.0F * Settings.scale * scale, this.m.drawY + this.m.animY + this.effect.y / 4.0F - 15.0F * Settings.scale * scale - 256.0F + bodyOffsetY * scale, 256.0F, 256.0F, 512.0F, 512.0F, Settings.scale * scale, Settings.scale * scale, 0.0F, 0, 0, 512, 512, false, false);// 106
-    }// 123
+        sb.draw(plasma3, Settings.WIDTH/2f-256f, Settings.HEIGHT/2f-256f, 256F, 256F, 512.0F, 512.0F, Settings.scale * 1F, Settings.scale * 1F, this.plasma3Angle, 0, 0, 512, 512, false, false);// 54
+        sb.draw(plasma2, Settings.WIDTH/2f-256f, Settings.HEIGHT/2f-256f, 256F, 256F, 512.0F, 512.0F, Settings.scale * 1F, Settings.scale * 1F, this.plasma2Angle, 0, 0, 512, 512, false, false);// 54
+        sb.draw(plasma1, Settings.WIDTH/2f-256f, Settings.HEIGHT/2f-256f, 256F, 256F, 512.0F, 512.0F, Settings.scale * 1F, Settings.scale * 1F, this.plasma1Angle, 0, 0, 512, 512, false, false);// 54
+        sb.draw(shadow, Settings.WIDTH/2f-256f, Settings.HEIGHT/2f-256f, 256F, 256F, 512.0F, 512.0F, Settings.scale * 1F, Settings.scale * 1F, 0f, 0, 0, 512, 512, false, false);// 54
+    }
 
     static {
-        bodyOffsetY = 256.0F * Settings.scale;// 32
+        bodyOffsetY = 128.0F * Settings.scale;// 32
     }
 }
