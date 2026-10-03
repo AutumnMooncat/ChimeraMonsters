@@ -26,12 +26,14 @@ public class TauntMod extends AbstractMonsterModifier {
             return false;
         }
         // TODO check for enemy scaling instead of hardcoding
-        for (AbstractMonster m : context.monsters) {
-            if (monster.equals(m)) {
-                continue;
-            }
-            if (m.id.equals(Taskmaster.ID) || m.id.equals(Cultist.ID) || m.id.equals(OrbWalker.ID)) {
-                return false;
+        if(context!=null){
+            for (AbstractMonster m : context.monsters) {
+                if (monster.equals(m)) {
+                    continue;
+                }
+                if (m.id.equals(Taskmaster.ID) || m.id.equals(Cultist.ID) || m.id.equals(OrbWalker.ID)) {
+                    return false;
+                }
             }
         }
         return true;
