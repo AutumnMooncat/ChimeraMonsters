@@ -15,7 +15,7 @@ public class LifestealDamage extends AbstractDamageModifier {
 
     @Override
     public void onLastDamageTakenUpdate(DamageInfo info, int lastDamageTaken, int overkillAmount, AbstractCreature target) {
-        if (lastDamageTaken > 0) {
+        if (lastDamageTaken > 0 && info.type== DamageInfo.DamageType.NORMAL && info.owner!=target) {
             addToTop(new HealAction(info.owner, info.owner, lastDamageTaken*percentage/100));
         }
     }
