@@ -6,6 +6,7 @@ import ChimeraMonsters.patches.*;
 import ChimeraMonsters.powers.interfaces.IntentInterceptingPower;
 import ChimeraMonsters.util.MonsterSpawnHelper;
 import com.megacrit.cardcrawl.actions.animations.AnimateShakeAction;
+import com.megacrit.cardcrawl.actions.common.ApplyPowerAction;
 import com.megacrit.cardcrawl.actions.common.SpawnMonsterAction;
 import com.megacrit.cardcrawl.actions.common.SuicideAction;
 import com.megacrit.cardcrawl.actions.unique.CanLoseAction;
@@ -20,6 +21,7 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.localization.PowerStrings;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.EnemyMoveInfo;
+import com.megacrit.cardcrawl.powers.AbstractPower;
 
 import java.util.ArrayList;
 
@@ -64,7 +66,7 @@ public class SplittingPower extends AbstractEasyPower implements IntentIntercept
     @Override
     public void setInterceptIntent(EnemyMoveInfo replacedMove) {
         EnemyMoveInfo newMove = new EnemyMoveInfo(replacedMove.nextMove, AbstractMonster.Intent.UNKNOWN, -1 , 0, false);
-        overrideMove(owner,newMove);
+        overrideMove(owner,newMove, true);
     }
 
     @Override
@@ -80,6 +82,7 @@ public class SplittingPower extends AbstractEasyPower implements IntentIntercept
             ArrayList<AbstractMonster> splitMonsters = MonsterSpawnHelper.getSplitMonsters((AbstractMonster) owner, MonsterGroupFields.encounterID.get(AbstractDungeon.getCurrRoom().monsters));
             for (AbstractMonster splitMonster : splitMonsters) {
                 AbstractDungeon.actionManager.addToBottom(new SpawnMonsterAction(splitMonster, false));
+                splitMonster.usePreBattleAction();
             }
             AbstractDungeon.actionManager.addToBottom(new CanLoseAction());
             ActionCapturePatch.clear();
