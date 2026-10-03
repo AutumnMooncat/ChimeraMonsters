@@ -7,6 +7,7 @@ import ChimeraMonsters.util.matchers.SuperFieldAccessMatcher;
 import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
+import com.megacrit.cardcrawl.powers.MinionPower;
 
 public class SplittingMod extends AbstractMonsterModifier {
     public static final String ID = ChimeraMonstersMod.makeID(SplittingMod.class.getSimpleName());
@@ -17,8 +18,7 @@ public class SplittingMod extends AbstractMonsterModifier {
 
     @Override
     protected boolean validMonster(AbstractMonster monster, MonsterGroup context) {
-        return monster.type == AbstractMonster.EnemyType.NORMAL &&
-                !hasAnyAnywhere(monster, new SuperFieldAccessMatcher(AbstractCreature.class, "halfDead"));
+        return monster.type == AbstractMonster.EnemyType.NORMAL && !monster.hasPower(MinionPower.POWER_ID) && !hasAnyAnywhere(monster, new SuperFieldAccessMatcher(AbstractCreature.class, "halfDead"));
     }
 
     @Override

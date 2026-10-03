@@ -8,6 +8,7 @@ import com.megacrit.cardcrawl.monsters.MonsterGroup;
 import com.megacrit.cardcrawl.monsters.beyond.OrbWalker;
 import com.megacrit.cardcrawl.monsters.city.Taskmaster;
 import com.megacrit.cardcrawl.monsters.exordium.Cultist;
+import com.megacrit.cardcrawl.powers.MinionPower;
 
 public class BackstageMod extends AbstractMonsterModifier {
     public static final String ID = ChimeraMonstersMod.makeID(BackstageMod.class.getSimpleName());
@@ -22,6 +23,8 @@ public class BackstageMod extends AbstractMonsterModifier {
         if (context != null && context.monsters != null && context.monsters.size() <= 1) {
             return false;
         } else if (monster.id.equals(Taskmaster.ID) || monster.id.equals(Cultist.ID) || monster.id.equals(OrbWalker.ID)) {
+            return false;
+        } else if (monster.hasPower(MinionPower.POWER_ID)) {
             return false;
         } else {
             return true;
