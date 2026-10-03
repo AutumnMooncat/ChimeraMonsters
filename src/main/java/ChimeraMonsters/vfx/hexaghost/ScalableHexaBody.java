@@ -25,7 +25,6 @@ public class ScalableHexaBody {
     public float plasma1Angle = 0.0F;
     public float plasma2Angle = 0.0F;
     public float plasma3Angle = 0.0F;
-    private static final float bodyOffsetY;
     private float scale;
 
     public ScalableHexaBody(AbstractCreature m, float scale) {
@@ -51,13 +50,9 @@ public class ScalableHexaBody {
     }// 50
 
     public void render(SpriteBatch sb) {
-        sb.draw(plasma3, Settings.WIDTH/2f-256f, Settings.HEIGHT/2f-256f, 256F, 256F, 512.0F, 512.0F, Settings.scale * 1F, Settings.scale * 1F, this.plasma3Angle, 0, 0, 512, 512, false, false);// 54
-        sb.draw(plasma2, Settings.WIDTH/2f-256f, Settings.HEIGHT/2f-256f, 256F, 256F, 512.0F, 512.0F, Settings.scale * 1F, Settings.scale * 1F, this.plasma2Angle, 0, 0, 512, 512, false, false);// 54
-        sb.draw(plasma1, Settings.WIDTH/2f-256f, Settings.HEIGHT/2f-256f, 256F, 256F, 512.0F, 512.0F, Settings.scale * 1F, Settings.scale * 1F, this.plasma1Angle, 0, 0, 512, 512, false, false);// 54
-        sb.draw(shadow, Settings.WIDTH/2f-256f, Settings.HEIGHT/2f-256f, 256F, 256F, 512.0F, 512.0F, Settings.scale * 1F, Settings.scale * 1F, 0f, 0, 0, 512, 512, false, false);// 54
-    }
-
-    static {
-        bodyOffsetY = 128.0F * Settings.scale;// 32
+        sb.draw(plasma3, Settings.WIDTH/2f - 256.0F + 12.0F * Settings.scale * scale, Settings.HEIGHT/2f - 256.0F + this.effect.y * 2.0F, 256.0F, 256.0F, 512.0F, 512.0F, Settings.scale * 0.95F * scale, Settings.scale * 0.95F * scale, this.plasma3Angle, 0, 0, 512, 512, false, false);
+        sb.draw(plasma2, Settings.WIDTH/2f - 256.0F + 6.0F * Settings.scale * scale, Settings.HEIGHT/2f - 256.0F + this.effect.y, 256.0F, 256.0F, 512.0F, 512.0F, Settings.scale * scale, Settings.scale * scale, this.plasma2Angle, 0, 0, 512, 512, false, false);
+        sb.draw(plasma1, Settings.WIDTH/2f - 256.0F, Settings.HEIGHT/2f - 256.0F + this.effect.y * 0.5F, 256.0F, 256.0F, 512.0F, 512.0F, Settings.scale * scale, Settings.scale * scale, this.plasma1Angle, 0, 0, 512, 512, false, false);
+        sb.draw(shadow, Settings.WIDTH/2f - 256.0F + 12.0F * Settings.scale * scale, Settings.HEIGHT/2f - 256.0F + this.effect.y / 4F, 256.0F, 256.0F, 512.0F, 512.0F, Settings.scale * scale, Settings.scale * scale, 0.0F, 0, 0, 512, 512, false, false);
     }
 }
