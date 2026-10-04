@@ -80,5 +80,11 @@
     "DESCRIPTIONS": [
       "If this creature still has #yBlock at the start of its turn, it gains #b"," #yBuffer."
     ]
+  },
+  "${ModID}:DilatantPower": {
+    "NAME": "Dilatant",
+    "DESCRIPTIONS": [
+      "Gains #yBlock equal to half unblocked attack damage taken."
+    ]
   }
 }

@@ -95,5 +95,8 @@
   },
   "${ModID}:BarrierMod": {
     "TEXT": ["Barrier ", "", "Gains #yBuffer if it starts its turn with #yBlock remaining."]
+  },
+  "${ModID}:DilatantMod": {
+    "TEXT": ["Dilatant ", "", "Gains #yBlock equal to half unblocked attack damage taken."]
   }
 }
