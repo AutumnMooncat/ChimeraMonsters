@@ -92,5 +92,8 @@
   },
   "${ModID}:ArmoredMod": {
     "TEXT": ["Armored ", "", "Starts with #yBarricade and #b[6/12/18/24] #yBlock."]
+  },
+  "${ModID}:BarrierMod": {
+    "TEXT": ["Barrier ", "", "Gains #yBuffer if it starts its turn with #yBlock remaining."]
   }
 }

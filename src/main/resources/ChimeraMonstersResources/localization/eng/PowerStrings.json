@@ -74,5 +74,11 @@
     "DESCRIPTIONS": [
       "Rest"
     ]
+  },
+  "${ModID}:BarrierPower": {
+    "NAME": "Magic Barrier",
+    "DESCRIPTIONS": [
+      "If this creature still has #yBlock at the start of its turn, it gains #b"," #yBuffer."
+    ]
   }
 }
