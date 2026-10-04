@@ -37,6 +37,7 @@ public class ParticleEffect extends AbstractGameEffect implements CustomLighting
         this.scale = MathUtils.random(1.0F, 1.2F) * Settings.scale;
         this.dur_div2 = this.duration / 2.0F;
         this.color = c.cpy();
+        this.color.a = 0f;
         this.oX = MathUtils.random(-25.0F, 25.0F) * Settings.scale;
         this.oY = MathUtils.random(-25.0F, 25.0F) * Settings.scale;
         this.oX -= (float)this.img.packedWidth / 2.0F;
