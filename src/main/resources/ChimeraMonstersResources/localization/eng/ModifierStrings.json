@@ -89,5 +89,8 @@
   },
   "${ModID}:SleepyMod": {
     "TEXT": ["Sleepy ", "", "Intends to heal itself #b[8/16/24/36] #yHP every 3 turns."]
+  },
+  "${ModID}:ArmoredMod": {
+    "TEXT": ["Armored ", "", "Starts with #yBarricade and #b[6/12/18/24] #yBlock."]
   }
 }
