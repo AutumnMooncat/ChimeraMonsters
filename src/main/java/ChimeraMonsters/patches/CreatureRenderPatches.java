@@ -31,6 +31,7 @@ import javassist.CtBehavior;
 
 import java.util.ArrayList;
 import java.util.WeakHashMap;
+import java.util.function.Consumer;
 
 public class CreatureRenderPatches {
     private static final FrameBuffer frontBuffer = ImageHelper.createBuffer();
@@ -133,6 +134,10 @@ public class CreatureRenderPatches {
     }
 
     public static TextureRegion blitShader(SpriteBatch sb, ShaderProgram sp) {
+        return blitShader(sb, sp, u -> {});
+    }
+
+    public static TextureRegion blitShader(SpriteBatch sb, ShaderProgram sp, Consumer<ShaderProgram> uniforms) {
         sb.end();
         activeBuffer.end();
         TextureRegion tex = ImageHelper.getBufferTexture(activeBuffer);
@@ -140,6 +145,7 @@ public class CreatureRenderPatches {
         ImageHelper.beginBuffer(shaderBuffer);
         temp.begin();
         temp.setShader(sp);
+        uniforms.accept(sp);
         //temp.setBlendFunction(GL20.GL_ONE, GL20.GL_ZERO);
         temp.setBlendFunction(GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA);
         temp.draw(tex, 0, 0);

@@ -86,5 +86,23 @@
     "DESCRIPTIONS": [
       "Gains #yBlock equal to half unblocked attack damage taken."
     ]
+  },
+  "${ModID}:FrostyPower": {
+    "NAME": "Frosty",
+    "DESCRIPTIONS": [
+      "Your next Attack deals #b", " less damage."
+    ]
+  },
+  "${ModID}:IcyPower": {
+    "NAME": "Icy",
+    "DESCRIPTIONS": [
+      "Whenever you receive attack damage from this enemy, your next Attack deals #b", " less damage."
+    ]
+  },
+  "${ModID}:CrackedPower": {
+    "NAME": "Cracked",
+    "DESCRIPTIONS": [
+      "Receive #b", "% more damage from Attacks. When taking unblocked attack damage, increase #yCracked by #b1."
+    ]
   }
 }

@@ -8,6 +8,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 
+import java.util.function.Consumer;
+
 public interface RenderModifierPower {
     default void onRender(SpriteBatch sb, TextureRegion tex) {
         Color origColor = sb.getColor();
@@ -17,10 +19,14 @@ public interface RenderModifierPower {
     }
 
     default TextureRegion blitShader(SpriteBatch sb, TextureRegion tex, ShaderProgram sp) {
+        return blitShader(sb, tex, sp, u -> {});
+    }
+
+    default TextureRegion blitShader(SpriteBatch sb, TextureRegion tex, ShaderProgram sp, Consumer<ShaderProgram> uniforms) {
         if (!ChimeraMonstersConfig.BoolSetting.ENABLE_SHADERS.getVal()) {
             return tex;
         }
-        TextureRegion ret = CreatureRenderPatches.blitShader(sb, sp);
+        TextureRegion ret = CreatureRenderPatches.blitShader(sb, sp, uniforms);
         render(sb, ret);
         return ret;
     }
