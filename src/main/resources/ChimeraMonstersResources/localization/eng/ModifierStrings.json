@@ -103,6 +103,9 @@
     "TEXT": ["Icy ", "", "Increases #yHP by #b50%. NL Applies #b[2/4/6/8] #yFrosty on unblocked attack damage dealt, but suffers #yCracked."]
   },
   "${ModID}:CloakedMod": {
-    "TEXT": ["Cloaked ", "", "Hides intent until attack."]
+    "TEXT": ["Cloaked ", "", "Hides intent each turn until attacked."]
+  },
+  "${ModID}:AbyssalMod": {
+    "TEXT": ["Abyssal ", "", "If directly targeted by a card, adds a #yVoid into your discard pile during its turn."]
   }
 }

@@ -25,12 +25,22 @@ public class ParticleEffect extends AbstractGameEffect implements CustomLighting
     protected final TextureAtlas.AtlasRegion img;
 
     public ParticleEffect(Color c, float x, float y) {
-        this(c, null);
+        this(c, null, 1f, 1f);
+        this.x = x;
+        this.y = y;
+    }
+
+    public ParticleEffect(Color c, float x, float y,  float posScale, float velScale) {
+        this(c,null, posScale, velScale);
         this.x = x;
         this.y = y;
     }
 
     public ParticleEffect(Color c, Hitbox hb) {
+        this(c, hb, 1f, 1f);
+    }
+
+    public ParticleEffect(Color c, Hitbox hb, float posScale, float velScale) {
         this.hb = hb;
         this.img = ImageMaster.GLOW_SPARK_2;
         this.duration = MathUtils.random(1.8F, 2.0F);
@@ -38,12 +48,12 @@ public class ParticleEffect extends AbstractGameEffect implements CustomLighting
         this.dur_div2 = this.duration / 2.0F;
         this.color = c.cpy();
         this.color.a = 0f;
-        this.oX = MathUtils.random(-25.0F, 25.0F) * Settings.scale;
-        this.oY = MathUtils.random(-25.0F, 25.0F) * Settings.scale;
+        this.oX = MathUtils.random(-25.0F, 25.0F) * Settings.scale * posScale;
+        this.oY = MathUtils.random(-25.0F, 25.0F) * Settings.scale * posScale;
         this.oX -= (float)this.img.packedWidth / 2.0F;
         this.oY -= (float)this.img.packedHeight / 2.0F;
-        this.vX = MathUtils.random(-15.0F, 15.0F) * Settings.scale;
-        this.vY = MathUtils.random(-17.0F, 17.0F) * Settings.scale;
+        this.vX = MathUtils.random(-15.0F, 15.0F) * Settings.scale * velScale;
+        this.vY = MathUtils.random(-17.0F, 17.0F) * Settings.scale * velScale;
         this.renderBehind = MathUtils.randomBoolean(0.2F + (this.scale - 0.5F));
         this.rotation = MathUtils.random(-8.0F, 8.0F);
     }

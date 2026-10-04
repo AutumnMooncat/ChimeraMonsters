@@ -110,5 +110,11 @@
     "DESCRIPTIONS": [
       "At the start of each turn, hides its intent until it receives attack damage."
     ]
+  },
+  "${ModID}:AbyssalPower": {
+    "NAME": "Abyssal",
+    "DESCRIPTIONS": [
+      "During its turn, adds #b"," #yVoid into your discard pile if it was directly targeted by a card this turn."
+    ]
   }
 }
