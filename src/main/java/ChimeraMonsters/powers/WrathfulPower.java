@@ -42,7 +42,7 @@ public class WrathfulPower extends AbstractEasyPower {
         }
         loopKey = LoopingSoundManager.addLoopedSound(loopSFX);
         for(int i = 0; i < 10; ++i) {
-            AbstractDungeon.effectsQueue.add(new GenericWrathChangeParticle(GenericWrathChangeParticle.originalColor(), owner.hb.cX));
+            AbstractDungeon.effectsQueue.add(new GenericWrathChangeParticle(GenericWrathChangeParticle.originalColor(), owner.hb.cX, 0));
         }
         AbstractDungeon.effectsQueue.add(new BorderFlashEffect(Color.SCARLET, true));
         CardCrawlGame.sound.play("STANCE_ENTER_WRATH", 0f);

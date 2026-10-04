@@ -24,7 +24,12 @@ public class GenericDivinityParticle extends AbstractGameEffect implements Custo
         return new Color(MathUtils.random(0.8F, 1.0F), MathUtils.random(0.5F, 0.7F), MathUtils.random(0.8F, 1.0F), 0.0F);
     }
 
-    public GenericDivinityParticle(Color c, Hitbox hb) {
+    public GenericDivinityParticle(Color c, Hitbox hb)
+    {
+        this(c,hb,0,0);
+    }
+
+    public GenericDivinityParticle(Color c, Hitbox hb,float offsetX, float offsetY) {
         this.scale = Settings.scale;// 20
         this.img = ImageMaster.EYE_ANIM_0;// 21
         this.scale = MathUtils.random(1.0F, 1.5F);// 22
@@ -34,8 +39,8 @@ public class GenericDivinityParticle extends AbstractGameEffect implements Custo
         this.dur_div2 = this.duration / 2.0F;// 27
         this.color = c.cpy();// 28
         this.color.a = 0f;
-        this.x = hb.cX + MathUtils.random(-hb.width / 2.0F - 50.0F * Settings.scale, hb.width / 2.0F + 50.0F * Settings.scale);// 30
-        this.y = hb.cY + MathUtils.random(-hb.height / 2.0F + 10.0F * Settings.scale, hb.height / 2.0F - 20.0F * Settings.scale);// 34
+        this.x = offsetX + hb.cX + MathUtils.random(-hb.width / 2.0F - 50.0F * Settings.scale, hb.width / 2.0F + 50.0F * Settings.scale);// 30
+        this.y = offsetY + hb.cY + MathUtils.random(-hb.height / 2.0F + 10.0F * Settings.scale, hb.height / 2.0F - 20.0F * Settings.scale);// 34
         this.renderBehind = MathUtils.randomBoolean();// 38
         this.rotation = MathUtils.random(12.0F, 6.0F);// 39
         if (this.x > hb.cX) {// 40

@@ -7,10 +7,10 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
 
-public class KiteMod extends AbstractMonsterModifier {
-    public static final String ID = ChimeraMonstersMod.makeID(KiteMod.class.getSimpleName());
+public class HoverMod extends AbstractMonsterModifier {
+    public static final String ID = ChimeraMonstersMod.makeID(HoverMod.class.getSimpleName());
 
-    public KiteMod() {
+    public HoverMod() {
         super(ID, ModifierRarity.UNCOMMON);
     }
 
@@ -27,6 +27,6 @@ public class KiteMod extends AbstractMonsterModifier {
 
     @Override
     public AbstractMonsterModifier makeCopy() {
-        return new KiteMod();
+        return new HoverMod();
     }
 }

@@ -21,14 +21,16 @@ public class GenericWrathChangeParticle extends AbstractGameEffect implements Cu
         return new Color(1.0F, MathUtils.random(0.1F, 0.3F), 0.1F, 0.0F);
     }
 
-    public GenericWrathChangeParticle(Color c, float x) {
+
+
+    public GenericWrathChangeParticle(Color c, float x, float y) {
         this.img = ImageMaster.STRIKE_LINE;
         this.startingDuration = 1.0F;
         this.duration = this.startingDuration;
         this.color = c.cpy();
         this.color.a = 0f;
         this.x = x + MathUtils.random(-30.0F, 30.0F) * Settings.scale - (float)this.img.packedWidth / 2.0F;
-        this.y = (float)Settings.HEIGHT / 2.0F + MathUtils.random(-150.0F, 150.0F) * Settings.scale - (float)this.img.packedHeight / 2.0F;
+        this.y = y + (float)Settings.HEIGHT / 2.0F + MathUtils.random(-150.0F, 150.0F) * Settings.scale - (float)this.img.packedHeight / 2.0F;
         this.scale = MathUtils.random(2.2F, 2.5F) * Settings.scale;
         this.delayTimer = MathUtils.random(0.5F);
         this.rotation = MathUtils.random(89.0F, 91.0F);

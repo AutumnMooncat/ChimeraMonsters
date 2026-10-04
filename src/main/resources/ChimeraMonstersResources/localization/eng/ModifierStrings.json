@@ -48,7 +48,7 @@
   "${ModID}:NormalMod": {
     "TEXT": ["Normal ", "", "You cannot play more than 3 cards per turn."]
   },
-  "${ModID}:KiteMod": {
+  "${ModID}:HoverMod": {
     "TEXT": ["Hovering ", "", "Has #b[6/9] #yHover. Loses #b25% #yHP on impact."]
   },
   "${ModID}:BurningMod": {

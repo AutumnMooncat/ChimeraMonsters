@@ -20,7 +20,7 @@ public class TauntPower extends AbstractInternalLogicPower implements RenderModi
     public static final String POWER_ID = ChimeraMonstersMod.makeID(TauntPower.class.getSimpleName());
     private static final UIStrings cantUseText = CardCrawlGame.languagePack.getUIString(ChimeraMonstersMod.makeID("CantUseText"));
     private static final UIStrings speechText = CardCrawlGame.languagePack.getUIString(ChimeraMonstersMod.makeID("SpeechText"));
-    private final float speechCooldown = 4f;
+    private final float speechCooldown = 10f;
     private float remainingSpeechCooldown = speechCooldown;
 
     public TauntPower(AbstractCreature owner, int amount) {
