@@ -68,5 +68,11 @@
     "DESCRIPTIONS": [
       "When attacked, loses #b"," #yStrength for the turn."
     ]
+  },
+  "${ModID}:SleepyPower": {
+    "NAME": "Sleepy",
+    "DESCRIPTIONS": [
+      "Rest"
+    ]
   }
 }

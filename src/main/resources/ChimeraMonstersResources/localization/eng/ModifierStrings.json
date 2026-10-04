@@ -86,5 +86,8 @@
   },
   "${ModID}:ShelledMod": {
     "TEXT": ["Shelled ", "", "Has #b[8/12] #yPlated #yArmor. Becomes #yStunned if all armor is removed."]
+  },
+  "${ModID}:SleepyMod": {
+    "TEXT": ["Sleepy ", "", "Intends to heal itself #b[8/16/24/36] #yHP every 3 turns."]
   }
 }
