@@ -83,5 +83,8 @@
   },
   "${ModID}:AncientMod": {
     "TEXT": ["Ancient ", "", "Has #b5 #yArtifact. Loses #yStength for the turn when attacked."]
+  },
+  "${ModID}:ShelledMod": {
+    "TEXT": ["Shelled ", "", "Has #b[8/12] #yPlated #yArmor. Becomes #yStunned if all armor is removed."]
   }
 }
