@@ -101,5 +101,8 @@
   },
   "${ModID}:IcyMod": {
     "TEXT": ["Icy ", "", "Increases #yHP by #b50%. NL Applies #b[2/4/6/8] #yFrosty on unblocked attack damage dealt, but suffers #yCracked."]
+  },
+  "${ModID}:CloakedMod": {
+    "TEXT": ["Cloaked ", "", "Hides intent until attack."]
   }
 }

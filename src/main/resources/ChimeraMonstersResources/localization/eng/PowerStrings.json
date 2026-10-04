@@ -104,5 +104,11 @@
     "DESCRIPTIONS": [
       "Receive #b", "% more damage from Attacks. When taking unblocked attack damage, increase #yCracked by #b1."
     ]
+  },
+  "${ModID}:CloakedPower": {
+    "NAME": "Cloaked",
+    "DESCRIPTIONS": [
+      "At the start of each turn, hides its intent until it receives attack damage."
+    ]
   }
 }

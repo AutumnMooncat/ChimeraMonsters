@@ -1,11 +1,12 @@
 package ChimeraMonsters.patches;
 
+import ChimeraMonsters.powers.interfaces.IntentHidingPower;
 import basemod.abstracts.CustomMonster;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.modthespire.lib.*;
-import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.PowerTip;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
+import com.megacrit.cardcrawl.powers.AbstractPower;
 import javassist.CannotCompileException;
 import javassist.CtBehavior;
 import javassist.expr.ExprEditor;
@@ -15,8 +16,13 @@ import java.util.ArrayList;
 
 public class RunicPatch {
     public static boolean hideIntent(AbstractMonster monster) {
-        // Powers could hide
-        return false;
+        boolean ret = false;
+        for (AbstractPower power : monster.powers) {
+            if (power instanceof IntentHidingPower) {
+                ret |= ((IntentHidingPower) power).shouldHide();
+            }
+        }
+        return ret;
     }
     @SpirePatch(clz = AbstractMonster.class, method = "renderTip")
     public static class TipPatch {
