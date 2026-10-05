@@ -1,32 +1,34 @@
-package ChimeraMonsters.modifiers.monsters.rare;
+package ChimeraMonsters.modifiers.monsters.special;
 
 import ChimeraMonsters.ChimeraMonstersMod;
 import ChimeraMonsters.modifiers.monsters.AbstractMonsterModifier;
-import ChimeraMonsters.powers.DoppelPower;
+import ChimeraMonsters.powers.HexacursedPower;
+import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
 
-public class DoppelMod extends AbstractMonsterModifier {
-    public static final String ID = ChimeraMonstersMod.makeID(DoppelMod.class.getSimpleName());
+public class HexacurseMod extends AbstractMonsterModifier {
+    public static final String ID = ChimeraMonstersMod.makeID(HexacurseMod.class.getSimpleName());
 
-    public DoppelMod() {
-        super(ID, ModifierRarity.RARE);
+    public HexacurseMod() {
+        super(ID, ModifierRarity.SPECIAL);
     }
 
     @Override
     protected boolean validMonster(AbstractMonster monster, MonsterGroup context) {
-        return true;
+        return monster.type != AbstractMonster.EnemyType.BOSS && actAtLeast(2);
     }
 
     @Override
     public void applyTo(AbstractMonster monster) {
-        manipulateBaseDamage(monster, 0.5f);
-        applyPowersToCreature(monster, new DoppelPower(monster, 1));
+        manipulateBaseHealth(monster, DEBUFF_20);
+        int base = AbstractDungeon.actNum + (monster.type == AbstractMonster.EnemyType.ELITE ? 1 : 0);
+        applyPowersToCreature(monster, new HexacursedPower(monster, scaleDeadlier(monster, base, base + 1)));
     }
 
     @Override
     public AbstractMonsterModifier makeCopy() {
-        return new DoppelMod();
+        return new HexacurseMod();
     }
 
     @Override
