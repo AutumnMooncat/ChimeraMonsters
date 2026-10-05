@@ -116,5 +116,19 @@
     "DESCRIPTIONS": [
       "During its turn, adds #b"," #yVoid into your discard pile if it was directly targeted by a card this turn."
     ]
+  },
+  "${ModID}:TemporalPower": {
+    "NAME": "Temporal",
+    "DESCRIPTIONS": [
+      "All damage received is delayed until the start of your next turn."
+    ]
+  },
+  "${ModID}:NextTurnTakeDamagePower": {
+    "NAME": "Next Turn Damage",
+    "DESCRIPTIONS": [
+      "Dealt #b"," attack damage at the start of your next turn.",
+      "Takes #b"," damage at the start of your next turn.",
+      "Loses #b"," #yHP at the start of your next turn."
+    ]
   }
 }

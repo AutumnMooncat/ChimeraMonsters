@@ -1,11 +1,13 @@
 package ChimeraMonsters.patches;
 
+import ChimeraMonsters.powers.interfaces.DelayDamagePower;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch2;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePrefixPatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpireReturn;
 import com.megacrit.cardcrawl.cards.DamageInfo;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
+import com.megacrit.cardcrawl.powers.AbstractPower;
 
 public class DamagePatches {
     @SpirePatch2(clz = AbstractMonster.class, method = "damage")
@@ -18,6 +20,11 @@ public class DamagePatches {
                         monster.damage(info);
                         return SpireReturn.Return();
                     }
+                }
+            }
+            for (AbstractPower power : __instance.powers) {
+                if (power instanceof DelayDamagePower && ((DelayDamagePower) power).shouldDelay(info)) {
+                    return SpireReturn.Return();
                 }
             }
             return SpireReturn.Continue();

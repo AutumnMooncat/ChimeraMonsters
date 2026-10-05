@@ -68,7 +68,7 @@ public class AbyssalPower extends AbstractEasyPower implements RenderModifierPow
             particleTimer -= Gdx.graphics.getDeltaTime();
             if (particleTimer <= 0) {
                 particleTimer = MathUtils.random(0.25f, 0.3f);
-                float factor = Math.max(owner.hb.width, owner.hb.height)/40f;
+                float factor = Math.max(owner.hb.width, owner.hb.height)/75f;
                 for (int i = 0; i < 4; ++i) {
                     AbstractDungeon.effectsQueue.add(new ParticleEffect(ColorUtil.AMETHYST, owner.hb, factor, 1.5f));
                 }
