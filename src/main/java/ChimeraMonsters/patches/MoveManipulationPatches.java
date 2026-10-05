@@ -145,6 +145,16 @@ public class MoveManipulationPatches {
         return null;
     }
 
+    public static void setMove(AbstractCreature creature, EnemyMoveInfo info) {
+        if (creature instanceof AbstractMonster) {
+            try {
+                moveField.set(creature, info);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
     public static void overrideMove(AbstractCreature creature, EnemyMoveInfo info) {
         overrideMove(creature, info, false);
     }
@@ -196,6 +206,7 @@ public class MoveManipulationPatches {
         @SpirePostfixPatch
         public static void setName(AbstractMonster __instance) {
             EnemyMoveInfo currentMove = getMove(__instance);
+            if (currentMove == null) return;
             EnemyMoveInfoFields.name.set(currentMove, __instance.moveName);
         }
     }

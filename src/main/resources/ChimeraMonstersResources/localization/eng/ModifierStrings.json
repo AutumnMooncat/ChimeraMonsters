@@ -119,5 +119,8 @@
   },
   "${ModID}:GiantMod": {
     "TEXT": ["Giant ", "", "Increases base damage and #yHP by #b50%. NL Stunned every other turn."]
+  },
+  "${ModID}:TinyMod": {
+    "TEXT": ["Tiny ", "", "Reduces base damage and #yHP by #b50%. NL Takes two turns."]
   }
 }

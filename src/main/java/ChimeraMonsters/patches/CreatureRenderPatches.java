@@ -1,11 +1,13 @@
 package ChimeraMonsters.patches;
 
 import ChimeraMonsters.monsters.You;
+import ChimeraMonsters.powers.interfaces.MultiIntentPower;
 import ChimeraMonsters.powers.interfaces.RenderModifierPower;
 import ChimeraMonsters.ui.HoveringCardManager;
 import ChimeraMonsters.util.ImageHelper;
 import ChimeraMonsters.util.Wiz;
 import ChimeraMonsters.util.matchers.SuperFieldAccessMatcher;
+import ChimeraMonsters.util.matchers.SuperMethodCallMatcher;
 import basemod.ReflectionHacks;
 import basemod.abstracts.CustomMonster;
 import com.badlogic.gdx.backends.lwjgl.LwjglGraphics;
@@ -272,6 +274,8 @@ public class CreatureRenderPatches {
     @SpirePatch2(clz = AbstractMonster.class, method = "render")
     @SpirePatch2(clz = CustomMonster.class, method = "render")
     public static class RenderTime {
+        public static boolean didIntents;
+
         @SpirePrefixPatch
         public static void onAtStart(AbstractMonster __instance, SpriteBatch sb) {
             timeFlux = 1f;
@@ -301,6 +305,27 @@ public class CreatureRenderPatches {
             endCapture(__instance, sb);
         }
 
+        @SpireInsertPatch(locator = LocatorTwoElectricBoogaloo.class)
+        public static void intentsStart(AbstractMonster __instance, SpriteBatch sb) {
+            didIntents = true;
+            for (AbstractPower power : __instance.powers) {
+                if (power instanceof MultiIntentPower) {
+                    ((MultiIntentPower) power).preIntentRender(sb);
+                }
+            }
+        }
+
+        @SpireInsertPatch(locator = LocatorThreeElectricBeegalee.class)
+        public static void intentsDone(AbstractMonster __instance, SpriteBatch sb) {
+            if (!didIntents) return;
+            didIntents = false;
+            for (AbstractPower power : __instance.powers) {
+                if (power instanceof MultiIntentPower) {
+                    ((MultiIntentPower) power).postIntentRender(sb);
+                }
+            }
+        }
+
         @SpirePostfixPatch
         public static void renderCards(AbstractMonster __instance, SpriteBatch sb) {
             Color orig = sb.getColor();
@@ -317,6 +342,22 @@ public class CreatureRenderPatches {
             @Override
             public int[] Locate(CtBehavior ctBehavior) throws Exception {
                 Matcher m = new SuperFieldAccessMatcher(AbstractCreature.class, "isDying");
+                return LineFinder.findInOrder(ctBehavior, m);
+            }
+        }
+
+        public static class LocatorTwoElectricBoogaloo extends SpireInsertLocator {
+            @Override
+            public int[] Locate(CtBehavior ctBehavior) throws Exception {
+                Matcher m = new SuperMethodCallMatcher(AbstractMonster.class, "renderIntentVfxBehind");
+                return LineFinder.findInOrder(ctBehavior, m);
+            }
+        }
+
+        public static class LocatorThreeElectricBeegalee extends SpireInsertLocator {
+            @Override
+            public int[] Locate(CtBehavior ctBehavior) throws Exception {
+                Matcher m = new Matcher.MethodCallMatcher(Hitbox.class, "render");
                 return LineFinder.findInOrder(ctBehavior, m);
             }
         }
