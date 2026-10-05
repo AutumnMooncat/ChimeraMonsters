@@ -13,7 +13,7 @@ import com.megacrit.cardcrawl.monsters.EnemyMoveInfo;
 public class SleepyPower extends AbstractInternalLogicPower implements IntentInterceptingPower {
     public static final String POWER_ID = ChimeraMonstersMod.makeID(SleepyPower.class.getSimpleName());
     private static final PowerStrings powerStrings = CardCrawlGame.languagePack.getPowerStrings(POWER_ID);
-    public int cooldown;
+    public int cooldown = 2;
 
     public SleepyPower(AbstractCreature owner, int amount) {
         super(POWER_ID, owner, amount);
@@ -43,7 +43,7 @@ public class SleepyPower extends AbstractInternalLogicPower implements IntentInt
 
     @Override
     public boolean performIntercept() {
-        cooldown = 3;
+        cooldown = 2;
         addToBot(new HealAction(owner, owner, amount));
         return false;
     }
