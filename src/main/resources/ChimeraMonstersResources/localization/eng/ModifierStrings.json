@@ -116,5 +116,8 @@
   },
   "${ModID}:VoidboundMod": {
     "TEXT": ["Voidbound ", "", "On death, puts a #yVoid onto the top of your draw pile."]
+  },
+  "${ModID}:GiantMod": {
+    "TEXT": ["Giant ", "", "Increases base damage and #yHP by #b50%. NL Stunned every other turn."]
   }
 }
