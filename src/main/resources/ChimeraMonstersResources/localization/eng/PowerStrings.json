@@ -130,5 +130,11 @@
       "Takes #b"," damage at the start of your next turn.",
       "Loses #b"," #yHP at the start of your next turn."
     ]
+  },
+  "${ModID}:VoidboundPower": {
+    "NAME": "Voidbound",
+    "DESCRIPTIONS": [
+      "On death, puts #b"," #yVoid onto the top of your draw pile."
+    ]
   }
 }

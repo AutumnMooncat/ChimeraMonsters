@@ -110,5 +110,8 @@
   },
   "${ModID}:TemporalMod": {
     "TEXT": ["Temporal ", "", "All damage received is delayed until the start of your next turn."]
+  },
+  "${ModID}:VoidboundMod": {
+    "TEXT": ["Voidbound ", "", "On death, puts a #yVoid onto the top of your draw pile."]
   }
 }
