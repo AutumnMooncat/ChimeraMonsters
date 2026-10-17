@@ -142,5 +142,17 @@
     "DESCRIPTIONS": [
       "Beeg."
     ]
+  },
+  "${ModID}:TinyPower": {
+    "NAME": "Tiny",
+    "DESCRIPTIONS": [
+      "Smol."
+    ]
+  },
+  "${ModID}:MirrorPower": {
+    "NAME": "Mirror",
+    "DESCRIPTIONS": [
+      "The first time this is attacked each turn, it gains an equal attack intent."
+    ]
   }
 }

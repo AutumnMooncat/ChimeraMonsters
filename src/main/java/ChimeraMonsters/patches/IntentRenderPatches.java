@@ -1,6 +1,8 @@
 package ChimeraMonsters.patches;
 
 import ChimeraMonsters.powers.interfaces.IntentHidingPower;
+import ChimeraMonsters.util.IntentManager;
+import ChimeraMonsters.util.IntentPayload;
 import basemod.abstracts.CustomMonster;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.modthespire.lib.*;
@@ -14,7 +16,7 @@ import javassist.expr.MethodCall;
 
 import java.util.ArrayList;
 
-public class RunicPatch {
+public class IntentRenderPatches {
     public static boolean hideIntent(AbstractMonster monster) {
         boolean ret = false;
         for (AbstractPower power : monster.powers) {
@@ -24,12 +26,19 @@ public class RunicPatch {
         }
         return ret;
     }
+
     @SpirePatch(clz = AbstractMonster.class, method = "renderTip")
     public static class TipPatch {
         @SpireInsertPatch (locator = Locator.class)
         public static void Insert(AbstractMonster __instance, SpriteBatch sb, ArrayList<PowerTip> ___tips, PowerTip ___intentTip) {
             if (hideIntent(__instance)) {
                 ___tips.remove(___intentTip);
+                return;
+            }
+            int index = ___tips.indexOf(___intentTip);
+            for (IntentPayload intent : MonsterFields.extraIntents.get(__instance)) {
+                index++;
+                ___tips.add(index, intent.fields.intentTip);
             }
         }
         public static class Locator extends SpireInsertLocator {
@@ -49,10 +58,44 @@ public class RunicPatch {
                 @Override
                 public void edit(MethodCall m) throws CannotCompileException {
                     if (m.getMethodName().equals("hasRelic")) {
-                        m.replace("{$_ = $proceed($$) || " + RunicPatch.class.getName() + ".hideIntent(this);}");
+                        m.replace("{$_ = $proceed($$) || " + IntentRenderPatches.class.getName() + ".hideIntent(this);}");
                     }
                 }
             };
+        }
+    }
+
+    @SpirePatch(clz = AbstractMonster.class, method = "renderIntent")
+    public static class IntentStuff {
+        public static boolean lock;
+
+        @SpirePostfixPatch
+        public static void doExtras(AbstractMonster __instance, SpriteBatch sb) {
+            if (lock || !IntentManager.hasExtraIntents(__instance)) return;
+            lock = true;
+            IntentManager.backupMainIntent(__instance);
+            for (IntentPayload intent : MonsterFields.extraIntents.get(__instance)) {
+                intent.render(__instance, sb);
+            }
+            IntentManager.restoreMainIntent(__instance);
+            lock = false;
+        }
+    }
+
+    @SpirePatch(clz = AbstractMonster.class, method = "renderDamageRange")
+    public static class IntentDamageStuff {
+        public static boolean lock;
+
+        @SpirePostfixPatch
+        public static void doExtras(AbstractMonster __instance, SpriteBatch sb) {
+            if (lock || !IntentManager.hasExtraIntents(__instance)) return;
+            lock = true;
+            IntentManager.backupMainIntent(__instance);
+            for (IntentPayload intent : MonsterFields.extraIntents.get(__instance)) {
+                intent.renderDamage(__instance, sb);
+            }
+            IntentManager.restoreMainIntent(__instance);
+            lock = false;
         }
     }
 }

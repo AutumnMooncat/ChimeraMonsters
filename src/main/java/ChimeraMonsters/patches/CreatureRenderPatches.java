@@ -1,7 +1,7 @@
 package ChimeraMonsters.patches;
 
 import ChimeraMonsters.monsters.You;
-import ChimeraMonsters.powers.interfaces.MultiIntentPower;
+import ChimeraMonsters.powers.interfaces.OnIntentRenderPower;
 import ChimeraMonsters.powers.interfaces.RenderModifierPower;
 import ChimeraMonsters.ui.HoveringCardManager;
 import ChimeraMonsters.util.ImageHelper;
@@ -309,8 +309,8 @@ public class CreatureRenderPatches {
         public static void intentsStart(AbstractMonster __instance, SpriteBatch sb) {
             didIntents = true;
             for (AbstractPower power : __instance.powers) {
-                if (power instanceof MultiIntentPower) {
-                    ((MultiIntentPower) power).preIntentRender(sb);
+                if (power instanceof OnIntentRenderPower) {
+                    ((OnIntentRenderPower) power).preIntentRender(sb);
                 }
             }
         }
@@ -320,8 +320,8 @@ public class CreatureRenderPatches {
             if (!didIntents) return;
             didIntents = false;
             for (AbstractPower power : __instance.powers) {
-                if (power instanceof MultiIntentPower) {
-                    ((MultiIntentPower) power).postIntentRender(sb);
+                if (power instanceof OnIntentRenderPower) {
+                    ((OnIntentRenderPower) power).postIntentRender(sb);
                 }
             }
         }

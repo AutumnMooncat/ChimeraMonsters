@@ -122,5 +122,8 @@
   },
   "${ModID}:TinyMod": {
     "TEXT": ["Tiny ", "", "Reduces base damage and #yHP by #b50%. NL Takes two turns."]
+  },
+  "${ModID}:MirrorMod": {
+    "TEXT": ["", " of Mirrors", "Reduces base damage by #b33%. NL The first time it is attacked each turn, gains an equal attack intent."]
   }
 }

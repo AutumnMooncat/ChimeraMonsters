@@ -3,6 +3,7 @@ package ChimeraMonsters.patches;
 import ChimeraMonsters.modifiers.monsters.AbstractMonsterModifier;
 import ChimeraMonsters.powers.interfaces.IntentInterceptingPower;
 import ChimeraMonsters.ui.HoveringCardManager;
+import ChimeraMonsters.util.IntentPayload;
 import com.evacipated.cardcrawl.modthespire.lib.SpireField;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
@@ -26,6 +27,9 @@ public class MonsterFields {
     public static SpireField<IntentInterceptingPower> interceptor = new SpireField<>(() -> null);
     public static SpireField<EnemyMoveInfo> replacedIntendedMove = new SpireField<>(() -> null);
     public static SpireField<Boolean> successfullyRolledMove = new SpireField<>(() -> false);
+    public static SpireField<IntentPayload> mainIntent = new SpireField<>(() -> null);
+    public static SpireField<IntentPayload> activeIntent = new SpireField<>(() -> null);
+    public static SpireField<ArrayList<IntentPayload>> extraIntents = new SpireField<>(ArrayList::new);
     // Features
     public static SpireField<HoveringCardManager> cardManager = new SpireField<>(() -> null);
     public static SpireField<ArrayList<AbstractOrb>> orbs = new SpireField<>(() -> null);

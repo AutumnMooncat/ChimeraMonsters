@@ -1,8 +1,11 @@
 package ChimeraMonsters.patches;
 
+import ChimeraMonsters.ChimeraMonstersMod;
 import ChimeraMonsters.actions.DoAction;
 import ChimeraMonsters.powers.interfaces.IntentInterceptingPower;
 import ChimeraMonsters.powers.interfaces.IntentLockingPower;
+import ChimeraMonsters.util.IntentManager;
+import ChimeraMonsters.util.IntentPayload;
 import ChimeraMonsters.util.Wiz;
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.megacrit.cardcrawl.actions.GameActionManager;
@@ -88,7 +91,12 @@ public class MoveManipulationPatches {
         MonsterFields.replacedIntendedMove.set(monster, intendedMove);
         interceptor.setInterceptIntent(intendedMove);
         monster.moveName = interceptor.interceptName();
-        MonsterFields.interceptor.set(monster, interceptor);
+        IntentPayload pl = MonsterFields.activeIntent.get(monster);
+        if (pl != null) {
+            pl.handler = interceptor;
+        } else {
+            MonsterFields.interceptor.set(monster, interceptor);
+        }
     }
 
     public static void removeAndResetInterceptor(AbstractMonster monster) {
@@ -96,7 +104,12 @@ public class MoveManipulationPatches {
         if (interceptor != null) {
             interceptor.onFinishedThisIntercept();
         }
-        MonsterFields.interceptor.set(monster, null);
+        IntentPayload pl = MonsterFields.activeIntent.get(monster);
+        if (pl != null) {
+            pl.handler = monster;
+        } else {
+            MonsterFields.interceptor.set(monster, null);
+        }
     }
 
     // Called by AbstractMonsterDynamicPatch, should wrap all stateChange overrides and damage overrides if reaction changes intent
@@ -118,6 +131,26 @@ public class MoveManipulationPatches {
             return true;
         }
         return false;
+    }
+
+    // Called by GetNextAction
+    public static void doExtraIntents(AbstractMonster monster) {
+        IntentManager.backupMainIntent(monster);
+        for (IntentPayload pl : IntentManager.extraIntents(monster)) {
+            pl.takeTurn(monster);
+        }
+        IntentManager.restoreMainIntent(monster);
+    }
+
+    public static void handleHandler(IntentPayload pl) {
+        if (pl.handler instanceof IntentInterceptingPower) {
+            if (!((IntentInterceptingPower) pl.handler).performIntercept()) {
+                rollOrBackupMove(pl.owner);
+            }
+        } else {
+            pl.owner.nextMove = pl.fields.nextMove;
+            pl.owner.takeTurn();
+        }
     }
 
     private static void rollOrBackupMove(AbstractMonster monster) {
@@ -206,7 +239,12 @@ public class MoveManipulationPatches {
         @SpirePostfixPatch
         public static void setName(AbstractMonster __instance) {
             EnemyMoveInfo currentMove = getMove(__instance);
-            if (currentMove == null) return;
+            if (currentMove == null) {
+                // Throw if this happens because it means we messed something up
+                // Will have to prevent if we find out modded monsters do this on purpose for whatever reason
+                ChimeraMonstersMod.logger.error("Monster {} left setMove with null EnemyMoveInfo", __instance.getClass().getSimpleName());
+                throw new IllegalStateException("Monster "+__instance.getClass().getSimpleName()+" left setMove with null EnemyMoveInfo");
+            }
             EnemyMoveInfoFields.name.set(currentMove, __instance.moveName);
         }
     }
@@ -242,7 +280,7 @@ public class MoveManipulationPatches {
             return new ExprEditor() {
                 public void edit(MethodCall m) throws CannotCompileException {
                     if (m.getClassName().equals(AbstractMonster.class.getName()) && m.getMethodName().equals("takeTurn")) {
-                        m.replace(String.format("if (!%s.performedIntercept(m)) {$_ = $proceed($$);}", MoveManipulationPatches.class.getName()));
+                        m.replace(String.format("if (!%1$s.performedIntercept(m)) {$_ = $proceed($$);} %1$s.doExtraIntents(m);", MoveManipulationPatches.class.getName()));
                     }
                 }
             };

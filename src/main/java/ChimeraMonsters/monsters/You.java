@@ -2,7 +2,7 @@ package ChimeraMonsters.monsters;
 
 import ChimeraMonsters.ChimeraMonstersMod;
 import ChimeraMonsters.patches.CreatureRenderPatches;
-import ChimeraMonsters.patches.RunicPatch;
+import ChimeraMonsters.patches.IntentRenderPatches;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.esotericsoftware.spine.AnimationState;
@@ -133,7 +133,7 @@ public class You extends AbstractEasyMonster {
                 );
             }
 
-            if (!this.isDying && !this.isEscaping && AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT && !AbstractDungeon.player.isDead && !AbstractDungeon.player.hasRelic("Runic Dome") && !RunicPatch.hideIntent(this) && intent != Intent.NONE && !Settings.hideCombatElements) {
+            if (!this.isDying && !this.isEscaping && AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT && !AbstractDungeon.player.isDead && !AbstractDungeon.player.hasRelic("Runic Dome") && !IntentRenderPatches.hideIntent(this) && intent != Intent.NONE && !Settings.hideCombatElements) {
                 renderIntentVfxBehind(sb);
                 renderIntent(sb);
                 renderIntentVfxAfter(sb);
