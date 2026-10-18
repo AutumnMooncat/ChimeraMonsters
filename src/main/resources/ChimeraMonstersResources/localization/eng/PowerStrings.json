@@ -161,5 +161,11 @@
     "DESCRIPTIONS": [
       "The first time this is attacked each turn, it gains an equal attack intent."
     ]
+  },
+  "${ModID}:SickPower": {
+    "NAME": "Sick",
+    "DESCRIPTIONS": [
+      "#yAttacks deal #b25% less damage. Spreads to the target when dealing unblocked attack damage."
+    ]
   }
 }
