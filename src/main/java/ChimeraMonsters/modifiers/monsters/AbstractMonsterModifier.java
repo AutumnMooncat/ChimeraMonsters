@@ -22,6 +22,10 @@ public abstract class AbstractMonsterModifier implements Modifier<AbstractMonste
         this.modifierID = ID;
         this.uiStrings = CardCrawlGame.languagePack.getUIString(ID);
         this.rarity = rarity;
+
+        if (uiStrings == null) {
+            throw new NullPointerException("Could not find uiStrings for "+ID);
+        }
     }
 
     @Override
