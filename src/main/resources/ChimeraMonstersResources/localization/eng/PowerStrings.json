@@ -63,6 +63,13 @@
       "Explodes this turn, dealing #b"
     ]
   },
+  "${ModID}:StickyPower": {
+    "NAME": "Sticky",
+    "DESCRIPTIONS": [
+      "Whenever you receive attack damage from this enemy, add a #ySlimed into your discard pile.",
+      "Whenever you receive attack damage from this enemy, add #b"," #ySlimed into your discard pile."
+    ]
+  },
   "${ModID}:AncientPower": {
     "NAME": "Ancient",
     "DESCRIPTIONS": [

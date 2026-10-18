@@ -1,20 +1,26 @@
 package ChimeraMonsters.util;
 
+import ChimeraMonsters.ChimeraMonstersMod;
 import ChimeraMonsters.patches.IntentUpdatePatches;
 import ChimeraMonsters.patches.MonsterFields;
+import ChimeraMonsters.powers.interfaces.IntentInterceptingPower;
 import basemod.ReflectionHacks;
 import basemod.abstracts.CustomMonster;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
+import com.megacrit.cardcrawl.monsters.EnemyMoveInfo;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class IntentManager {
+    private static final String replacedIntendedMove = ChimeraMonstersMod.makeID(IntentManager.class.getSimpleName()+":replacedIntendedMove");
+    private static final String interceptor = ChimeraMonstersMod.makeID(IntentManager.class.getSimpleName()+":interceptor");
+
     public static IntentPayload payloadFromBaseIntent(AbstractMonster monster) {
         IntentPayload pl = new IntentPayload();
         pl.owner = monster;
-        pl.handler = monster;
         pl.damage = null;
         pl.readFields(monster);
         return pl;
@@ -63,7 +69,7 @@ public class IntentManager {
         monster.refreshIntentHbLocation();
         IntentUpdatePatches.PlzMoveHitbox.needsRefresh = false;
         monster.createIntent();
-        MonsterFields.extraIntents.get(monster).add(pl);
+        IntentManager.extraIntents(monster).add(pl);
         if (pl.damage != null) {
             monster.damage.add(pl.damage);
         }
@@ -73,18 +79,89 @@ public class IntentManager {
     }
 
     public static void removeExtraIntent(AbstractMonster monster, IntentPayload pl) {
-        MonsterFields.extraIntents.get(monster).remove(pl);
+        IntentManager.extraIntents(monster).remove(pl);
         if (pl.damage != null) {
             monster.damage.remove(pl.damage);
         }
     }
 
+    public static IntentPayload getActiveIntent(AbstractMonster monster) {
+        return MonsterFields.activeIntent.get(monster);
+    }
+
     public static Object getDataHandler(AbstractMonster monster) {
-        IntentPayload pl = MonsterFields.activeIntent.get(monster);
+        IntentPayload pl = getActiveIntent(monster);
         if (pl != null) {
             return pl;
         }
         return monster;
+    }
+
+    public static IntentInterceptingPower getInterceptor(AbstractMonster monster) {
+        IntentPayload pl = getActiveIntent(monster);
+        if (pl != null) {
+            if (pl.interceptor != null) {
+                return pl.interceptor;
+            }
+            return null;
+        }
+        return MonsterFields.interceptor.get(monster);
+    }
+
+    public static EnemyMoveInfo getReplacedMove(AbstractMonster monster) {
+        IntentPayload pl = getActiveIntent(monster);
+        if (pl != null) {
+            return pl.replacedIntendedMove;
+        }
+        return MonsterFields.replacedIntendedMove.get(monster);
+    }
+
+    public static void applyInterceptor(AbstractMonster monster, IntentInterceptingPower interceptor, EnemyMoveInfo intendedMove) {
+        IntentPayload pl = getActiveIntent(monster);
+        if (pl != null) {
+            pl.replacedIntendedMove = intendedMove;
+            pl.interceptor = interceptor;
+        } else {
+            MonsterFields.replacedIntendedMove.set(monster, intendedMove);
+            MonsterFields.interceptor.set(monster, interceptor);
+        }
+        interceptor.setInterceptIntent(intendedMove);
+        monster.moveName = interceptor.interceptName();
+    }
+
+    public static void removeAndResetInterceptor(AbstractMonster monster) {
+        IntentInterceptingPower interceptor = getInterceptor(monster);
+        if (interceptor != null) {
+            interceptor.onFinishedThisIntercept();
+        }
+        // Don't actually clear out the replaced intended move as we could still use it for backup
+        IntentPayload pl = getActiveIntent(monster);
+        if (pl != null) {
+            pl.interceptor = null;
+        } else {
+            MonsterFields.interceptor.set(monster, null);
+        }
+    }
+
+    public static void organizeIntentOrder(AbstractMonster monster) {
+        if (!hasExtraIntents(monster)) return;
+        IntentPayload current = payloadFromBaseIntent(monster);
+        ArrayList<IntentPayload> all = new ArrayList<>();
+        all.add(current);
+        all.addAll(extraIntents(monster));
+        Collections.sort(all);
+        IntentPayload first = all.remove(0);
+        if (current != first) {
+            IntentInterceptingPower currentInterceptor = MonsterFields.interceptor.get(monster);
+            EnemyMoveInfo currentReplacedMove = MonsterFields.replacedIntendedMove.get(monster);
+            MonsterFields.interceptor.set(monster, first.interceptor);
+            MonsterFields.replacedIntendedMove.set(monster, first.replacedIntendedMove);
+            current.interceptor = currentInterceptor;
+            current.replacedIntendedMove = currentReplacedMove;
+            first.writeFields(monster);
+            extraIntents(monster).clear();
+            extraIntents(monster).addAll(all);
+        }
     }
 
     public static ReflectionHacks.RMethod updateIntentVFXMethod(AbstractMonster mon) {

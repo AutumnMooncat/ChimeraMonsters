@@ -66,6 +66,9 @@ public class DynamicPatches {
                         if (m.getName().equals("die")) {
                             m.insertBefore("if(" + MonsterCantDiePatches.DontBonkDie.class.getName() + ".plz($0).isPresent()) {return;}");
                         }
+                        if (m.getName().equals("takeTurn")) {
+                            m.insertBefore("if(" + MoveManipulationPatches.class.getName() + ".performedPayload($0)) {return;}");
+                        }
                     }
                 } catch (CannotCompileException ignored) {}
             }

@@ -2,7 +2,6 @@ package ChimeraMonsters.powers;
 
 import ChimeraMonsters.ChimeraMonstersMod;
 import ChimeraMonsters.actions.DoAction;
-import ChimeraMonsters.patches.MoveManipulationPatches;
 import ChimeraMonsters.powers.interfaces.IntentInterceptingPower;
 import ChimeraMonsters.powers.interfaces.RenderModifierPower;
 import ChimeraMonsters.vfx.hexaghost.ScalableHexaBody;
@@ -65,6 +64,7 @@ public class HexaghostPower extends AbstractInternalLogicPower implements Intent
             return;
         }
 
+        // TODO Rectify multi intents or ban interaction
         addToBot(new DoAction(() -> {
             for (ScalableHexaOrb orb : this.orbs) {
                 if (!orb.activated) {
@@ -73,9 +73,9 @@ public class HexaghostPower extends AbstractInternalLogicPower implements Intent
                 }
             }
 
-            if (owner instanceof AbstractMonster && orbs.stream().allMatch(orb -> orb.activated)) {
-                MoveManipulationPatches.removeAndResetInterceptor((AbstractMonster) owner);
-                MoveManipulationPatches.applyInterceptor((AbstractMonster) owner, HexaghostPower.this, getMove(owner));
+            if (orbs.stream().allMatch(orb -> orb.activated)) {
+                removeAndResetInterceptor(owner);
+                applyInterceptor(owner, HexaghostPower.this, getMove(owner));
             }
         }));
     }

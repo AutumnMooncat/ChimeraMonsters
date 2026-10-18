@@ -29,4 +29,10 @@ public class TinyMod extends AbstractMonsterModifier {
     public AbstractMonsterModifier makeCopy() {
         return new TinyMod();
     }
+
+    @Override
+    public String modifyName(AbstractMonster monster) {
+        // TODO Cancels out Tiny Giant Head, monster is just called Head
+        return super.modifyName(monster);
+    }
 }

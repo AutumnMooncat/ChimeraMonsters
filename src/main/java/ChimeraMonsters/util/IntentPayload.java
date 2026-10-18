@@ -1,6 +1,7 @@
 package ChimeraMonsters.util;
 
 import ChimeraMonsters.patches.MoveManipulationPatches;
+import ChimeraMonsters.powers.interfaces.IntentInterceptingPower;
 import basemod.ReflectionHacks;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -18,7 +19,7 @@ import java.lang.reflect.Field;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-public class IntentPayload {
+public class IntentPayload implements Comparable<IntentPayload> {
     public static final float SPACING = 64f * Settings.scale;
     public static final float MOVESTEP = 15f;
 
@@ -49,7 +50,8 @@ public class IntentPayload {
     public BiConsumer<IntentPayload, SpriteBatch> renderDamageFunc = IntentPayload::renderDamageCore;
     public Consumer<IntentPayload> takeTurnFunc = IntentPayload::takeTurnCore;
     public AbstractMonster owner;
-    public Object handler;
+    public IntentInterceptingPower interceptor;
+    public EnemyMoveInfo replacedIntendedMove;
     public DamageInfo damage;
     public Fields fields = new Fields();
 
@@ -73,48 +75,63 @@ public class IntentPayload {
         }
     }
 
-    public void update(AbstractMonster mon) {
+    public void update() {
         updateFunc.accept(this);
     }
 
-    public void render(AbstractMonster mon, SpriteBatch sb) {
+    public void render(SpriteBatch sb) {
         renderFunc.accept(this, sb);
     }
 
-    public void renderDamage(AbstractMonster mon, SpriteBatch sb) {
+    public void renderDamage(SpriteBatch sb) {
         renderDamageFunc.accept(this, sb);
     }
 
-    public void takeTurn(AbstractMonster mon) {
+    public void takeTurn() {
         takeTurnFunc.accept(this);
     }
 
+    @Override
+    public int compareTo(IntentPayload other) {
+        return weight() - other.weight();
+    }
+
+    private int weight() {
+        int base = 0;
+        if (fields.intent.name().toLowerCase().contains(AbstractMonster.Intent.ATTACK.name().toLowerCase())) {
+            base -= 1000;
+        }
+        if (fields.intent.name().toLowerCase().contains(AbstractMonster.Intent.DEFEND.name().toLowerCase())) {
+            base -= 100;
+        }
+        if (fields.intent.name().toLowerCase().contains(AbstractMonster.Intent.DEBUFF.name().toLowerCase())) {
+            base += 10;
+        } else if (fields.intent.name().toLowerCase().contains(AbstractMonster.Intent.BUFF.name().toLowerCase())) {
+            base += 1;
+        }
+        return base;
+    }
+
     public static void updateCore(IntentPayload pl) {
-        pl.fields.bobEffect.update();
-        if (pl.fields.intentAlpha != pl.fields.intentAlphaTarget) {
-            if (pl.fields.intentAlphaTarget > pl.fields.intentAlpha) {
-                pl.fields.intentAlpha = Math.min(pl.fields.intentAlphaTarget, pl.fields.intentAlpha + Gdx.graphics.getDeltaTime());
+        ReflectionHacks.<BobEffect>getPrivate(pl.owner, AbstractMonster.class, "bobEffect").update();
+        if (pl.owner.intentAlpha != pl.owner.intentAlphaTarget) {
+            if (pl.owner.intentAlphaTarget > pl.owner.intentAlpha) {
+                pl.owner.intentAlpha = Math.min(pl.owner.intentAlphaTarget, pl.owner.intentAlpha + Gdx.graphics.getDeltaTime());
             } else {
-                pl.fields.intentAlpha = Math.max(pl.fields.intentAlphaTarget, pl.fields.intentAlpha - Gdx.graphics.getDeltaTime());
+                pl.owner.intentAlpha = Math.max(pl.owner.intentAlphaTarget, pl.owner.intentAlpha - Gdx.graphics.getDeltaTime());
             }
         }
     }
 
     public static void renderCore(IntentPayload pl, SpriteBatch sb) {
-        IntentManager.setActivePayload(pl.owner, pl);
         IntentManager.renderIntentMethod(pl.owner).invoke(pl.owner, sb);
-        IntentManager.releaseActivePayload(pl.owner, pl);
     }
 
     public static void renderDamageCore(IntentPayload pl, SpriteBatch sb) {
-        IntentManager.setActivePayload(pl.owner, pl);
         IntentManager.renderDamageRangeMethod(pl.owner).invoke(pl.owner, sb);
-        IntentManager.releaseActivePayload(pl.owner, pl);
     }
 
     public static void takeTurnCore(IntentPayload pl) {
-        IntentManager.setActivePayload(pl.owner, pl);
-        MoveManipulationPatches.handleHandler(pl);
-        IntentManager.releaseActivePayload(pl.owner, pl);
+        pl.owner.takeTurn();
     }
 }

@@ -1,9 +1,9 @@
 package ChimeraMonsters.powers;
 
 import ChimeraMonsters.ChimeraMonstersMod;
-import ChimeraMonsters.patches.MoveManipulationPatches;
 import ChimeraMonsters.powers.interfaces.IntentInterceptingPower;
 import ChimeraMonsters.powers.interfaces.MonsterCantDiePower;
+import ChimeraMonsters.util.IntentManager;
 import com.megacrit.cardcrawl.actions.animations.ShoutAction;
 import com.megacrit.cardcrawl.actions.animations.VFXAction;
 import com.megacrit.cardcrawl.actions.common.ApplyPowerAction;
@@ -22,7 +22,6 @@ import java.util.Objects;
 public class AwakeningPower extends AbstractInternalLogicPower implements MonsterCantDiePower, IntentInterceptingPower {
     public static final String POWER_ID = ChimeraMonstersMod.makeID(AwakeningPower.class.getSimpleName());
     private boolean activated;
-    private EnemyMoveInfo lastMove;
 
     public AwakeningPower(AbstractCreature owner) {
         super(POWER_ID, owner, -1);
@@ -37,10 +36,10 @@ public class AwakeningPower extends AbstractInternalLogicPower implements Monste
     @Override
     public void onPreventDeath(AbstractMonster monsterOwner) {
         if (!activated) {
-            // TODO Check what happens if death while another interceptor is active
+            // TODO Check what happens if death while another interceptor is active, or multiple intents
             monsterOwner.powers.removeIf(pow -> pow.type == PowerType.DEBUFF || Objects.equals(pow.ID, UnawakenedPower.POWER_ID) || Objects.equals(pow.ID, GainStrengthPower.POWER_ID));
-            MoveManipulationPatches.removeAndResetInterceptor(monsterOwner);
-            MoveManipulationPatches.applyInterceptor(monsterOwner, this, getMove(monsterOwner));
+            IntentManager.removeAndResetInterceptor(monsterOwner);
+            IntentManager.applyInterceptor(monsterOwner, this, getMove(monsterOwner));
             addToBot(new ShoutAction(owner, AwakenedOne.DIALOG[0]));
         }
     }
@@ -52,7 +51,6 @@ public class AwakeningPower extends AbstractInternalLogicPower implements Monste
 
     @Override
     public void setInterceptIntent(EnemyMoveInfo replacedMove) {
-        lastMove = replacedMove;
         overrideMove(owner, new EnemyMoveInfo((byte) -1, AbstractMonster.Intent.UNKNOWN, -1, 0, false), true);
     }
 
@@ -64,8 +62,7 @@ public class AwakeningPower extends AbstractInternalLogicPower implements Monste
         addToBot(new VFXAction(owner, new IntenseZoomEffect(owner.hb.cX, owner.hb.cY, true), 0.05F, true));
         addToBot(new HealAction(owner, owner, owner.maxHealth));
         addToBot(new ApplyPowerAction(owner, owner, new WrathfulPower(owner)));
-        setMove(owner, lastMove);
-        return true;
+        return restoreReplacedMove(owner);
     }
 
     @Override

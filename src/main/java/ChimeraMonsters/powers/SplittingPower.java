@@ -2,11 +2,10 @@ package ChimeraMonsters.powers;
 
 import ChimeraMonsters.ChimeraMonstersMod;
 import ChimeraMonsters.actions.DoAction;
-import ChimeraMonsters.patches.*;
+import ChimeraMonsters.patches.MonsterGroupFields;
 import ChimeraMonsters.powers.interfaces.IntentInterceptingPower;
 import ChimeraMonsters.util.MonsterSpawnHelper;
 import com.megacrit.cardcrawl.actions.animations.AnimateShakeAction;
-import com.megacrit.cardcrawl.actions.common.ApplyPowerAction;
 import com.megacrit.cardcrawl.actions.common.SpawnMonsterAction;
 import com.megacrit.cardcrawl.actions.common.SuicideAction;
 import com.megacrit.cardcrawl.actions.unique.CanLoseAction;
@@ -21,7 +20,6 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.localization.PowerStrings;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.EnemyMoveInfo;
-import com.megacrit.cardcrawl.powers.AbstractPower;
 
 import java.util.ArrayList;
 
@@ -49,8 +47,8 @@ public class SplittingPower extends AbstractEasyPower implements IntentIntercept
         if (!wasActivated && activated && owner instanceof AbstractMonster) {
             flash();
             addToBot(new DoAction(() -> {
-                MoveManipulationPatches.removeAndResetInterceptor((AbstractMonster) owner);
-                MoveManipulationPatches.applyInterceptor((AbstractMonster) owner, this, getMove(owner));
+                removeAndResetInterceptor(owner);
+                applyInterceptor(owner, this, getMove(owner));
             }));
         }
     }
@@ -66,26 +64,25 @@ public class SplittingPower extends AbstractEasyPower implements IntentIntercept
     @Override
     public void setInterceptIntent(EnemyMoveInfo replacedMove) {
         EnemyMoveInfo newMove = new EnemyMoveInfo(replacedMove.nextMove, AbstractMonster.Intent.UNKNOWN, -1 , 0, false);
-        overrideMove(owner,newMove, true);
+        overrideMove(owner, newMove, true);
     }
 
     @Override
     public boolean performIntercept() {
         if (owner instanceof AbstractMonster) {
-            AbstractDungeon.actionManager.addToBottom(new CannotLoseAction());
-            AbstractDungeon.actionManager.addToBottom(new AnimateShakeAction(owner, 1.0F, 0.1F));
-            AbstractDungeon.actionManager.addToBottom(new HideHealthBarAction(owner));
-            AbstractDungeon.actionManager.addToBottom(new SuicideAction((AbstractMonster) owner, false));
-            AbstractDungeon.actionManager.addToBottom(new WaitAction(1.0F));
-            AbstractDungeon.actionManager.addToBottom(new SFXAction("SLIME_SPLIT"));
+            addToBot(new CannotLoseAction());
+            addToBot(new AnimateShakeAction(owner, 1.0F, 0.1F));
+            addToBot(new HideHealthBarAction(owner));
+            addToBot(new SuicideAction((AbstractMonster) owner, false));
+            addToBot(new WaitAction(1.0F));
+            addToBot(new SFXAction("SLIME_SPLIT"));
 
             ArrayList<AbstractMonster> splitMonsters = MonsterSpawnHelper.getSplitMonsters((AbstractMonster) owner, MonsterGroupFields.encounterID.get(AbstractDungeon.getCurrRoom().monsters));
             for (AbstractMonster splitMonster : splitMonsters) {
-                AbstractDungeon.actionManager.addToBottom(new SpawnMonsterAction(splitMonster, false));
+                addToBot(new SpawnMonsterAction(splitMonster, false));
                 splitMonster.usePreBattleAction();
             }
-            AbstractDungeon.actionManager.addToBottom(new CanLoseAction());
-            ActionCapturePatch.clear();
+            addToBot(new CanLoseAction());
         }
         return true;
     }

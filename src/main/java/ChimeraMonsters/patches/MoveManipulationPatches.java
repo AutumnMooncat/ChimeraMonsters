@@ -4,13 +4,18 @@ import ChimeraMonsters.ChimeraMonstersMod;
 import ChimeraMonsters.actions.DoAction;
 import ChimeraMonsters.powers.interfaces.IntentInterceptingPower;
 import ChimeraMonsters.powers.interfaces.IntentLockingPower;
+import ChimeraMonsters.util.DataUtil;
 import ChimeraMonsters.util.IntentManager;
 import ChimeraMonsters.util.IntentPayload;
 import ChimeraMonsters.util.Wiz;
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.megacrit.cardcrawl.actions.GameActionManager;
+import com.megacrit.cardcrawl.actions.IntentFlashAction;
 import com.megacrit.cardcrawl.actions.common.RollMoveAction;
+import com.megacrit.cardcrawl.actions.common.ShowMoveNameAction;
+import com.megacrit.cardcrawl.actions.utility.WaitAction;
 import com.megacrit.cardcrawl.core.AbstractCreature;
+import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.EnemyMoveInfo;
@@ -25,6 +30,7 @@ public class MoveManipulationPatches {
     private static final Field moveField;
     private static boolean wasRolled;
     private static boolean changingState;
+    private static boolean takeTurnLock;
 
     static {
         try {
@@ -47,7 +53,7 @@ public class MoveManipulationPatches {
     }
 
     public static boolean hasInterceptorFollowup(AbstractMonster monster) {
-        IntentInterceptingPower interceptor = MonsterFields.interceptor.get(monster);
+        IntentInterceptingPower interceptor = IntentManager.getInterceptor(monster);
         if (interceptor != null) {
             if (interceptor.setFollowupInterceptionIntent()) {
                 return true;
@@ -88,28 +94,11 @@ public class MoveManipulationPatches {
     }
 
     public static void applyInterceptor(AbstractMonster monster, IntentInterceptingPower interceptor, EnemyMoveInfo intendedMove) {
-        MonsterFields.replacedIntendedMove.set(monster, intendedMove);
-        interceptor.setInterceptIntent(intendedMove);
-        monster.moveName = interceptor.interceptName();
-        IntentPayload pl = MonsterFields.activeIntent.get(monster);
-        if (pl != null) {
-            pl.handler = interceptor;
-        } else {
-            MonsterFields.interceptor.set(monster, interceptor);
-        }
+        IntentManager.applyInterceptor(monster, interceptor, intendedMove);
     }
 
     public static void removeAndResetInterceptor(AbstractMonster monster) {
-        IntentInterceptingPower interceptor = MonsterFields.interceptor.get(monster);
-        if (interceptor != null) {
-            interceptor.onFinishedThisIntercept();
-        }
-        IntentPayload pl = MonsterFields.activeIntent.get(monster);
-        if (pl != null) {
-            pl.handler = monster;
-        } else {
-            MonsterFields.interceptor.set(monster, null);
-        }
+        IntentManager.removeAndResetInterceptor(monster);
     }
 
     // Called by AbstractMonsterDynamicPatch, should wrap all stateChange overrides and damage overrides if reaction changes intent
@@ -121,9 +110,23 @@ public class MoveManipulationPatches {
         changingState = false;
     }
 
+    public static boolean performedPayload(AbstractMonster monster) {
+        if (takeTurnLock) {
+            return false;
+        }
+        IntentPayload pl = IntentManager.getActiveIntent(monster);
+        if (pl != null) {
+            takeTurnLock = true;
+            pl.takeTurn();
+            takeTurnLock = false;
+            return true;
+        }
+        return false;
+    }
+
     // Called by GetNextAction
     public static boolean performedIntercept(AbstractMonster monster) {
-        IntentInterceptingPower interceptor = MonsterFields.interceptor.get(monster);
+        IntentInterceptingPower interceptor = IntentManager.getInterceptor(monster);
         if (interceptor != null) {
             if (!interceptor.performIntercept()) {
                 rollOrBackupMove(monster);
@@ -137,27 +140,49 @@ public class MoveManipulationPatches {
     public static void doExtraIntents(AbstractMonster monster) {
         IntentManager.backupMainIntent(monster);
         for (IntentPayload pl : IntentManager.extraIntents(monster)) {
-            pl.takeTurn(monster);
+            IntentManager.setActivePayload(monster, pl);
+            if (pl.fields.intent != AbstractMonster.Intent.NONE) {
+                AbstractDungeon.actionManager.addToBottom(new ShowMoveNameAction(monster));
+                //AbstractDungeon.actionManager.addToBottom(new IntentFlashAction(m));
+                AbstractDungeon.actionManager.addToBottom(new DoAction(() -> {
+                    IntentManager.backupMainIntent(monster);
+                    IntentManager.setActivePayload(monster, pl);
+                    monster.flashIntent();
+                    IntentManager.releaseActivePayload(monster, pl);
+                    IntentManager.restoreMainIntent(monster);
+                }));
+                AbstractDungeon.actionManager.addToBottom(new WaitAction(Settings.ACTION_DUR_MED));
+            }
+            if (!performedIntercept(monster)) {
+                monster.takeTurn();
+            }
+            IntentManager.releaseActivePayload(monster, pl);
         }
         IntentManager.restoreMainIntent(monster);
     }
 
-    public static void handleHandler(IntentPayload pl) {
-        if (pl.handler instanceof IntentInterceptingPower) {
-            if (!((IntentInterceptingPower) pl.handler).performIntercept()) {
-                rollOrBackupMove(pl.owner);
-            }
-        } else {
-            pl.owner.nextMove = pl.fields.nextMove;
-            pl.owner.takeTurn();
-        }
-    }
-
-    private static void rollOrBackupMove(AbstractMonster monster) {
-        Wiz.atb(new DoAction(() -> MonsterFields.successfullyRolledMove.set(monster, false)));
-        Wiz.atb(new RollMoveAction(monster));
+    public static void rollOrBackupMove(AbstractMonster monster) {
+        IntentPayload pl = IntentManager.getActiveIntent(monster);
+        // There might have been a good reason we used 3 actions, but 1 is less likely to break
         Wiz.atb(new DoAction(() -> {
-            if (!MonsterFields.successfullyRolledMove.get(monster)) {
+            MonsterFields.successfullyRolledMove.set(monster, false);
+            if (pl != null) {
+                IntentManager.backupMainIntent(monster);
+                IntentManager.setActivePayload(monster, pl);
+            }
+            monster.rollMove();
+            boolean needsBackup = !MonsterFields.successfullyRolledMove.get(monster);
+            if (pl != null) {
+                if (needsBackup) {
+                    EnemyMoveInfo backup = pl.replacedIntendedMove;
+                    if (backup != null) {
+                        overrideMove(monster, backup);
+                    }
+                    // Else super rip
+                }
+                IntentManager.releaseActivePayload(monster, pl);
+                IntentManager.restoreMainIntent(monster);
+            } else if (needsBackup) {
                 EnemyMoveInfo backup = MonsterFields.replacedIntendedMove.get(monster);
                 if (backup != null) {
                     overrideMove(monster, backup);
@@ -196,9 +221,8 @@ public class MoveManipulationPatches {
         if (creature instanceof AbstractMonster) {
             byte moveByte = ((AbstractMonster) creature).nextMove;
             try {
-               if (info.nextMove != -1) {
-                   ((AbstractMonster) creature).moveHistory.add(info.nextMove);
-                   //TODO: MoveName
+               if (moveByte != -1) {
+                   ((AbstractMonster) creature).moveHistory.add(moveByte);
                }
 
                moveField.set(creature, info);
@@ -228,7 +252,7 @@ public class MoveManipulationPatches {
             for (AbstractPower power : __instance.powers) {
                 if (power instanceof IntentInterceptingPower) {
                     IntentInterceptingPower interceptor = (IntentInterceptingPower) power;
-                    if (interceptor != MonsterFields.interceptor.get(__instance)) {
+                    if (interceptor != IntentManager.getInterceptor(__instance)) {
                         interceptor.otherIntentPicked(currentInfo);
                     }
                 }
@@ -253,7 +277,7 @@ public class MoveManipulationPatches {
     public static class OnIntentCreated {
         @SpirePrefixPatch
         public static void plz (AbstractMonster __instance) {
-            IntentInterceptingPower interceptor = MonsterFields.interceptor.get(__instance);
+            IntentInterceptingPower interceptor = IntentManager.getInterceptor(__instance);
             if (interceptor != null) {
                 interceptor.onInterceptedIntentCreated();
             }
@@ -284,6 +308,41 @@ public class MoveManipulationPatches {
                     }
                 }
             };
+        }
+    }
+
+    @SpirePatch(clz = RollMoveAction.class, method = SpirePatch.CONSTRUCTOR)
+    public static class GrabIntentRef {
+        public static final String REF_KEY = ChimeraMonstersMod.makeID(GrabIntentRef.class.getSimpleName()+":refPayload");
+
+        @SpirePostfixPatch
+        public static void plz(RollMoveAction __instance, AbstractMonster monster) {
+            IntentPayload pl = IntentManager.getActiveIntent(monster);
+            if (pl != null) {
+                DataUtil.setData(__instance, REF_KEY, pl);
+            }
+        }
+    }
+
+    @SpirePatch(clz = RollMoveAction.class, method = "update")
+    public static class UseIntentRef {
+        @SpirePrefixPatch
+        public static void apply(RollMoveAction __instance, AbstractMonster ___monster) {
+            IntentPayload pl = DataUtil.getData(__instance, GrabIntentRef.REF_KEY);
+            if (pl != null) {
+                IntentManager.backupMainIntent(___monster);
+                IntentManager.setActivePayload(___monster, pl);
+            }
+        }
+
+        @SpirePostfixPatch
+        public static void restore(RollMoveAction __instance, AbstractMonster ___monster) {
+            IntentPayload pl = DataUtil.getData(__instance, GrabIntentRef.REF_KEY);
+            if (pl != null) {
+                IntentManager.releaseActivePayload(___monster, pl);
+                IntentManager.restoreMainIntent(___monster);
+                DataUtil.removeData(__instance, GrabIntentRef.REF_KEY);
+            }
         }
     }
 }

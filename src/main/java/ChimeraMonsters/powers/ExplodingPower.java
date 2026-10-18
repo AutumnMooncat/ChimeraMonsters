@@ -2,7 +2,6 @@ package ChimeraMonsters.powers;
 
 import ChimeraMonsters.ChimeraMonstersMod;
 import ChimeraMonsters.actions.DoAction;
-import ChimeraMonsters.patches.MoveManipulationPatches;
 import ChimeraMonsters.powers.interfaces.IntentInterceptingPower;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -60,8 +59,9 @@ public class ExplodingPower extends AbstractEasyPower implements IntentIntercept
                 if (amount == 1) {
                     primed = true;
                     startFlashing();
-                    MoveManipulationPatches.removeAndResetInterceptor((AbstractMonster) owner);
-                    MoveManipulationPatches.applyInterceptor((AbstractMonster) owner, ExplodingPower.this, getMove(owner));
+                    // TODO multi intent clear? Prevent new being added?
+                    removeAndResetInterceptor(owner);
+                    applyInterceptor(owner, ExplodingPower.this, getMove(owner));
                 }
             }));
         } else if (!owner.isDying && owner instanceof AbstractMonster) {

@@ -12,7 +12,6 @@ import com.megacrit.cardcrawl.powers.ThornsPower;
 public class SpikyPower extends AbstractInternalLogicPower implements IntentInterceptingPower {
     public static final String POWER_ID = ChimeraMonstersMod.makeID(SpikyPower.class.getSimpleName());
     public int cooldown;
-    private EnemyMoveInfo replacedMove;
 
     public SpikyPower(AbstractCreature owner, int amount) {
         super(POWER_ID, owner, amount);
@@ -34,20 +33,18 @@ public class SpikyPower extends AbstractInternalLogicPower implements IntentInte
     @Override
     public void setInterceptIntent(EnemyMoveInfo replacedMove) {
         overrideMove(owner, new EnemyMoveInfo((byte) -1, AbstractMonster.Intent.BUFF, -1, 0, false));
-        this.replacedMove = replacedMove;
     }
 
     @Override
     public boolean performIntercept() {
         cooldown = 1;
         Wiz.atb(new ApplyPowerAction(owner, owner, new ThornsPower(owner, amount)));
-        setMove(owner, replacedMove);
-        replacedMove = null;
-        return true;
+        return restoreReplacedMove(owner);
     }
 
     @Override
     public boolean setFollowupInterceptionIntent() {
         return false;
     }
+
 }

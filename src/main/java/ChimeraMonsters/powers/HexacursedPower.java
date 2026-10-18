@@ -3,7 +3,6 @@ package ChimeraMonsters.powers;
 import ChimeraMonsters.ChimeraMonstersMod;
 import ChimeraMonsters.actions.DoAction;
 import ChimeraMonsters.actions.ThrowObjectAction;
-import ChimeraMonsters.patches.MoveManipulationPatches;
 import ChimeraMonsters.powers.interfaces.IntentInterceptingPower;
 import ChimeraMonsters.powers.interfaces.RenderModifierPower;
 import ChimeraMonsters.util.ColorUtil;
@@ -21,7 +20,6 @@ import com.megacrit.cardcrawl.actions.AbstractGameAction;
 import com.megacrit.cardcrawl.actions.animations.VFXAction;
 import com.megacrit.cardcrawl.actions.common.DamageAction;
 import com.megacrit.cardcrawl.actions.common.MakeTempCardInDiscardAction;
-import com.megacrit.cardcrawl.actions.utility.SFXAction;
 import com.megacrit.cardcrawl.cards.DamageInfo;
 import com.megacrit.cardcrawl.cards.status.Burn;
 import com.megacrit.cardcrawl.core.AbstractCreature;
@@ -91,6 +89,7 @@ public class HexacursedPower extends AbstractInternalLogicPower implements Inten
             return;
         }
 
+        // TODO Rectify with multi intents or ban that interaction
         addToBot(new DoAction(() -> {
             for (ScalableHexaOrb orb : this.orbs) {
                 if (!orb.activated) {
@@ -99,9 +98,9 @@ public class HexacursedPower extends AbstractInternalLogicPower implements Inten
                 }
             }
 
-            if (owner instanceof AbstractMonster && orbs.stream().allMatch(orb -> orb.activated)) {
-                MoveManipulationPatches.removeAndResetInterceptor((AbstractMonster) owner);
-                MoveManipulationPatches.applyInterceptor((AbstractMonster) owner, HexacursedPower.this, getMove(owner));
+            if (orbs.stream().allMatch(orb -> orb.activated)) {
+                removeAndResetInterceptor(owner);
+                applyInterceptor(owner, HexacursedPower.this, getMove(owner));
             }
         }));
     }
@@ -196,9 +195,9 @@ public class HexacursedPower extends AbstractInternalLogicPower implements Inten
             }
 
             addToBot(new DoAction(() -> {
-                for (ScalableHexaOrb orb : this.orbs) {
+                /*for (ScalableHexaOrb orb : this.orbs) {
                     orb.deactivate();
-                }
+                }*/
                 CardCrawlGame.sound.play("CARD_EXHAUST", 0.2F);// 297
                 CardCrawlGame.sound.play("CARD_EXHAUST", 0.2F);// 298
             }));
@@ -208,7 +207,17 @@ public class HexacursedPower extends AbstractInternalLogicPower implements Inten
 
             addToBot(new VFXAction(owner, new ScreenOnFireEffect(), 1.0F));// 204
             for (int i = 0; i < 6; ++i) {// 205
-                addToBot(new DamageAction(AbstractDungeon.player, inferno, AbstractGameAction.AttackEffect.FIRE));// 206 207
+                addToBot(new DoAction(() -> {
+                    for (ScalableHexaOrb orb : this.orbs) {
+                        if (orb.activated) {
+                            orb.deactivate();
+                            break;
+                        }
+                    }
+                }));
+                addToBot(new ThrowObjectAction(tref, scale, owner.hb, AbstractDungeon.player.hb, ColorUtil.TRANSPARENT, true));
+                addToBot(new DamageAction(AbstractDungeon.player, divider, AbstractGameAction.AttackEffect.BLUNT_HEAVY, true));// 152 153
+                //addToBot(new DamageAction(AbstractDungeon.player, inferno, AbstractGameAction.AttackEffect.FIRE));// 206 207
             }
 
             addToBot(new MakeTempCardInDiscardAction(new Burn(), 2));
@@ -218,9 +227,9 @@ public class HexacursedPower extends AbstractInternalLogicPower implements Inten
             }*/
 
             addToBot(new DoAction(() -> {
-                for (ScalableHexaOrb orb : this.orbs) {
+                /*for (ScalableHexaOrb orb : this.orbs) {
                     orb.deactivate();
-                }
+                }*/
                 CardCrawlGame.sound.play("CARD_EXHAUST", 0.2F);// 297
                 CardCrawlGame.sound.play("CARD_EXHAUST", 0.2F);// 298
             }));

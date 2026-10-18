@@ -4,6 +4,7 @@ import ChimeraMonsters.ChimeraMonstersMod;
 import ChimeraMonsters.patches.CreatureRenderPatches;
 import ChimeraMonsters.powers.interfaces.IntentInterceptingPower;
 import ChimeraMonsters.powers.interfaces.RenderModifierPower;
+import ChimeraMonsters.util.IntentManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.megacrit.cardcrawl.actions.utility.TextAboveCreatureAction;
@@ -20,7 +21,6 @@ public class GiantPower extends AbstractInternalLogicPower implements RenderModi
     public static final String[] DESCRIPTIONS = powerStrings.DESCRIPTIONS;
     public static final float SCALE = 1.5f;
     public int cooldown = 1;
-    private EnemyMoveInfo replacedMove;
 
     public GiantPower(AbstractCreature owner) {
         super(POWER_ID, owner, -1);
@@ -55,7 +55,6 @@ public class GiantPower extends AbstractInternalLogicPower implements RenderModi
 
     @Override
     public void setInterceptIntent(EnemyMoveInfo replacedMove) {
-        this.replacedMove = replacedMove;
         EnemyMoveInfo info = new EnemyMoveInfo((byte) -1, AbstractMonster.Intent.STUN, -1, 0, false);
         overrideMove(owner, info);
     }
@@ -64,12 +63,7 @@ public class GiantPower extends AbstractInternalLogicPower implements RenderModi
     public boolean performIntercept() {
         cooldown = 1;
         addToBot(new TextAboveCreatureAction(owner, TextAboveCreatureAction.TextType.STUNNED));
-        if (replacedMove != null) {
-            setMove(owner, replacedMove);
-            replacedMove = null;
-            return true;
-        }
-        return false;
+        return restoreReplacedMove(owner);
     }
 
     @Override

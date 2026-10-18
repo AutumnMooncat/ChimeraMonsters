@@ -82,7 +82,7 @@
     "TEXT": ["Infested ", "", "Applies #b2 #yVulnerable on death."]
   },
   "${ModID}:StickyMod": {
-    "TEXT": ["Sticky ", "", "Shuffles #b[1/2] #ySlimed into your discard pile on its attack turns."]
+    "TEXT": ["Sticky ", "", "Shuffles #b[1/2] #ySlimed into your discard pile when dealing attack damage."]
   },
   "${ModID}:AncientMod": {
     "TEXT": ["Ancient ", "", "Has #b5 #yArtifact. Loses #yStength for the turn when attacked."]

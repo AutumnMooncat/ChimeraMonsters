@@ -10,15 +10,21 @@ import com.evacipated.cardcrawl.modthespire.lib.SpireReturn;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
+import com.megacrit.cardcrawl.monsters.MonsterGroup;
 
 public class IntentUpdatePatches {
     @SpirePatch2(clz = AbstractMonster.class, method = "updateIntent")
     public static class IntentUpdate {
         @SpirePrefixPatch
         public static void extraUpdates(AbstractMonster __instance) {
+            IntentManager.organizeIntentOrder(__instance);
+            IntentManager.backupMainIntent(__instance);
             for (IntentPayload pl : IntentManager.extraIntents(__instance)) {
-                pl.update(__instance);
+                IntentManager.setActivePayload(__instance, pl);
+                pl.update();
+                IntentManager.releaseActivePayload(__instance, pl);
             }
+            IntentManager.restoreMainIntent(__instance);
         }
     }
 
@@ -74,13 +80,25 @@ public class IntentUpdatePatches {
         }
     }
 
-    @SpirePatch2(clz = AbstractMonster.class, method = "updateIntentTip")
-    public static class TechnicallyAnUpdate {
-
+    @SpirePatch2(clz = MonsterGroup.class, method = "showIntent")
+    public static class ShowExtraIntents {
+        @SpirePostfixPatch
+        public static void plz(MonsterGroup __instance) {
+            for (AbstractMonster monster : __instance.monsters) {
+                if (!IntentManager.hasExtraIntents(monster)) continue;
+                IntentManager.backupMainIntent(monster);
+                for (IntentPayload pl : IntentManager.extraIntents(monster)) {
+                    IntentManager.setActivePayload(monster, pl);
+                    monster.createIntent();
+                    IntentManager.releaseActivePayload(monster, pl);
+                }
+                IntentManager.restoreMainIntent(monster);
+            }
+        }
     }
 
     @SpirePatch2(clz = AbstractMonster.class, method = "applyPowers")
-    public static class OkayThisOneIsnt {
+    public static class UpdateExtraIntents {
         public static boolean lock;
 
         @SpirePrefixPatch

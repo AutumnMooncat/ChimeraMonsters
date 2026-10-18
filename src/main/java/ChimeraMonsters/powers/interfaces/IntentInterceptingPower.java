@@ -2,6 +2,8 @@ package ChimeraMonsters.powers.interfaces;
 
 import ChimeraMonsters.patches.EnemyMoveInfoFields;
 import ChimeraMonsters.patches.MoveManipulationPatches;
+import ChimeraMonsters.util.DataUtil;
+import ChimeraMonsters.util.IntentManager;
 import com.badlogic.gdx.math.MathUtils;
 import com.megacrit.cardcrawl.blights.Spear;
 import com.megacrit.cardcrawl.cards.DamageInfo;
@@ -138,6 +140,69 @@ public interface IntentInterceptingPower {
      */
     default void overrideMove(AbstractCreature creature, EnemyMoveInfo info, boolean instantCreate) {
         MoveManipulationPatches.overrideMove(creature, info, instantCreate);
+    }
+
+    /**
+     * Restores the original move the replaced intent was attempting to do if the creature is a monster.
+     * Calls monster.setMove if a replaced move was found, allowing this interceptor to reset if it is done and potentially obtain a new one.
+     * @param creature The creature to try restoring the intent for
+     * @return If a move was successfully restored
+     */
+    default boolean restoreReplacedMove(AbstractCreature creature) {
+        EnemyMoveInfo replacedMove = getReplacedMove(creature);
+        if (replacedMove != null) {
+            setMove(creature, replacedMove);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Gets the original move that the interceptor replaced if the creature is a monster.
+     * @param creature The creature to try getting the replaced move for
+     * @return The replaced move if found, or null if the creature is not a monster
+     */
+    default EnemyMoveInfo getReplacedMove(AbstractCreature creature) {
+        if (creature instanceof AbstractMonster) {
+            return IntentManager.getReplacedMove((AbstractMonster) creature);
+        }
+        return null;
+    }
+
+    /**
+     * Calls {@link IntentManager#removeAndResetInterceptor(AbstractMonster)} to remove and reset the active interceptor if the creature is a monster.
+     * @param creature The creature to try removing the interceptor for
+     */
+    default void removeAndResetInterceptor(AbstractCreature creature) {
+        if (creature instanceof AbstractMonster) {
+            IntentManager.removeAndResetInterceptor((AbstractMonster) creature);
+        }
+    }
+
+    /**
+     * Calls {@link IntentManager#applyInterceptor(AbstractMonster, IntentInterceptingPower, EnemyMoveInfo)} to apply an interceptor and store the original intended move if the creature is a monster.
+     * This is normally done automatically if the interceptor rolls to intercept, but is required if the interceptor actives by trigger.
+     * @param creature The creature to try applying an interceptor to
+     * @param interceptor The interceptor to apply
+     * @param intendedMove The original move intended, can be recovered with {@link IntentInterceptingPower#getReplacedMove(AbstractCreature)}
+     */
+    default void applyInterceptor(AbstractCreature creature, IntentInterceptingPower interceptor, EnemyMoveInfo intendedMove) {
+        if (creature instanceof AbstractMonster) {
+            IntentManager.applyInterceptor((AbstractMonster) creature, interceptor, intendedMove);
+        }
+    }
+
+    /**
+     * Gets the active data handler of the owner if the owner of this power is a monster.
+     * As multiple intents can exist, this allows us to store state data on a per-intent basis via {@link IntentManager#getDataHandler(AbstractMonster)}.
+     * Intended use case is for {@link DataUtil#getHandler()}.
+     * @return The object to read/write data to
+     */
+    default Object getDataHandler() {
+        if (this instanceof AbstractPower && ((AbstractPower) this).owner instanceof AbstractMonster) {
+            return IntentManager.getDataHandler((AbstractMonster) ((AbstractPower) this).owner);
+        }
+        return this;
     }
 
     /**

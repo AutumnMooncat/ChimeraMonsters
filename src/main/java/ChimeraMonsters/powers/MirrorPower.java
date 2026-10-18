@@ -54,7 +54,6 @@ public class MirrorPower extends AbstractEasyPower implements RenderModifierPowe
             addToBot(new DoAction(() -> {
                 IntentPayload pl = new IntentPayload();
                 pl.owner = (AbstractMonster) owner;
-                pl.handler = owner;
                 pl.fields.move = new EnemyMoveInfo((byte) -1, AbstractMonster.Intent.ATTACK, info.output, 0, false);
                 pl.damage = new DamageInfo(owner, info.output);
                 pl.takeTurnFunc = thiz -> {

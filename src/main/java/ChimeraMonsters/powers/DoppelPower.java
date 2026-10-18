@@ -2,6 +2,7 @@ package ChimeraMonsters.powers;
 
 import ChimeraMonsters.ChimeraMonstersMod;
 import ChimeraMonsters.patches.ActionCapturePatch;
+import ChimeraMonsters.patches.EnemyMoveInfoFields;
 import ChimeraMonsters.powers.interfaces.IntentInterceptingPower;
 import ChimeraMonsters.powers.interfaces.RenderModifierPower;
 import ChimeraMonsters.util.Wiz;
@@ -36,8 +37,9 @@ public class DoppelPower extends AbstractInternalLogicPower implements IntentInt
     @Override
     public void setInterceptIntent(EnemyMoveInfo replacedMove) {
         int multi = replacedMove.multiplier == 0 ? 2 : replacedMove.multiplier*2;
-        EnemyMoveInfo newMove = new EnemyMoveInfo(replacedMove.nextMove, replacedMove.intent, replacedMove.baseDamage,multi, true);
-        overrideMove(owner,newMove);
+        EnemyMoveInfo newMove = new EnemyMoveInfo(replacedMove.nextMove, replacedMove.intent, replacedMove.baseDamage, multi, true);
+        EnemyMoveInfoFields.name.set(newMove, EnemyMoveInfoFields.name.get(replacedMove));
+        overrideMove(owner, newMove);
     }
 
     @Override

@@ -13,7 +13,6 @@ import com.megacrit.cardcrawl.monsters.EnemyMoveInfo;
 public class PacifistPower extends AbstractInternalLogicPower implements IntentInterceptingPower {
     public static final String POWER_ID = ChimeraMonstersMod.makeID(PacifistPower.class.getSimpleName());
     public int cooldown;
-    private EnemyMoveInfo replacedMove;
 
     public PacifistPower(AbstractCreature owner, int amount) {
         super(POWER_ID, owner, amount);
@@ -41,12 +40,11 @@ public class PacifistPower extends AbstractInternalLogicPower implements IntentI
     @Override
     public void setInterceptIntent(EnemyMoveInfo replacedMove) {
         overrideMove(owner, new EnemyMoveInfo((byte) -1, AbstractMonster.Intent.BUFF, -1, 0, false));
-        this.replacedMove = replacedMove;
     }
 
     @Override
     public void onInterceptedIntentCreated() {
-        addToBot(new ApplyPowerAction(owner, owner, new InterruptablePower(owner, replacedMove)));
+        addToBot(new ApplyPowerAction(owner, owner, new InterruptablePower(owner, getReplacedMove(owner))));
     }
 
     @Override
@@ -55,6 +53,7 @@ public class PacifistPower extends AbstractInternalLogicPower implements IntentI
         // Heal is equal to the replaced attack damage, or power amount as a fallback
         int[] heal = {amount};
         int times = 1;
+        EnemyMoveInfo replacedMove = getReplacedMove(owner);
         if (replacedMove != null && replacedMove.baseDamage > 0) {
             // TODO Do we want to have vuln/str affect this heal? Can pass it through monster.calcDamage if so
             heal[0] = replacedMove.baseDamage;
@@ -71,10 +70,5 @@ public class PacifistPower extends AbstractInternalLogicPower implements IntentI
     @Override
     public boolean setFollowupInterceptionIntent() {
         return false;
-    }
-
-    @Override
-    public void onFinishedThisIntercept() {
-        replacedMove = null;
     }
 }

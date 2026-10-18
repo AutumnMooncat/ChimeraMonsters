@@ -36,7 +36,7 @@ public class IntentRenderPatches {
                 return;
             }
             int index = ___tips.indexOf(___intentTip);
-            for (IntentPayload intent : MonsterFields.extraIntents.get(__instance)) {
+            for (IntentPayload intent : IntentManager.extraIntents(__instance)) {
                 index++;
                 ___tips.add(index, intent.fields.intentTip);
             }
@@ -74,8 +74,10 @@ public class IntentRenderPatches {
             if (lock || !IntentManager.hasExtraIntents(__instance)) return;
             lock = true;
             IntentManager.backupMainIntent(__instance);
-            for (IntentPayload intent : MonsterFields.extraIntents.get(__instance)) {
-                intent.render(__instance, sb);
+            for (IntentPayload pl : IntentManager.extraIntents(__instance)) {
+                IntentManager.setActivePayload(__instance, pl);
+                pl.render(sb);
+                IntentManager.releaseActivePayload(__instance, pl);
             }
             IntentManager.restoreMainIntent(__instance);
             lock = false;
@@ -91,8 +93,10 @@ public class IntentRenderPatches {
             if (lock || !IntentManager.hasExtraIntents(__instance)) return;
             lock = true;
             IntentManager.backupMainIntent(__instance);
-            for (IntentPayload intent : MonsterFields.extraIntents.get(__instance)) {
-                intent.renderDamage(__instance, sb);
+            for (IntentPayload pl : IntentManager.extraIntents(__instance)) {
+                IntentManager.setActivePayload(__instance, pl);
+                pl.renderDamage(sb);
+                IntentManager.releaseActivePayload(__instance, pl);
             }
             IntentManager.restoreMainIntent(__instance);
             lock = false;

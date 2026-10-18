@@ -45,7 +45,7 @@ public class SleepyPower extends AbstractInternalLogicPower implements IntentInt
     public boolean performIntercept() {
         cooldown = 2;
         addToBot(new HealAction(owner, owner, amount));
-        return false;
+        return restoreReplacedMove(owner);
     }
 
     @Override
