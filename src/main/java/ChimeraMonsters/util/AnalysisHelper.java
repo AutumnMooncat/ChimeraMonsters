@@ -3,10 +3,12 @@ package ChimeraMonsters.util;
 import ChimeraMonsters.modifiers.monsters.AbstractMonsterModifier;
 import ChimeraMonsters.patches.MonsterFields;
 import ChimeraMonsters.util.analysis.ClassAnalyzer;
+import ChimeraMonsters.util.matchers.SuperFieldAccessMatcher;
 import com.evacipated.cardcrawl.modthespire.lib.Matcher;
 import com.megacrit.cardcrawl.actions.common.GainBlockAction;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
+import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
@@ -77,6 +79,10 @@ public interface AnalysisHelper {
             return true;
         }
         return !((AbstractDungeon.getCurrRoom() instanceof MonsterRoomElite) || (AbstractDungeon.getCurrRoom() instanceof MonsterRoomBoss));
+    }
+
+    default boolean noHalfDead(AbstractMonster monster) {
+        return !hasAnyAnywhere(monster, new SuperFieldAccessMatcher(AbstractCreature.class, "halfDead"));
     }
 
     default boolean actAtLeast(int num) {

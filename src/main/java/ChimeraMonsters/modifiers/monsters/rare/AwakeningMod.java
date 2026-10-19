@@ -18,8 +18,7 @@ public class AwakeningMod extends AbstractMonsterModifier {
 
     @Override
     protected boolean validMonster(AbstractMonster monster, MonsterGroup context) {
-        return monster.type == AbstractMonster.EnemyType.ELITE &&
-                !hasAnyAnywhere(monster, new SuperFieldAccessMatcher(AbstractCreature.class, "halfDead"));
+        return monster.type == AbstractMonster.EnemyType.ELITE && noHalfDead(monster);
     }
 
     @Override

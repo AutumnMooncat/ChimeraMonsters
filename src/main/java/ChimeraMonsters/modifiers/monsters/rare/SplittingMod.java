@@ -18,7 +18,7 @@ public class SplittingMod extends AbstractMonsterModifier {
 
     @Override
     protected boolean validMonster(AbstractMonster monster, MonsterGroup context) {
-        return monster.type == AbstractMonster.EnemyType.NORMAL && !monster.hasPower(MinionPower.POWER_ID) && !hasAnyAnywhere(monster, new SuperFieldAccessMatcher(AbstractCreature.class, "halfDead"));
+        return monster.type == AbstractMonster.EnemyType.NORMAL && !monster.hasPower(MinionPower.POWER_ID) && noHalfDead(monster);
     }
 
     @Override
