@@ -1,6 +1,9 @@
 package ChimeraMonsters.util;
 
 import ChimeraMonsters.patches.MonsterFields;
+import basemod.ReflectionHacks;
+import com.esotericsoftware.spine.Bone;
+import com.esotericsoftware.spine.Skeleton;
 import com.evacipated.cardcrawl.mod.stslib.powers.interfaces.InvisiblePower;
 import com.megacrit.cardcrawl.cards.DamageInfo;
 import com.megacrit.cardcrawl.core.AbstractCreature;
@@ -61,5 +64,23 @@ public interface MonsterManipulator {
 
     default void manipulateFinalBlock(AbstractMonster monster, float factor) {
         MonsterFields.blockMulti.set(monster, MonsterFields.blockMulti.get(monster) * factor);
+    }
+
+    default Skeleton getSkeleton(AbstractMonster monster) {
+        return ReflectionHacks.getPrivate(monster, AbstractCreature.class, "skeleton");
+    }
+
+    default boolean hasSkeleton(AbstractMonster monster) {
+        return getSkeleton(monster) != null;
+    }
+
+    default Bone getBone(AbstractMonster monster, String bone) {
+        Skeleton skel = getSkeleton(monster);
+        if (skel == null) return null;
+        return skel.findBone(bone);
+    }
+
+    default boolean hasBone(AbstractMonster monster, String bone) {
+        return getBone(monster, bone) != null;
     }
 }
