@@ -13,7 +13,7 @@
     "TEXT": ["Bulky ", "", "Increase #yBlock gained by #b33%. NL Reduces base damage by #b20%."]
   },
   "${ModID}:AggressiveMod": {
-    "TEXT": ["Aggressive ", "", "Starts with #b1 #yStrength and #b-1 #yDexterity."]
+    "TEXT": ["Aggressive ", "", "Non-attack intents have a 50% chance to be replaced with the last attack used."]
   },
   "${ModID}:InterceptingMod": {
     "TEXT": ["", " the Tank", "Can Block and intercept attacks."]
