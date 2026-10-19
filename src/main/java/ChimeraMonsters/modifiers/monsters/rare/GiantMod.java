@@ -26,6 +26,15 @@ public class GiantMod extends AbstractMonsterModifier {
     }
 
     @Override
+    public String modifyName(AbstractMonster monster) {
+        // Replace Giant with Even More Giant
+        if (monster.name.contains(uiStrings.TEXT[0])) {
+            return monster.name.replace(uiStrings.TEXT[0], uiStrings.TEXT[3]);
+        }
+        return super.modifyName(monster);
+    }
+
+    @Override
     public AbstractMonsterModifier makeCopy() {
         return new GiantMod();
     }

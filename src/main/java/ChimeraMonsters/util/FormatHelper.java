@@ -3,6 +3,13 @@ package ChimeraMonsters.util;
 public class FormatHelper {
     private static final StringBuilder newMsg = new StringBuilder();
 
+    public static boolean isCapitalized(String str) {
+        if (str.isEmpty()) {
+            return false;
+        }
+        return str.substring(0, 1).equals(str.substring(0, 1).toUpperCase());
+    }
+
     public static String capitalize(String str) {
         if (str.isEmpty()) {
             return str;

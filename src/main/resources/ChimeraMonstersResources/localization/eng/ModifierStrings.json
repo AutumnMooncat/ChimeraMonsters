@@ -118,10 +118,16 @@
     "TEXT": ["Voidbound ", "", "On death, puts a #yVoid onto the top of your draw pile."]
   },
   "${ModID}:GiantMod": {
-    "TEXT": ["Giant ", "", "Increases base damage and #yHP by #b50%. NL Stunned every other turn."]
+    "TEXT": [
+      "Giant ", "", "Increases base damage and #yHP by #b50%. NL Stunned every other turn.",
+      "Even More Giant", "TL Note: If name already contains Giant, replace it with this"
+    ]
   },
   "${ModID}:TinyMod": {
-    "TEXT": ["Tiny ", "", "Reduces base damage and #yHP by #b50%. NL Takes two turns."]
+    "TEXT": [
+      "Tiny ", "", "Reduces base damage and #yHP by #b50%. NL Takes two turns.",
+      "Giant", "TL Note: Removes this word if it exists in the name"
+    ]
   },
   "${ModID}:MirrorMod": {
     "TEXT": ["", " of Mirrors", "Reduces base damage by #b33%. NL The first time it is attacked each turn, gains an equal attack intent."]
