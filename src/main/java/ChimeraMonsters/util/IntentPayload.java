@@ -98,7 +98,7 @@ public class IntentPayload implements Comparable<IntentPayload> {
 
     private int weight() {
         int base = 0;
-        if (fields.intent.name().toLowerCase().contains(AbstractMonster.Intent.ATTACK.name().toLowerCase())) {
+        if (fields.intentBaseDmg > -1) {
             base -= 1000;
         }
         if (fields.intent.name().toLowerCase().contains(AbstractMonster.Intent.DEFEND.name().toLowerCase())) {
