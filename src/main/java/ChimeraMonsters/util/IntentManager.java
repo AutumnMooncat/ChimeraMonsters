@@ -3,6 +3,7 @@ package ChimeraMonsters.util;
 import ChimeraMonsters.ChimeraMonstersMod;
 import ChimeraMonsters.patches.IntentUpdatePatches;
 import ChimeraMonsters.patches.MonsterFields;
+import ChimeraMonsters.patches.MoveManipulationPatches;
 import ChimeraMonsters.powers.interfaces.IntentInterceptingPower;
 import basemod.ReflectionHacks;
 import basemod.abstracts.CustomMonster;
@@ -12,7 +13,6 @@ import com.megacrit.cardcrawl.monsters.EnemyMoveInfo;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 
 public class IntentManager {
     private static final String replacedIntendedMove = ChimeraMonstersMod.makeID(IntentManager.class.getSimpleName()+":replacedIntendedMove");
@@ -75,7 +75,11 @@ public class IntentManager {
         }
         releaseActivePayload(monster, pl);
         restoreMainIntent(monster);
-        monster.applyPowers();
+        if (MoveManipulationPatches.getMove(monster) != null)
+        {
+            // TODO Handle battle setup better, may be other problems
+            monster.applyPowers();
+        }
     }
 
     public static void removeExtraIntent(AbstractMonster monster, IntentPayload pl) {
