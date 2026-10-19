@@ -193,6 +193,16 @@ public interface IntentInterceptingPower {
     }
 
     /**
+     * Calls takeTurn if the creature is a monster
+     * @param creature The creature to try to make take a turn
+     */
+    default void takeTurn(AbstractCreature creature) {
+        if (creature instanceof AbstractMonster) {
+            ((AbstractMonster) creature).takeTurn();
+        }
+    }
+
+    /**
      * Gets the active data handler of the owner if the owner of this power is a monster.
      * As multiple intents can exist, this allows us to store state data on a per-intent basis via {@link IntentManager#getDataHandler(AbstractMonster)}.
      * Intended use case is for {@link DataUtil#getHandler()}.

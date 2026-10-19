@@ -78,43 +78,40 @@ public class BerserkerPower extends AbstractEasyPower implements IntentIntercept
 
     @Override
     public boolean performIntercept() {
-        if (owner instanceof AbstractMonster) {
-            AbstractMonster ownerMon = (AbstractMonster) owner;
-            ActionCapturePatch.doCapture = true;
-            ownerMon.takeTurn();
-            ArrayList<AbstractGameAction> captured = new ArrayList<>(ActionCapturePatch.capturedActions);
-            Wiz.forAllMonstersLiving(mon -> {
-                if (mon != owner) {
-                    addToBot(new AnimateSlowAttackAction(owner));
-                    for (AbstractGameAction action : captured) {
-                        if (action instanceof DamageAction && action.target == AbstractDungeon.player) {
-                            DamageInfo di = ReflectionHacks.getPrivate(action, DamageAction.class, "info");
-                            addToBot(new DamageAction(mon, new DamageInfo(owner, monsterToMonsterDamage(owner, mon, di.base)), action.attackEffect));
-                        } else if (action instanceof VampireDamageAction && action.target == AbstractDungeon.player) {
-                            DamageInfo di = ReflectionHacks.getPrivate(action, VampireDamageAction.class, "info");
-                            addToBot(new VampireDamageAction(mon, new DamageInfo(owner, monsterToMonsterDamage(owner, mon, di.base)), action.attackEffect));
-                        } else if (action instanceof ApplyPowerAction && action.target == AbstractDungeon.player) {
-                            AbstractPower pow = ReflectionHacks.getPrivate(action, ApplyPowerAction.class, "powerToApply");
-                            if (PowerAnalyzer.safeToApply(pow)) {
-                                AbstractPower toApply = PowerAnalyzer.tryGetReplacement(pow, mon, owner, pow.amount);
-                                if (toApply == null) {
-                                    if (pow instanceof CloneablePowerInterface) {
-                                        toApply = ((CloneablePowerInterface) pow).makeCopy();
-                                        toApply.owner = mon;
-                                    } else {
-                                        toApply = PowerAnalyzer.tryGetClone(pow, mon, owner, pow.amount);
-                                    }
+        ActionCapturePatch.doCapture = true;
+        takeTurn(owner);
+        ArrayList<AbstractGameAction> captured = new ArrayList<>(ActionCapturePatch.capturedActions);
+        Wiz.forAllMonstersLiving(mon -> {
+            if (mon != owner) {
+                addToBot(new AnimateSlowAttackAction(owner));
+                for (AbstractGameAction action : captured) {
+                    if (action instanceof DamageAction && action.target == AbstractDungeon.player) {
+                        DamageInfo di = ReflectionHacks.getPrivate(action, DamageAction.class, "info");
+                        addToBot(new DamageAction(mon, new DamageInfo(owner, monsterToMonsterDamage(owner, mon, di.base)), action.attackEffect));
+                    } else if (action instanceof VampireDamageAction && action.target == AbstractDungeon.player) {
+                        DamageInfo di = ReflectionHacks.getPrivate(action, VampireDamageAction.class, "info");
+                        addToBot(new VampireDamageAction(mon, new DamageInfo(owner, monsterToMonsterDamage(owner, mon, di.base)), action.attackEffect));
+                    } else if (action instanceof ApplyPowerAction && action.target == AbstractDungeon.player) {
+                        AbstractPower pow = ReflectionHacks.getPrivate(action, ApplyPowerAction.class, "powerToApply");
+                        if (PowerAnalyzer.safeToApply(pow)) {
+                            AbstractPower toApply = PowerAnalyzer.tryGetReplacement(pow, mon, owner, pow.amount);
+                            if (toApply == null) {
+                                if (pow instanceof CloneablePowerInterface) {
+                                    toApply = ((CloneablePowerInterface) pow).makeCopy();
+                                    toApply.owner = mon;
+                                } else {
+                                    toApply = PowerAnalyzer.tryGetClone(pow, mon, owner, pow.amount);
                                 }
-                                if (toApply != null) {
-                                    addToBot(new ApplyPowerAction(mon, owner, toApply));
-                                }
+                            }
+                            if (toApply != null) {
+                                addToBot(new ApplyPowerAction(mon, owner, toApply));
                             }
                         }
                     }
                 }
-            });
-            ActionCapturePatch.releaseToBot();
-        }
+            }
+        });
+        ActionCapturePatch.releaseToBot();
         return true;
     }
 

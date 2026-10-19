@@ -44,24 +44,21 @@ public class DoppelPower extends AbstractInternalLogicPower implements IntentInt
 
     @Override
     public boolean performIntercept() {
-        if (owner instanceof AbstractMonster) {
-            AbstractMonster ownerMon = (AbstractMonster) owner;
-            ActionCapturePatch.doCapture = true;
-            ownerMon.takeTurn();
-            ArrayList<AbstractGameAction> captured = new ArrayList<>(ActionCapturePatch.capturedActions);
-            ActionCapturePatch.clear();
-            for (AbstractGameAction action : captured) {
-                if (action instanceof DamageAction && action.target == AbstractDungeon.player) {
-                    DamageInfo di = ReflectionHacks.getPrivate(action, DamageAction.class, "info");
-                    addToBot(new DamageAction(Wiz.adp(), di, action.attackEffect));
-                    addToBot(new DamageAction(Wiz.adp(), di, action.attackEffect));
-                } else if (action instanceof VampireDamageAction && action.target == AbstractDungeon.player) {
-                    DamageInfo di = ReflectionHacks.getPrivate(action, VampireDamageAction.class, "info");
-                    addToBot(new VampireDamageAction(Wiz.adp(), di, action.attackEffect));
-                    addToBot(new VampireDamageAction(Wiz.adp(), di, action.attackEffect));
-                } else {
-                    addToBot(action);
-                }
+        ActionCapturePatch.doCapture = true;
+        takeTurn(owner);
+        ArrayList<AbstractGameAction> captured = new ArrayList<>(ActionCapturePatch.capturedActions);
+        ActionCapturePatch.clear();
+        for (AbstractGameAction action : captured) {
+            if (action instanceof DamageAction && action.target == AbstractDungeon.player) {
+                DamageInfo di = ReflectionHacks.getPrivate(action, DamageAction.class, "info");
+                addToBot(new DamageAction(Wiz.adp(), di, action.attackEffect));
+                addToBot(new DamageAction(Wiz.adp(), di, action.attackEffect));
+            } else if (action instanceof VampireDamageAction && action.target == AbstractDungeon.player) {
+                DamageInfo di = ReflectionHacks.getPrivate(action, VampireDamageAction.class, "info");
+                addToBot(new VampireDamageAction(Wiz.adp(), di, action.attackEffect));
+                addToBot(new VampireDamageAction(Wiz.adp(), di, action.attackEffect));
+            } else {
+                addToBot(action);
             }
         }
         return true;
