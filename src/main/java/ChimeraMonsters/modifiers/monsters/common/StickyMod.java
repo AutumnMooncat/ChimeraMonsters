@@ -16,7 +16,7 @@ public class StickyMod extends AbstractMonsterModifier {
 
     @Override
     protected boolean validMonster(AbstractMonster monster, MonsterGroup context) {
-        return true;
+        return noBossCheck(monster, context);
     }
 
     @Override
