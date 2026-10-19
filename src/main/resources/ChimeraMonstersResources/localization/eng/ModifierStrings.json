@@ -134,5 +134,11 @@
   },
   "${ModID}:SicklyMod": {
     "TEXT": ["Sickly ", "", "Starts with #ySick, making the creature deal less damage but able to spread it."]
+  },
+  "${ModID}:StabbingMod": {
+    "TEXT": ["", " of Stabbing", "Starts with #yPainful #yStabs."]
+  },
+  "${ModID}:CultistMod": {
+    "TEXT": ["", " of the Creed", "Caw Caw!"]
   }
 }
