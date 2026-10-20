@@ -19,16 +19,7 @@ public class BackstageMod extends AbstractMonsterModifier {
 
     @Override
     protected boolean validMonster(AbstractMonster monster, MonsterGroup context) {
-        // TODO check for enemy scaling instead of hardcoding
-        if (context != null && context.monsters != null && context.monsters.size() <= 1) {
-            return false;
-        } else if (monster.id.equals(Taskmaster.ID) || monster.id.equals(Cultist.ID) || monster.id.equals(OrbWalker.ID)) {
-            return false;
-        } else if (monster.hasPower(MinionPower.POWER_ID)) {
-            return false;
-        } else {
-            return true;
-        }
+        return checkContext(context, multiCombat.and(noScaling).and(noSummoning));
     }
 
     @Override
