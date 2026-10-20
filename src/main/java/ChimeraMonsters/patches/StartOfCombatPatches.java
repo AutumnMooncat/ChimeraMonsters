@@ -1,14 +1,17 @@
 package ChimeraMonsters.patches;
 
 import ChimeraMonsters.ChimeraMonstersController;
+import ChimeraMonsters.modifiers.monsters.AbstractMonsterModifier;
 import ChimeraMonsters.util.FightModificationManager;
 import ChimeraMonsters.vfx.CustomBattleStartEffect;
 import basemod.patches.com.megacrit.cardcrawl.helpers.TopPanel.TopPanelHelper;
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
 import com.megacrit.cardcrawl.vfx.combat.BattleStartEffect;
+import javassist.CtBehavior;
 
 public class StartOfCombatPatches {
     @SpirePatch2(clz = MonsterGroup.class, method = "init")
@@ -37,6 +40,23 @@ public class StartOfCombatPatches {
         public static void makeDisappear(BattleStartEffect __instance) {
             __instance.isDone=true;
             AbstractDungeon.topLevelEffects.add(new CustomBattleStartEffect(false));
+        }
+    }
+
+    @SpirePatch2(clz = MonsterGroup.class, method = "usePreBattleAction")
+    public static class DoPreBattleStuff {
+        @SpireInsertPatch(locator = Locator.class, localvars = {"m"})
+        public static void plz(MonsterGroup __instance, AbstractMonster m) {
+            for (AbstractMonsterModifier mod : MonsterFields.receivedModifiers.get(m)) {
+                mod.preBattleActions(m, __instance);
+            }
+        }
+
+        public static class Locator extends SpireInsertLocator {
+            @Override
+            public int[] Locate(CtBehavior ctBehavior) throws Exception {
+                return LineFinder.findInOrder(ctBehavior, new Matcher.MethodCallMatcher(AbstractMonster.class, "useUniversalPreBattleAction"));
+            }
         }
     }
 }

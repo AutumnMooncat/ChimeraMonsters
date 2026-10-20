@@ -7,6 +7,8 @@ import ChimeraMonsters.patches.MonsterFields;
 import ChimeraMonsters.util.AscensionScaling;
 import ChimeraMonsters.util.AnalysisHelper;
 import ChimeraMonsters.util.MonsterManipulator;
+import ChimeraMonsters.util.Wiz;
+import com.megacrit.cardcrawl.actions.AbstractGameAction;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.localization.UIStrings;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
@@ -34,6 +36,25 @@ public abstract class AbstractMonsterModifier implements Modifier<AbstractMonste
     }
 
     protected abstract boolean validMonster(AbstractMonster monster, MonsterGroup context);
+
+    /**
+     * Called when the modifier is rolled on the monster.
+     * Use for changes that need to take place immediately, before monster has called init().
+     * We do not want to use actions here, and no preBattleActions have run yet, so powers can be applied here via applyPowersToCreature().
+     * Most powers can be applied without issue this way, but care should be taken if they interact with other powers,
+     * as the inherent powers of the monster such as Slow have not been applied yet.
+     * @param target The target to modify
+     */
+    @Override
+    public abstract void applyTo(AbstractMonster target);
+
+    /**
+     * Called after the monster's preBattleActions have been added to the action queue.
+     * Use for applying powers normally and any other actions that need to run before the battle.
+     * @param monster The target to modify
+     * @param context The current MonsterGroup
+     */
+    public void preBattleActions(AbstractMonster monster, MonsterGroup context) {}
 
     @Override
     public String identifier() {
@@ -79,6 +100,14 @@ public abstract class AbstractMonsterModifier implements Modifier<AbstractMonste
             return validMonster(monster, context);
         }
         return false;
+    }
+
+    public void addToBot(AbstractGameAction... actions) {
+        Wiz.sequenceActions(false, actions);
+    }
+
+    public void addToTop(AbstractGameAction... actions) {
+        Wiz.sequenceActions(true, actions);
     }
 
     @Override
