@@ -15,6 +15,7 @@ import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
+import com.megacrit.cardcrawl.powers.GenericStrengthUpPower;
 import com.megacrit.cardcrawl.powers.MinionPower;
 import com.megacrit.cardcrawl.powers.RitualPower;
 import com.megacrit.cardcrawl.powers.StrengthPower;
@@ -32,7 +33,7 @@ public interface AnalysisHelper {
     Predicate<MonsterGroup> noBosses = (group) -> group.monsters.stream().noneMatch(mon -> mon.type == AbstractMonster.EnemyType.BOSS);
     Predicate<MonsterGroup> noElites = (group) -> group.monsters.stream().noneMatch(mon -> mon.type == AbstractMonster.EnemyType.ELITE);
     Predicate<MonsterGroup> noElitesOrBosses = (group) -> group.monsters.stream().allMatch(mon -> mon.type == AbstractMonster.EnemyType.NORMAL);
-    Predicate<MonsterGroup> noScaling = (group) -> group.monsters.stream().noneMatch(mon -> ClassAnalyzer.classHasAnyClass(mon, RitualPower.class, StrengthPower.class));
+    Predicate<MonsterGroup> noScaling = (group) -> group.monsters.stream().noneMatch(mon -> ClassAnalyzer.classHasAnyClass(mon, RitualPower.class, StrengthPower.class, GenericStrengthUpPower.class));
     Predicate<MonsterGroup> noSummoning = (group) -> group.monsters.stream().noneMatch(mon -> ClassAnalyzer.classHasAnyClass(mon, SpawnMonsterAction.class, SummonGremlinAction.class, MinionPower.class));
     BiPredicate<MonsterGroup, AbstractMonsterModifier> onePerFight = (group, toCheck) -> group.monsters.stream().noneMatch(mon -> MonsterFields.receivedModifiers.get(mon).stream().anyMatch(mod -> mod.identifier().equals(toCheck.identifier())));
     BiPredicate<MonsterGroup, AbstractMonster> lastMonster = (group, mon) -> group.monsters.get(group.monsters.size() - 1) == mon;
