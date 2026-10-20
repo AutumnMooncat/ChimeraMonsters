@@ -6,6 +6,7 @@ import ChimeraMonsters.modifiers.monsters.AbstractMonsterModifier;
 import ChimeraMonsters.util.AnalysisHelper;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.localization.UIStrings;
+import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
 
 public abstract class AbstractMonsterGroupModifier implements Modifier<MonsterGroup>, AnalysisHelper {
@@ -25,6 +26,8 @@ public abstract class AbstractMonsterGroupModifier implements Modifier<MonsterGr
     protected abstract boolean validGroup(MonsterGroup group);
 
     public abstract void applyTo(MonsterGroup group);
+
+    public void preBattleActions(MonsterGroup context) {}
 
     public String identifier() {
         return modifierID;

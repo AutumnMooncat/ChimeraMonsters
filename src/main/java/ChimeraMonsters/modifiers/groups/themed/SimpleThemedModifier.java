@@ -2,6 +2,7 @@ package ChimeraMonsters.modifiers.groups.themed;
 
 import ChimeraMonsters.ChimeraMonstersMod;
 import ChimeraMonsters.modifiers.monsters.AbstractMonsterModifier;
+import com.megacrit.cardcrawl.monsters.MonsterGroup;
 
 public interface SimpleThemedModifier {
     default String fightName() {
@@ -11,6 +12,8 @@ public interface SimpleThemedModifier {
         return null;
     }
 
+    default void onPreBattle(MonsterGroup context) {}
+
     default void registerThemed() {
         if (this instanceof AbstractMonsterModifier) {
             AbstractMonsterModifier mod = (AbstractMonsterModifier) this;
@@ -18,6 +21,11 @@ public interface SimpleThemedModifier {
                 @Override
                 public String getModifierName() {
                     return fightName();
+                }
+
+                @Override
+                public void preBattleActions(MonsterGroup context) {
+                    onPreBattle(context);
                 }
             }, ChimeraMonstersMod.getModID());
         }
