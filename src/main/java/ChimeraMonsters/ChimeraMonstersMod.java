@@ -251,10 +251,11 @@ public class ChimeraMonstersMod implements
     }
 
     public static void findMonsters() {
+        registerFallback();
         Settings.seed = -1L;
         AbstractDungeon.generateSeeds();
         for (String encounterID : BaseMod.encounterList) {
-            logger.info("Loading monsters from encounter {}", encounterID);
+            //logger.info("Loading monsters from encounter {}", encounterID);
             MonsterGroup group = BaseMod.getMonster(encounterID);
             if (group == null) {
                 group = MonsterHelper.getEncounter(encounterID);
@@ -264,7 +265,6 @@ public class ChimeraMonstersMod implements
             }
         }
 
-        registerFallback();
     }
 
     private static void registerFallback() {
