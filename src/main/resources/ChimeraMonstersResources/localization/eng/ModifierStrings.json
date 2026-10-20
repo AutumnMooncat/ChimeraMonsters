@@ -81,7 +81,8 @@
     "TEXT": ["Hexa", "", "Has a powerful attack intent every 6 turns.", "TL Note: Hexa is added to last part of the monster name"]
   },
   "${ModID}:ExplodingMod": {
-    "TEXT": ["Exploding ", "", "Explodes after 3 turns, dealing #b[10/20/30] damage."]
+    "TEXT": ["Exploding ", "", "Explodes after 3 turns, dealing #b[10/20/30] damage."],
+    "EXTRA_TEXT": ["Blasting Zone"]
   },
   "${ModID}:ImpatientMod": {
     "TEXT": ["Impatient ", "", "Has #yTime #yWarp."]

@@ -1,14 +1,17 @@
 package ChimeraMonsters.modifiers.monsters.uncommon;
 
 import ChimeraMonsters.ChimeraMonstersMod;
+import ChimeraMonsters.modifiers.groups.themed.SimpleThemedModifier;
 import ChimeraMonsters.modifiers.monsters.AbstractMonsterModifier;
 import ChimeraMonsters.powers.ExplodingPower;
+import com.megacrit.cardcrawl.actions.common.MakeTempCardInHandAction;
+import com.megacrit.cardcrawl.cards.colorless.TheBomb;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
 import com.megacrit.cardcrawl.powers.*;
 
-public class ExplodingMod extends AbstractMonsterModifier {
+public class ExplodingMod extends AbstractMonsterModifier implements SimpleThemedModifier {
     public static final String ID = ChimeraMonstersMod.makeID(ExplodingMod.class.getSimpleName());
 
     public ExplodingMod() {
@@ -31,5 +34,10 @@ public class ExplodingMod extends AbstractMonsterModifier {
     @Override
     public AbstractMonsterModifier makeCopy() {
         return new ExplodingMod();
+    }
+
+    @Override
+    public void themedPreBattle(MonsterGroup context) {
+        // TODO Without a player boon, this theme might nuke them
     }
 }
