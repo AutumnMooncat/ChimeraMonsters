@@ -1,6 +1,7 @@
 package ChimeraMonsters.patches;
 
 import ChimeraMonsters.ChimeraMonstersController;
+import ChimeraMonsters.modifiers.groups.AbstractMonsterGroupModifier;
 import ChimeraMonsters.modifiers.monsters.AbstractMonsterModifier;
 import ChimeraMonsters.util.FightModificationManager;
 import ChimeraMonsters.vfx.CustomBattleStartEffect;
@@ -45,6 +46,13 @@ public class StartOfCombatPatches {
 
     @SpirePatch2(clz = MonsterGroup.class, method = "usePreBattleAction")
     public static class DoPreBattleStuff {
+        @SpirePostfixPatch
+        public static void alsoTheseOnes(MonsterGroup __instance) {
+            for (AbstractMonsterGroupModifier mod : MonsterGroupFields.receivedModifiers.get(__instance)) {
+                mod.preBattleActions(__instance);
+            }
+        }
+
         @SpireInsertPatch(locator = Locator.class, localvars = {"m"})
         public static void plz(MonsterGroup __instance, AbstractMonster m) {
             for (AbstractMonsterModifier mod : MonsterFields.receivedModifiers.get(m)) {

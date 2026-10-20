@@ -12,7 +12,7 @@ public interface SimpleThemedModifier {
         return null;
     }
 
-    default void onPreBattle(MonsterGroup context) {}
+    default void themedPreBattle(MonsterGroup context) {}
 
     default void registerThemed() {
         if (this instanceof AbstractMonsterModifier) {
@@ -25,7 +25,7 @@ public interface SimpleThemedModifier {
 
                 @Override
                 public void preBattleActions(MonsterGroup context) {
-                    onPreBattle(context);
+                    themedPreBattle(context);
                 }
             }, ChimeraMonstersMod.getModID());
         }
