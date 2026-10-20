@@ -25,6 +25,10 @@ public class FightModificationManager {
         }
         List<AbstractCuratedModifier> validCurated = ChimeraMonstersController.getValidCuratedMods(monsterGroup).collect(Collectors.toList());
         List<AbstractThemedModifier> validThemed = ChimeraMonstersController.getValidThemedMods(monsterGroup).collect(Collectors.toList());
+        if (monsterGroup.monsters.size() == 1) {
+            // TODO We probably dont want themed mods against 1 enemy, uncertain
+            validThemed.clear();
+        }
         int curated = validCurated.isEmpty() ? 0 : ChimeraMonstersConfig.IntSetting.CURATED_WEIGHT.getVal();
         int thematic = validThemed.isEmpty() ? 0 : ChimeraMonstersConfig.IntSetting.THEMED_WEIGHT.getVal();
         int modified = ChimeraMonstersConfig.IntSetting.ENHANCED_WEIGHT.getVal();
