@@ -4,6 +4,8 @@ import ChimeraMonsters.ChimeraMonstersMod;
 import ChimeraMonsters.modifiers.Modifier;
 import ChimeraMonsters.modifiers.monsters.AbstractMonsterModifier;
 import ChimeraMonsters.util.AnalysisHelper;
+import ChimeraMonsters.util.Wiz;
+import com.megacrit.cardcrawl.actions.AbstractGameAction;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.localization.UIStrings;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
@@ -47,6 +49,14 @@ public abstract class AbstractMonsterGroupModifier implements Modifier<MonsterGr
 
     public boolean allCanAccept(MonsterGroup group, AbstractMonsterModifier mod) {
         return group.monsters.stream().allMatch(mon -> mod.canApplyTo(mon, group));
+    }
+
+    public void addToBot(AbstractGameAction... actions) {
+        Wiz.sequenceActions(false, actions);
+    }
+
+    public void addToTop(AbstractGameAction... actions) {
+        Wiz.sequenceActions(true, actions);
     }
 
     @Override
