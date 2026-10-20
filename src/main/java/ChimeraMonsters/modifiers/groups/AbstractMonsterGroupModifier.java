@@ -16,6 +16,10 @@ public abstract class AbstractMonsterGroupModifier implements Modifier<MonsterGr
     public AbstractMonsterGroupModifier(String ID) {
         this.modifierID = ID;
         this.uiStrings = CardCrawlGame.languagePack.getUIString(ID);
+
+        if (uiStrings == null) {
+            throw new NullPointerException("Could not find uiStrings for "+ID);
+        }
     }
 
     protected abstract boolean validGroup(MonsterGroup group);
