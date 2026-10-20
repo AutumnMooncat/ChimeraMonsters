@@ -1,12 +1,13 @@
 package ChimeraMonsters.modifiers.monsters.uncommon;
 
 import ChimeraMonsters.ChimeraMonstersMod;
+import ChimeraMonsters.modifiers.groups.themed.SimpleThemedModifier;
 import ChimeraMonsters.modifiers.monsters.AbstractMonsterModifier;
 import ChimeraMonsters.powers.ShadowPower;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
 
-public class ShadowMod extends AbstractMonsterModifier {
+public class ShadowMod extends AbstractMonsterModifier implements SimpleThemedModifier {
     public static final String ID = ChimeraMonstersMod.makeID(ShadowMod.class.getSimpleName());
 
     public ShadowMod() {

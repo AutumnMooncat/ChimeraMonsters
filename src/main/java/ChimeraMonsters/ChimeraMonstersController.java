@@ -4,6 +4,7 @@ import ChimeraMonsters.modifiers.Modifier;
 import ChimeraMonsters.modifiers.groups.addon.AbstractAddonModifier;
 import ChimeraMonsters.modifiers.groups.curated.AbstractCuratedModifier;
 import ChimeraMonsters.modifiers.groups.themed.AbstractThemedModifier;
+import ChimeraMonsters.modifiers.groups.themed.SimpleThemedModifier;
 import ChimeraMonsters.modifiers.monsters.AbstractMonsterModifier;
 import ChimeraMonsters.patches.MonsterFields;
 import ChimeraMonsters.powers.ModifierExplainerPower;
@@ -167,6 +168,9 @@ public class ChimeraMonstersController {
                 monsterMods.put(modifier.getModRarity(), new ArrayList<>());
             }
             monsterMods.get(modifier.getModRarity()).add((AbstractMonsterModifier) modifier);
+            if (modifier instanceof SimpleThemedModifier) {
+                ((SimpleThemedModifier) modifier).registerThemed();
+            }
         } else if (modifier instanceof AbstractThemedModifier) {
             if (!themedMods.containsKey(modifier.getModRarity())) {
                 themedMods.put(modifier.getModRarity(), new ArrayList<>());

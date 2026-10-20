@@ -4,7 +4,7 @@
   },
   "${ModID}:ExampleMod": {
     "TEXT": ["Prefix name", "Suffix name", "Modifier description"],
-    "EXTRA_TEXT": ["Anything else needed"]
+    "EXTRA_TEXT": ["Simple Themed Name","Anything else needed"]
   },
   "${ModID}:AugerMod": {
     "TEXT": ["Drill ", "", "Reduces #yHP by #b20%. NL Applies #yVulnerable when breaking #yBlock."]
@@ -13,7 +13,8 @@
     "TEXT": ["Bulky ", "", "Increase #yBlock gained by #b33%. NL Reduces base damage by #b20%."]
   },
   "${ModID}:AggressiveMod": {
-    "TEXT": ["Aggressive ", "", "Non-attack intents have a 50% chance to be replaced with the last attack used."]
+    "TEXT": ["Aggressive ", "", "Non-attack intents have a 50% chance to be replaced with the last attack used."],
+    "EXTRA_TEXT": ["Drawing Aggro"]
   },
   "${ModID}:InterceptingMod": {
     "TEXT": ["", " the Tank", "Can Block and intercept attacks."]
@@ -22,16 +23,20 @@
     "TEXT": ["Raging ", "", "Upon reaching half #yhealth, gains #yStrength and also attacks its allies."]
   },
   "${ModID}:DoppelMod": {
-    "TEXT": ["Doppel", "", "Hits twice as many times but base damage is halved.", "TL Note: Doppel is added to last part of the monster name"]
+    "TEXT": ["Doppel", "", "Hits twice as many times but base damage is halved.", "TL Note: Doppel is added to last part of the monster name"],
+    "EXTRA_TEXT": ["Doppelings"]
   },
   "${ModID}:ShadowMod": {
-    "TEXT": ["Shadow ", "", "Increases base damage by #b50%. NL Reduces #yHP by #b33%."]
+    "TEXT": ["Shadow ", "", "Increases base damage by #b50%. NL Reduces #yHP by #b33%."],
+    "EXTRA_TEXT": ["Shadelings"]
   },
   "${ModID}:VampiricMod": {
-    "TEXT": ["Vampiric ", "", "Heals for #b50% of unblocked damage dealt. Starts with #b70% of it's maximum #yHP."]
+    "TEXT": ["Vampiric ", "", "Heals for #b50% of unblocked damage dealt. Starts with #b70% of it's maximum #yHP."],
+    "EXTRA_TEXT": ["Bloodlust"]
   },
   "${ModID}:RegenerationMod": {
-    "TEXT": ["Regenerating ", "", "Starts with #b[4/7/10] #yRegeneration. Starts with #b70% of it's maximum #yHP."]
+    "TEXT": ["Regenerating ", "", "Starts with #b[4/7/10] #yRegeneration. Starts with #b70% of it's maximum #yHP."],
+    "EXTRA_TEXT": ["Rejuvenating Springs"]
   },
   "${ModID}:SplittingMod": {
     "TEXT": ["Splitting ", "", "When its #yHP is at or below #b50%, will split into two copies of itself with its current #yHP."]
@@ -52,7 +57,8 @@
     "TEXT": ["Hovering ", "", "Has #b[6/9] #yHover. Loses #b25% #yHP on impact."]
   },
   "${ModID}:BurningMod": {
-    "TEXT": ["Burning ", "", "Has #b[2/4/6] #yBurning."]
+    "TEXT": ["Burning ", "", "Has #b[2/4/6] #yBurning."],
+    "EXTRA_TEXT": ["Wildfire"]
   },
   "${ModID}:PacifistMod": {
     "TEXT": ["Pacifist ", "", "Every other attack is replaced with an interruptable heal."]
@@ -79,7 +85,8 @@
     "TEXT": ["Impatient ", "", "Has #yTime #yWarp."]
   },
   "${ModID}:InfestedMod": {
-    "TEXT": ["Infested ", "", "Applies #b2 #yVulnerable on death."]
+    "TEXT": ["Infested ", "", "Applies #b2 #yVulnerable on death."],
+    "EXTRA_TEXT": ["Fungal Growths"]
   },
   "${ModID}:StickyMod": {
     "TEXT": ["Sticky ", "", "Shuffles #b[1/2] #ySlimed into your discard pile when dealing attack damage."]

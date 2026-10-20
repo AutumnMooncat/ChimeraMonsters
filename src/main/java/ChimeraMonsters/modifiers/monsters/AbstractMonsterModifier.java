@@ -61,6 +61,10 @@ public abstract class AbstractMonsterModifier implements Modifier<AbstractMonste
         return modifierID;
     }
 
+    public UIStrings getStrings() {
+        return uiStrings;
+    }
+
     public String getPrefix() {
         return uiStrings.TEXT[0];
     }

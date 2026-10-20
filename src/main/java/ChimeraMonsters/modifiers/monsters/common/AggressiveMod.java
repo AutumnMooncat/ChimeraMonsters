@@ -1,12 +1,13 @@
 package ChimeraMonsters.modifiers.monsters.common;
 
 import ChimeraMonsters.ChimeraMonstersMod;
+import ChimeraMonsters.modifiers.groups.themed.SimpleThemedModifier;
 import ChimeraMonsters.modifiers.monsters.AbstractMonsterModifier;
 import ChimeraMonsters.powers.AggressivePower;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
 
-public class AggressiveMod extends AbstractMonsterModifier {
+public class AggressiveMod extends AbstractMonsterModifier implements SimpleThemedModifier {
     public static final String ID = ChimeraMonstersMod.makeID(AggressiveMod.class.getSimpleName());
     public static final int AMOUNT = 1;
 

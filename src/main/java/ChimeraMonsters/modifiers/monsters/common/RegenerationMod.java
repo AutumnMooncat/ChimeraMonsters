@@ -1,13 +1,14 @@
 package ChimeraMonsters.modifiers.monsters.common;
 
 import ChimeraMonsters.ChimeraMonstersMod;
+import ChimeraMonsters.modifiers.groups.themed.SimpleThemedModifier;
 import ChimeraMonsters.modifiers.monsters.AbstractMonsterModifier;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
 import com.megacrit.cardcrawl.powers.*;
 
-public class RegenerationMod extends AbstractMonsterModifier {
+public class RegenerationMod extends AbstractMonsterModifier implements SimpleThemedModifier {
     public static final String ID = ChimeraMonstersMod.makeID(RegenerationMod.class.getSimpleName());
 
     public RegenerationMod() {

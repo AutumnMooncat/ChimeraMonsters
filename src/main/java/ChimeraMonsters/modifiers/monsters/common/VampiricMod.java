@@ -1,12 +1,13 @@
 package ChimeraMonsters.modifiers.monsters.common;
 
 import ChimeraMonsters.ChimeraMonstersMod;
+import ChimeraMonsters.modifiers.groups.themed.SimpleThemedModifier;
 import ChimeraMonsters.modifiers.monsters.AbstractMonsterModifier;
 import ChimeraMonsters.powers.VampiricPower;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
 
-public class VampiricMod extends AbstractMonsterModifier {
+public class VampiricMod extends AbstractMonsterModifier implements SimpleThemedModifier {
     public static final String ID = ChimeraMonstersMod.makeID(VampiricMod.class.getSimpleName());
     public static final int PERCENTAGE = 50;
 
