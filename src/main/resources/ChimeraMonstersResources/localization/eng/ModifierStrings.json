@@ -1,6 +1,7 @@
 {
   "${ModID}:AbstractMonsterModifier": {
-    "TEXT": ["Monster", "Modifier"]
+    "TEXT": ["Monster", "Modifier"],
+    "EXTRA_TEXT": [""]
   },
   "${ModID}:ExampleMod": {
     "TEXT": ["Prefix name", "Suffix name", "Modifier description"],
@@ -10,7 +11,8 @@
     "TEXT": ["Drill ", "", "Reduces #yHP by #b20%. NL Applies #yVulnerable when breaking #yBlock."]
   },
   "${ModID}:BulkyMod": {
-    "TEXT": ["Bulky ", "", "Reduces base damage by #b20%. Has a new intent to gain #yStrength and #yBlock."]
+    "TEXT": ["Bulky ", "", "Reduces base damage by #b20%. Has a new intent to gain #yStrength and #yBlock."],
+    "EXTRA_TEXT": ["Bulking Up"]
   },
   "${ModID}:AggressiveMod": {
     "TEXT": ["Aggressive ", "", "Non-attack intents have a 50% chance to be replaced with the last attack used."],
