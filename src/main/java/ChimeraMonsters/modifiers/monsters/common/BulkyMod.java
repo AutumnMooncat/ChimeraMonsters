@@ -1,4 +1,4 @@
-package ChimeraMonsters.modifiers.monsters.uncommon;
+package ChimeraMonsters.modifiers.monsters.common;
 
 import ChimeraMonsters.ChimeraMonstersMod;
 import ChimeraMonsters.modifiers.monsters.AbstractMonsterModifier;
@@ -9,7 +9,7 @@ public class BulkyMod extends AbstractMonsterModifier {
     public static final String ID = ChimeraMonstersMod.makeID(BulkyMod.class.getSimpleName());
 
     public BulkyMod() {
-        super(ID, ModifierRarity.UNCOMMON);
+        super(ID, ModifierRarity.COMMON);
     }
 
     @Override
