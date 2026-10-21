@@ -149,6 +149,6 @@
     "TEXT": ["", " of Stabbing", "Starts with #yPainful #yStabs."]
   },
   "${ModID}:CultistMod": {
-    "TEXT": ["", " of the Creed", "Caw Caw!"]
+    "TEXT": ["", " of the Flock", "Caw Caw!"]
   }
 }
