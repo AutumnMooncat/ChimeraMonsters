@@ -13,6 +13,7 @@ import com.megacrit.cardcrawl.monsters.EnemyMoveInfo;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 
 public class IntentManager {
     private static final String replacedIntendedMove = ChimeraMonstersMod.makeID(IntentManager.class.getSimpleName()+":replacedIntendedMove");
@@ -158,10 +159,13 @@ public class IntentManager {
         if (current != first) {
             IntentInterceptingPower currentInterceptor = MonsterFields.interceptor.get(monster);
             EnemyMoveInfo currentReplacedMove = MonsterFields.replacedIntendedMove.get(monster);
+            HashMap<String, Object> currentData = DataUtil.getDataMap(monster);
             MonsterFields.interceptor.set(monster, first.interceptor);
             MonsterFields.replacedIntendedMove.set(monster, first.replacedIntendedMove);
+            DataUtil.setDataMap(monster, DataUtil.getDataMap(first));
             current.interceptor = currentInterceptor;
             current.replacedIntendedMove = currentReplacedMove;
+            DataUtil.setDataMap(current, currentData);
             first.writeFields(monster);
             extraIntents(monster).clear();
             extraIntents(monster).addAll(all);

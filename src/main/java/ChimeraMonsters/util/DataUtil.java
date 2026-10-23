@@ -17,6 +17,10 @@ public interface DataUtil {
         return getDataMap(getHandler());
     }
 
+    default void setDataMap(HashMap<String, Object> map) {
+        setDataMap(getHandler(), map);
+    }
+
     default void removeDataMap() {
         removeDataMap(getHandler());
     }
@@ -51,6 +55,10 @@ public interface DataUtil {
 
     static HashMap<String, Object> getDataMap(Object o) {
         return customData.computeIfAbsent(o, obj -> new HashMap<>());
+    }
+
+    static void setDataMap(Object o, HashMap<String, Object> map) {
+        customData.put(o, map);
     }
 
     static void removeDataMap(Object o) {
