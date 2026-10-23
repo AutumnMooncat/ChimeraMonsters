@@ -167,5 +167,12 @@
     "DESCRIPTIONS": [
       "#yAttacks deal #b25% less damage. Spreads to the target when dealing unblocked attack damage."
     ]
+  },
+  "${ModID}:HyperPower": {
+    "NAME": "Fast",
+    "DESCRIPTIONS": [
+      "Whenever you play a card, ", " deals #b10% more damage with #yAttacks this turn.",
+      " (Deals #b", "% more damage)"
+    ]
   }
 }

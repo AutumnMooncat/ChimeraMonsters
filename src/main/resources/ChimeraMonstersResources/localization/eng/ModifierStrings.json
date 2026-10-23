@@ -150,5 +150,8 @@
   },
   "${ModID}:CultistMod": {
     "TEXT": ["", " of the Flock", "Caw Caw!"]
+  },
+  "${ModID}:HyperMod": {
+    "TEXT": ["Hyper", "", "Deals #b10% more damage per card played each turn.", "TL Note: Hyper is added to last part of the monster name"]
   }
 }
