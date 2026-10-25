@@ -61,9 +61,12 @@ public class HarbingerPower extends AbstractEasyPower implements NonStackablePow
                 addToBot(new AnimateSlowAttackAction(owner));
                 addToBot(new DamageAction(AbstractDungeon.player, thiz.damage, AbstractGameAction.AttackEffect.FIRE));
                 Wiz.forAllMonstersLiving(monster -> {
+                    if (monster == thiz.owner) return;
                     DamageInfo temp = new DamageInfo(thiz.owner, CalcHelper.monsterToMonsterDamage(thiz.owner, monster, thiz.damage.base));
                     addToBot(new DamageAction(monster, temp, AbstractGameAction.AttackEffect.FIRE));
                 });
+                DamageInfo temp = new DamageInfo(thiz.owner, CalcHelper.monsterToMonsterDamage(thiz.owner, thiz.owner, thiz.damage.base));
+                addToBot(new DamageAction(thiz.owner, temp, AbstractGameAction.AttackEffect.FIRE));
             }
             addToBot(new DoAction(() -> {
                 if (HarbingerPower.this.amount > 0) {
