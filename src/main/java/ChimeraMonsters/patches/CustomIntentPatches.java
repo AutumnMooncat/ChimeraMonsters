@@ -31,54 +31,18 @@ public class CustomIntentPatches {
     public static AbstractMonster.Intent CHIMERA_MONSTERS_SWEEPING_ATTACK_BLOCK;
     @SpireEnum
     public static AbstractMonster.Intent CHIMERA_MONSTERS_INTERCEPTING;
+    @SpireEnum
+    public static AbstractMonster.Intent CHIMERA_MONSTERS_METEOR_ATTACK;
 
-    private static boolean didInitIntents;
-    private static boolean didInitTips;
-    private static String[] INTENT_TEXT;
-    private static String WARNING_NAME;
-    private static String WARNING_TEXT;
-    private static String INTERCEPT_NAME;
-    private static String INTERCEPT_TEXT;
-    private static String FERAL_NAME;
-    private static String ATTACK_FOR;
-    private static String ATTACK_BUFF_FOR;
-    private static String ATTACK_DEBUFF_FOR;
-    private static String ATTACK_BLOCK_FOR;
-    private static String DAMAGE;
-    private static String DAMAGE_N;
-    private static String TIMES;
-    private static Texture warningIntentTexture;
-    private static Texture warningTipTexture;
-    private static Texture interceptIntentTexture;
-    private static Texture interceptTipTexture;
-    private static Texture sweepingIntentTexture;
-    private static Texture sweepingTipTexture;
+    private static boolean didInitHandlers;
+    private static final ArrayList<CustomHandler> handlers = new ArrayList<>();
 
-    private static void initIntents() {
-        didInitIntents = true;
-        warningIntentTexture = TextureLoader.getTexture(ChimeraMonstersMod.makeImagePath("ui/IntentFlinchedL.png"));
-        interceptIntentTexture = TextureLoader.getTexture(ChimeraMonstersMod.makeImagePath("ui/IntentInterceptingL.png"));
-        sweepingIntentTexture = TextureLoader.getTexture(ChimeraMonstersMod.makeImagePath("ui/IntentClawsL.png"));
-    }
-
-    private static void initTips() {
-        didInitTips = true;
-        warningTipTexture = TextureLoader.getTexture(ChimeraMonstersMod.makeImagePath("ui/IntentFlinched.png"));
-        interceptTipTexture = TextureLoader.getTexture(ChimeraMonstersMod.makeImagePath("ui/IntentIntercepting.png"));
-        sweepingTipTexture = TextureLoader.getTexture(ChimeraMonstersMod.makeImagePath("ui/IntentClaws.png"));
-        INTENT_TEXT = CardCrawlGame.languagePack.getUIString(ChimeraMonstersMod.makeID("IntentPatches")).TEXT;
-        WARNING_NAME = INTENT_TEXT[0];
-        WARNING_TEXT = INTENT_TEXT[1];
-        INTERCEPT_NAME = INTENT_TEXT[2];
-        INTERCEPT_TEXT = INTENT_TEXT[3];
-        FERAL_NAME = INTENT_TEXT[4];
-        ATTACK_FOR = INTENT_TEXT[5];
-        ATTACK_BUFF_FOR = INTENT_TEXT[6];
-        ATTACK_DEBUFF_FOR = INTENT_TEXT[7];
-        ATTACK_BLOCK_FOR = INTENT_TEXT[8];
-        DAMAGE = INTENT_TEXT[9];
-        DAMAGE_N = INTENT_TEXT[10];
-        TIMES = INTENT_TEXT[11];
+    private static void initHandlers() {
+        didInitHandlers = true;
+        handlers.add(new WarningHandler());
+        handlers.add(new InterceptingHandler());
+        handlers.add(new FeralHandler());
+        handlers.add(new MeteorHandler());
     }
 
     @SpirePatch2(clz = AbstractMonster.class, method = "renderDamageRange")
@@ -92,16 +56,14 @@ public class CustomIntentPatches {
     @SpirePatch2(clz = AbstractMonster.class, method = "getIntentImg")
     public static class HaveImage {
         @SpirePrefixPatch
-        public static SpireReturn<Texture> plz(AbstractMonster __instance) {
-            if (!didInitIntents) {
-                initIntents();
+        public static SpireReturn<Texture> plz(AbstractMonster __instance, int ___intentDmg, boolean ___isMultiDmg, int ___intentMultiAmt) {
+            if (!didInitHandlers) {
+                initHandlers();
             }
-            if (__instance.intent == CHIMERA_MONSTERS_WARNING) {
-                return SpireReturn.Return(warningIntentTexture);
-            } else if (__instance.intent == CHIMERA_MONSTERS_INTERCEPTING) {
-                return SpireReturn.Return(interceptIntentTexture);
-            } else if (__instance.intent == CHIMERA_MONSTERS_SWEEPING_ATTACK || __instance.intent == CHIMERA_MONSTERS_SWEEPING_ATTACK_BUFF || __instance.intent == CHIMERA_MONSTERS_SWEEPING_ATTACK_DEBUFF || __instance.intent == CHIMERA_MONSTERS_SWEEPING_ATTACK_BLOCK) {
-                return SpireReturn.Return(sweepingIntentTexture);
+            for (CustomHandler handler : handlers) {
+                if (handler.handles(__instance, __instance.intent)) {
+                    return SpireReturn.Return(handler.handleMainTex(__instance, __instance.intent, ___intentDmg, ___isMultiDmg ? ___intentMultiAmt : 0));
+                }
             }
             return SpireReturn.Continue();
         }
@@ -111,39 +73,14 @@ public class CustomIntentPatches {
     public static class HaveTipImage {
         @SpirePrefixPatch
         public static SpireReturn<Void> plz(AbstractMonster __instance, PowerTip ___intentTip, int ___intentDmg, boolean ___isMultiDmg, int ___intentMultiAmt) {
-            if (!didInitTips) {
-                initTips();
+            if (!didInitHandlers) {
+                initHandlers();
             }
-            if (__instance.intent == CHIMERA_MONSTERS_WARNING) {
-                ___intentTip.header = WARNING_NAME;
-                ___intentTip.body = WARNING_TEXT;
-                ___intentTip.img = warningTipTexture;
-                return SpireReturn.Return();
-            } else if (__instance.intent == CHIMERA_MONSTERS_INTERCEPTING) {
-                ___intentTip.header = INTERCEPT_NAME;
-                ___intentTip.body = INTERCEPT_TEXT;
-                ___intentTip.img = interceptTipTexture;
-                return SpireReturn.Return();
-            } else if (__instance.intent == CHIMERA_MONSTERS_SWEEPING_ATTACK || __instance.intent == CHIMERA_MONSTERS_SWEEPING_ATTACK_BUFF || __instance.intent == CHIMERA_MONSTERS_SWEEPING_ATTACK_DEBUFF || __instance.intent == CHIMERA_MONSTERS_SWEEPING_ATTACK_BLOCK) {
-                String text;
-                if (__instance.intent == CHIMERA_MONSTERS_SWEEPING_ATTACK) {
-                    text = ATTACK_FOR;
-                } else if (__instance.intent == CHIMERA_MONSTERS_SWEEPING_ATTACK_BUFF) {
-                    text = ATTACK_BUFF_FOR;
-                } else if (__instance.intent == CHIMERA_MONSTERS_SWEEPING_ATTACK_DEBUFF) {
-                    text = ATTACK_DEBUFF_FOR;
-                } else  {
-                    text = ATTACK_BLOCK_FOR;
+            for (CustomHandler handler : handlers) {
+                if (handler.handles(__instance, __instance.intent)) {
+                    handler.handleTip(__instance, __instance.intent, ___intentTip, ___intentDmg, ___isMultiDmg ? ___intentMultiAmt : 0);
+                    return SpireReturn.Return();
                 }
-                if (___isMultiDmg) {
-                    text += ___intentDmg + DAMAGE_N + ___intentMultiAmt + TIMES;
-                } else {
-                    text += ___intentDmg + DAMAGE;
-                }
-                ___intentTip.header = FERAL_NAME;
-                ___intentTip.body = text;
-                ___intentTip.img = sweepingTipTexture;
-                return SpireReturn.Return();
             }
             return SpireReturn.Continue();
         }
@@ -153,25 +90,167 @@ public class CustomIntentPatches {
     public static class HaveIntentVFX {
         @SpirePostfixPatch
         public static void plz(AbstractMonster __instance, @ByRef float[] ___intentParticleTimer, ArrayList<AbstractGameEffect> ___intentVfx) {
-            if (__instance.intent == CHIMERA_MONSTERS_SWEEPING_ATTACK_BUFF) {
-                ___intentParticleTimer[0] -= Gdx.graphics.getDeltaTime();
-                if (___intentParticleTimer[0] < 0.0F) {
-                    ___intentParticleTimer[0] = 0.1F;
-                    ___intentVfx.add(new BuffParticleEffect(__instance.intentHb.cX, __instance.intentHb.cY));
-                }
-            } else if (__instance.intent == CHIMERA_MONSTERS_SWEEPING_ATTACK_DEBUFF) {
-                ___intentParticleTimer[0] -= Gdx.graphics.getDeltaTime();
-                if (___intentParticleTimer[0] < 0.0F) {
-                    ___intentParticleTimer[0] = 1.0F;
-                    ___intentVfx.add(new DebuffParticleEffect(__instance.intentHb.cX, __instance.intentHb.cY));
-                }
-            } else if (__instance.intent == CHIMERA_MONSTERS_SWEEPING_ATTACK_BLOCK) {
-                ___intentParticleTimer[0] -= Gdx.graphics.getDeltaTime();
-                if (___intentParticleTimer[0] < 0.0F) {
-                    ___intentParticleTimer[0] = 0.5F;
-                    ___intentVfx.add(new ShieldParticleEffect(__instance.intentHb.cX, __instance.intentHb.cY));
+            if (!didInitHandlers) {
+                initHandlers();
+            }
+            for (CustomHandler handler : handlers) {
+                if (handler.handles(__instance, __instance.intent)) {
+                    handler.handleVfx(__instance, __instance.intent, ___intentVfx, ___intentParticleTimer);
                 }
             }
+        }
+    }
+
+    public static abstract class CustomHandler {
+        public Texture mainTex;
+        public Texture tipTex;
+
+        public CustomHandler(String mainTex, String tipTex) {
+            this(TextureLoader.getTexture(ChimeraMonstersMod.makeImagePath(mainTex)), TextureLoader.getTexture(ChimeraMonstersMod.makeImagePath(tipTex)));
+        }
+
+        public CustomHandler(Texture mainTex, Texture tipTex) {
+            this.mainTex = mainTex;
+            this.tipTex = tipTex;
+        }
+
+        public abstract boolean handles(AbstractMonster mon, AbstractMonster.Intent intent);
+
+        public abstract void handleTip(AbstractMonster mon, AbstractMonster.Intent intent, PowerTip tip, int damage, int multi);
+
+        public Texture handleMainTex(AbstractMonster mon, AbstractMonster.Intent intent, int damage, int multi) {
+            return mainTex;
+        }
+
+        public void handleVfx(AbstractMonster mon, AbstractMonster.Intent intent, ArrayList<AbstractGameEffect> effects, float[] timer) {}
+    }
+
+    public static class WarningHandler extends CustomHandler {
+        public static String[] TEXT = CardCrawlGame.languagePack.getUIString(ChimeraMonstersMod.makeID(WarningHandler.class.getSimpleName())).TEXT;
+
+        public WarningHandler() {
+            super("ui/IntentFlinchedL.png", "ui/IntentFlinched.png");
+        }
+
+        @Override
+        public boolean handles(AbstractMonster mon, AbstractMonster.Intent intent) {
+            return intent == CHIMERA_MONSTERS_WARNING;
+        }
+
+        @Override
+        public void handleTip(AbstractMonster mon, AbstractMonster.Intent intent, PowerTip tip, int damage, int multi) {
+            tip.header = TEXT[0];
+            tip.body = TEXT[1];
+            tip.img = tipTex;
+        }
+    }
+
+    public static class InterceptingHandler extends CustomHandler {
+        public static String[] TEXT = CardCrawlGame.languagePack.getUIString(ChimeraMonstersMod.makeID(InterceptingHandler.class.getSimpleName())).TEXT;
+
+        public InterceptingHandler() {
+            super("ui/IntentInterceptingL.png", "ui/IntentIntercepting.png");
+        }
+
+        @Override
+        public boolean handles(AbstractMonster mon, AbstractMonster.Intent intent) {
+            return intent == CHIMERA_MONSTERS_INTERCEPTING;
+        }
+
+        @Override
+        public void handleTip(AbstractMonster mon, AbstractMonster.Intent intent, PowerTip tip, int damage, int multi) {
+            tip.header = TEXT[0];
+            tip.body = TEXT[1];
+            tip.img = tipTex;
+        }
+    }
+
+    public static class FeralHandler extends CustomHandler {
+        public static String[] TEXT = CardCrawlGame.languagePack.getUIString(ChimeraMonstersMod.makeID(FeralHandler.class.getSimpleName())).TEXT;
+
+        public FeralHandler() {
+            super("ui/IntentClawsL.png", "ui/IntentClaws.png");
+        }
+
+        @Override
+        public boolean handles(AbstractMonster mon, AbstractMonster.Intent intent) {
+            return intent == CHIMERA_MONSTERS_SWEEPING_ATTACK ||
+                    intent == CHIMERA_MONSTERS_SWEEPING_ATTACK_BUFF ||
+                    intent == CHIMERA_MONSTERS_SWEEPING_ATTACK_DEBUFF ||
+                    intent == CHIMERA_MONSTERS_SWEEPING_ATTACK_BLOCK;
+        }
+
+        @Override
+        public void handleTip(AbstractMonster mon, AbstractMonster.Intent intent, PowerTip tip, int damage, int multi) {
+            String text;
+            if (intent == CHIMERA_MONSTERS_SWEEPING_ATTACK) {
+                text = TEXT[1];
+            } else if (intent == CHIMERA_MONSTERS_SWEEPING_ATTACK_BUFF) {
+                text = TEXT[2];
+            } else if (intent == CHIMERA_MONSTERS_SWEEPING_ATTACK_DEBUFF) {
+                text = TEXT[3];
+            } else  {
+                text = TEXT[4];
+            }
+            if (multi > 0) {
+                text += damage + TEXT[6] + multi + TEXT[7];
+            } else {
+                text += damage + TEXT[5];
+            }
+
+            tip.header = TEXT[0];
+            tip.body = text;
+            tip.img = tipTex;
+        }
+
+        @Override
+        public void handleVfx(AbstractMonster mon, AbstractMonster.Intent intent, ArrayList<AbstractGameEffect> effects, float[] timer) {
+            if (intent == CHIMERA_MONSTERS_SWEEPING_ATTACK_BUFF) {
+                timer[0] -= Gdx.graphics.getDeltaTime();
+                if (timer[0] < 0.0F) {
+                    timer[0] = 0.1F;
+                    effects.add(new BuffParticleEffect(mon.intentHb.cX, mon.intentHb.cY));
+                }
+            } else if (intent == CHIMERA_MONSTERS_SWEEPING_ATTACK_DEBUFF) {
+                timer[0] -= Gdx.graphics.getDeltaTime();
+                if (timer[0] < 0.0F) {
+                    timer[0] = 1.0F;
+                    effects.add(new DebuffParticleEffect(mon.intentHb.cX, mon.intentHb.cY));
+                }
+            } else if (intent == CHIMERA_MONSTERS_SWEEPING_ATTACK_BLOCK) {
+                timer[0] -= Gdx.graphics.getDeltaTime();
+                if (timer[0] < 0.0F) {
+                    timer[0] = 0.5F;
+                    effects.add(new ShieldParticleEffect(mon.intentHb.cX, mon.intentHb.cY));
+                }
+            }
+        }
+    }
+
+    public static class MeteorHandler extends CustomHandler {
+        public static String[] TEXT = CardCrawlGame.languagePack.getUIString(ChimeraMonstersMod.makeID(MeteorHandler.class.getSimpleName())).TEXT;
+
+        public MeteorHandler() {
+            super("ui/IntentMeteorL.png", "ui/IntentMeteor.png");
+        }
+
+        @Override
+        public boolean handles(AbstractMonster mon, AbstractMonster.Intent intent) {
+            return intent == CHIMERA_MONSTERS_METEOR_ATTACK;
+        }
+
+        @Override
+        public void handleTip(AbstractMonster mon, AbstractMonster.Intent intent, PowerTip tip, int damage, int multi) {
+            String text = TEXT[1];
+            if (multi > 0) {
+                text += damage + TEXT[3] + multi + TEXT[4];
+            } else {
+                text += damage + TEXT[2];
+            }
+
+            tip.header = TEXT[0];
+            tip.body = text;
+            tip.img = tipTex;
         }
     }
 }
