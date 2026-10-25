@@ -153,5 +153,8 @@
   },
   "${ModID}:HyperMod": {
     "TEXT": ["Hyper", "", "Deals #b10% more damage per card played each turn.", "TL Note: Hyper is added to last part of the monster name"]
+  },
+  "${ModID}:HarbingerMod": {
+    "TEXT": ["", ", the Harbinger", "After #b2 turns, also attacks everyone with increasing intensity every turn."]
   }
 }

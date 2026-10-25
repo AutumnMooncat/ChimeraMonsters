@@ -174,5 +174,14 @@
       "Whenever you play a card, ", " deals #b10% more damage with #yAttacks this turn.",
       " (Deals #b", "% more damage)"
     ]
+  },
+  "${ModID}:HarbingerPower": {
+    "NAME": "End of Times",
+    "DESCRIPTIONS": [
+      "After #b"," turns, begins attacking #rEveryone for #b",
+      "Next turn, begins attacking #rEveryone for #b",
+      "Attacks #rEveryone for #b",
+      " damage and increases this damage by #b","."
+    ]
   }
 }

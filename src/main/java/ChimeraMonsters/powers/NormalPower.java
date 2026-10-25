@@ -20,7 +20,7 @@ public class NormalPower extends AbstractInternalLogicPower implements RenderMod
     public NormalPower(AbstractCreature owner, int amount) {
         super(POWER_ID, owner, amount);
         priority=-200;
-
+        // TODO A power effect like this should be visible to the player, also maybe not this render effect lol
     }
 
     @Override

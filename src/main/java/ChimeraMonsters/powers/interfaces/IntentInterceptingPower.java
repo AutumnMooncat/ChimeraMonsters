@@ -2,14 +2,10 @@ package ChimeraMonsters.powers.interfaces;
 
 import ChimeraMonsters.patches.EnemyMoveInfoFields;
 import ChimeraMonsters.patches.MoveManipulationPatches;
+import ChimeraMonsters.util.CalcHelper;
 import ChimeraMonsters.util.DataUtil;
 import ChimeraMonsters.util.IntentManager;
-import com.badlogic.gdx.math.MathUtils;
-import com.megacrit.cardcrawl.blights.Spear;
-import com.megacrit.cardcrawl.cards.DamageInfo;
 import com.megacrit.cardcrawl.core.AbstractCreature;
-import com.megacrit.cardcrawl.core.Settings;
-import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.EnemyMoveInfo;
 import com.megacrit.cardcrawl.powers.AbstractPower;
@@ -223,30 +219,6 @@ public interface IntentInterceptingPower {
      * @return The calculated damage to deal.
      */
     default int monsterToMonsterDamage(AbstractCreature source, AbstractCreature target, int dmg) {
-        float tmp = (float)dmg;
-        if (Settings.isEndless && AbstractDungeon.player.hasBlight(Spear.ID)) {
-            float mod = AbstractDungeon.player.getBlight(Spear.ID).effectFloat();
-            tmp *= mod;
-        }
-
-        for (AbstractPower power : source.powers) {
-            tmp = power.atDamageGive(tmp, DamageInfo.DamageType.NORMAL);
-        }
-        for (AbstractPower power : target.powers) {
-            tmp = power.atDamageReceive(tmp, DamageInfo.DamageType.NORMAL);
-        }
-        for (AbstractPower power : source.powers) {
-            tmp = power.atDamageFinalGive(tmp, DamageInfo.DamageType.NORMAL);
-        }
-        for (AbstractPower power : target.powers) {
-            tmp = power.atDamageFinalReceive(tmp, DamageInfo.DamageType.NORMAL);
-        }
-
-        dmg = MathUtils.floor(tmp);
-        if (dmg < 0) {
-            dmg = 0;
-        }
-
-        return dmg;
+        return CalcHelper.monsterToMonsterDamage(source, target, dmg);
     }
 }
