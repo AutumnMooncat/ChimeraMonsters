@@ -107,7 +107,11 @@ public class IntentManager {
     }
 
     public static void removeExtraIntent(AbstractMonster monster, IntentPayload pl) {
-        IntentManager.extraIntents(monster).remove(pl);
+        if (pl == getMainIntent(monster)) {
+            MonsterFields.mainIntent.set(monster, extraIntents(monster).remove(0));
+        } else {
+            extraIntents(monster).remove(pl);
+        }
         if (pl.damage != null) {
             monster.damage.remove(pl.damage);
         }
