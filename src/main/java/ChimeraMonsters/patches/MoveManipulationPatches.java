@@ -10,7 +10,6 @@ import ChimeraMonsters.util.IntentPayload;
 import ChimeraMonsters.util.Wiz;
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.megacrit.cardcrawl.actions.GameActionManager;
-import com.megacrit.cardcrawl.actions.IntentFlashAction;
 import com.megacrit.cardcrawl.actions.common.RollMoveAction;
 import com.megacrit.cardcrawl.actions.common.ShowMoveNameAction;
 import com.megacrit.cardcrawl.actions.utility.WaitAction;
@@ -138,27 +137,28 @@ public class MoveManipulationPatches {
 
     // Called by GetNextAction
     public static void doExtraIntents(AbstractMonster monster) {
-        IntentManager.backupMainIntent(monster);
+        if (!IntentManager.hasExtraIntents(monster)) return;
+        IntentManager.readMainPayload(monster);
         for (IntentPayload pl : IntentManager.extraIntents(monster)) {
-            IntentManager.setActivePayload(monster, pl);
+            IntentManager.writePayload(monster, pl);
             if (pl.fields.intent != AbstractMonster.Intent.NONE) {
                 AbstractDungeon.actionManager.addToBottom(new ShowMoveNameAction(monster));
                 //AbstractDungeon.actionManager.addToBottom(new IntentFlashAction(m));
                 AbstractDungeon.actionManager.addToBottom(new DoAction(() -> {
-                    IntentManager.backupMainIntent(monster);
-                    IntentManager.setActivePayload(monster, pl);
+                    IntentManager.readMainPayload(monster);
+                    IntentManager.writePayload(monster, pl);
                     monster.flashIntent();
-                    IntentManager.releaseActivePayload(monster, pl);
-                    IntentManager.restoreMainIntent(monster);
+                    IntentManager.readPayload(monster, pl);
+                    IntentManager.writeMainPayload(monster);
                 }));
                 AbstractDungeon.actionManager.addToBottom(new WaitAction(Settings.ACTION_DUR_MED));
             }
             if (!performedIntercept(monster)) {
                 monster.takeTurn();
             }
-            IntentManager.releaseActivePayload(monster, pl);
+            IntentManager.readPayload(monster, pl);
         }
-        IntentManager.restoreMainIntent(monster);
+        IntentManager.writeMainPayload(monster);
     }
 
     public static void rollOrBackupMove(AbstractMonster monster) {
@@ -167,8 +167,8 @@ public class MoveManipulationPatches {
         Wiz.atb(new DoAction(() -> {
             MonsterFields.successfullyRolledMove.set(monster, false);
             if (pl != null) {
-                IntentManager.backupMainIntent(monster);
-                IntentManager.setActivePayload(monster, pl);
+                IntentManager.readMainPayload(monster);
+                IntentManager.writePayload(monster, pl);
             }
             monster.rollMove();
             boolean needsBackup = !MonsterFields.successfullyRolledMove.get(monster);
@@ -180,8 +180,8 @@ public class MoveManipulationPatches {
                     }
                     // Else super rip
                 }
-                IntentManager.releaseActivePayload(monster, pl);
-                IntentManager.restoreMainIntent(monster);
+                IntentManager.readPayload(monster, pl);
+                IntentManager.writeMainPayload(monster);
             } else if (needsBackup) {
                 EnemyMoveInfo backup = MonsterFields.replacedIntendedMove.get(monster);
                 if (backup != null) {
@@ -330,8 +330,8 @@ public class MoveManipulationPatches {
         public static void apply(RollMoveAction __instance, AbstractMonster ___monster) {
             IntentPayload pl = DataUtil.getData(__instance, GrabIntentRef.REF_KEY);
             if (pl != null) {
-                IntentManager.backupMainIntent(___monster);
-                IntentManager.setActivePayload(___monster, pl);
+                IntentManager.readMainPayload(___monster);
+                IntentManager.writePayload(___monster, pl);
             }
         }
 
@@ -339,8 +339,8 @@ public class MoveManipulationPatches {
         public static void restore(RollMoveAction __instance, AbstractMonster ___monster) {
             IntentPayload pl = DataUtil.getData(__instance, GrabIntentRef.REF_KEY);
             if (pl != null) {
-                IntentManager.releaseActivePayload(___monster, pl);
-                IntentManager.restoreMainIntent(___monster);
+                IntentManager.readPayload(___monster, pl);
+                IntentManager.writeMainPayload(___monster);
                 DataUtil.removeData(__instance, GrabIntentRef.REF_KEY);
             }
         }

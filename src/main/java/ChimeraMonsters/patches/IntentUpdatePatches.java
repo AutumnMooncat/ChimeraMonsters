@@ -17,14 +17,15 @@ public class IntentUpdatePatches {
     public static class IntentUpdate {
         @SpirePrefixPatch
         public static void extraUpdates(AbstractMonster __instance) {
+            if (!IntentManager.hasExtraIntents(__instance)) return;
             IntentManager.organizeIntentOrder(__instance);
-            IntentManager.backupMainIntent(__instance);
+            IntentManager.readMainPayload(__instance);
             for (IntentPayload pl : IntentManager.extraIntents(__instance)) {
-                IntentManager.setActivePayload(__instance, pl);
+                IntentManager.writePayload(__instance, pl);
                 pl.update();
-                IntentManager.releaseActivePayload(__instance, pl);
+                IntentManager.readPayload(__instance, pl);
             }
-            IntentManager.restoreMainIntent(__instance);
+            IntentManager.writeMainPayload(__instance);
         }
     }
 
@@ -36,14 +37,14 @@ public class IntentUpdatePatches {
         public static void extraVFXUpdates(AbstractMonster __instance) {
             if (!lock && IntentManager.hasExtraIntents(__instance)) {
                 lock = true;
-                IntentManager.backupMainIntent(__instance);
+                IntentManager.readMainPayload(__instance);
                 ReflectionHacks.RMethod update = IntentManager.updateIntentVFXMethod(__instance);
                 for (IntentPayload pl : IntentManager.extraIntents(__instance)) {
-                    IntentManager.setActivePayload(__instance, pl);
+                    IntentManager.writePayload(__instance, pl);
                     update.invoke(__instance);
-                    IntentManager.releaseActivePayload(__instance, pl);
+                    IntentManager.readPayload(__instance, pl);
                 }
-                IntentManager.restoreMainIntent(__instance);
+                IntentManager.writeMainPayload(__instance);
                 lock = false;
             }
         }
@@ -86,13 +87,13 @@ public class IntentUpdatePatches {
         public static void plz(MonsterGroup __instance) {
             for (AbstractMonster monster : __instance.monsters) {
                 if (!IntentManager.hasExtraIntents(monster)) continue;
-                IntentManager.backupMainIntent(monster);
+                IntentManager.readMainPayload(monster);
                 for (IntentPayload pl : IntentManager.extraIntents(monster)) {
-                    IntentManager.setActivePayload(monster, pl);
+                    IntentManager.writePayload(monster, pl);
                     monster.createIntent();
-                    IntentManager.releaseActivePayload(monster, pl);
+                    IntentManager.readPayload(monster, pl);
                 }
-                IntentManager.restoreMainIntent(monster);
+                IntentManager.writeMainPayload(monster);
             }
         }
     }
@@ -105,13 +106,13 @@ public class IntentUpdatePatches {
         public static void plz(AbstractMonster __instance) {
             if (lock || !IntentManager.hasExtraIntents(__instance)) return;
             lock = true;
-            IntentManager.backupMainIntent(__instance);
+            IntentManager.readMainPayload(__instance);
             for (IntentPayload pl : IntentManager.extraIntents(__instance)) {
-                IntentManager.setActivePayload(__instance, pl);
+                IntentManager.writePayload(__instance, pl);
                 __instance.applyPowers();
-                IntentManager.releaseActivePayload(__instance, pl);
+                IntentManager.readPayload(__instance, pl);
             }
-            IntentManager.restoreMainIntent(__instance);
+            IntentManager.writeMainPayload(__instance);
             lock = false;
         }
     }

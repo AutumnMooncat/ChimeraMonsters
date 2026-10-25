@@ -73,13 +73,13 @@ public class IntentRenderPatches {
         public static void doExtras(AbstractMonster __instance, SpriteBatch sb) {
             if (lock || !IntentManager.hasExtraIntents(__instance)) return;
             lock = true;
-            IntentManager.backupMainIntent(__instance);
+            IntentManager.readMainPayload(__instance);
             for (IntentPayload pl : IntentManager.extraIntents(__instance)) {
-                IntentManager.setActivePayload(__instance, pl);
+                IntentManager.writePayload(__instance, pl);
                 pl.render(sb);
-                IntentManager.releaseActivePayload(__instance, pl);
+                IntentManager.readPayload(__instance, pl);
             }
-            IntentManager.restoreMainIntent(__instance);
+            IntentManager.writeMainPayload(__instance);
             lock = false;
         }
     }
@@ -92,13 +92,13 @@ public class IntentRenderPatches {
         public static void doExtras(AbstractMonster __instance, SpriteBatch sb) {
             if (lock || !IntentManager.hasExtraIntents(__instance)) return;
             lock = true;
-            IntentManager.backupMainIntent(__instance);
+            IntentManager.readMainPayload(__instance);
             for (IntentPayload pl : IntentManager.extraIntents(__instance)) {
-                IntentManager.setActivePayload(__instance, pl);
+                IntentManager.writePayload(__instance, pl);
                 pl.renderDamage(sb);
-                IntentManager.releaseActivePayload(__instance, pl);
+                IntentManager.readPayload(__instance, pl);
             }
-            IntentManager.restoreMainIntent(__instance);
+            IntentManager.writeMainPayload(__instance);
             lock = false;
         }
     }

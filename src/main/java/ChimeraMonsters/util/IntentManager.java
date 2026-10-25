@@ -1,6 +1,5 @@
 package ChimeraMonsters.util;
 
-import ChimeraMonsters.ChimeraMonstersMod;
 import ChimeraMonsters.patches.IntentUpdatePatches;
 import ChimeraMonsters.patches.MonsterFields;
 import ChimeraMonsters.patches.MoveManipulationPatches;
@@ -13,39 +12,62 @@ import com.megacrit.cardcrawl.monsters.EnemyMoveInfo;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 
 public class IntentManager {
-    private static final String replacedIntendedMove = ChimeraMonstersMod.makeID(IntentManager.class.getSimpleName()+":replacedIntendedMove");
-    private static final String interceptor = ChimeraMonstersMod.makeID(IntentManager.class.getSimpleName()+":interceptor");
 
     public static IntentPayload payloadFromBaseIntent(AbstractMonster monster) {
         IntentPayload pl = new IntentPayload();
         pl.owner = monster;
         pl.damage = null;
+        pl.interceptor = MonsterFields.interceptor.get(monster);
+        pl.replacedIntendedMove = MonsterFields.replacedIntendedMove.get(monster);
         pl.readFields(monster);
         return pl;
     }
 
-    public static void backupMainIntent(AbstractMonster monster) {
-        MonsterFields.mainIntent.set(monster, payloadFromBaseIntent(monster));
+    public static IntentPayload getMainIntent(AbstractMonster monster) {
+        return MonsterFields.mainIntent.get(monster);
     }
 
-    public static void restoreMainIntent(AbstractMonster monster) {
-        IntentPayload main = MonsterFields.mainIntent.get(monster);
-        if (main == null) return;
+    public static void checkStoreMainIntent(AbstractMonster monster) {
+        IntentPayload main = getMainIntent(monster);
+        if (main == null)
+        {
+            main = payloadFromBaseIntent(monster);
+            DataUtil.setDataMap(main, DataUtil.getDataMap(monster));
+            MonsterFields.mainIntent.set(monster, main);
+            MonsterFields.activeIntent.set(monster, main);
+            MonsterFields.interceptor.set(monster, null);
+            MonsterFields.replacedIntendedMove.set(monster, null);
+        }
+    }
+
+    public static void checkReleaseMainIntent(AbstractMonster monster) {
+        if (hasExtraIntents(monster)) return;
+        IntentPayload main = getMainIntent(monster);
         main.writeFields(monster);
+        DataUtil.getDataMap(monster).putAll(DataUtil.getDataMap(main));
         MonsterFields.mainIntent.set(monster, null);
+        MonsterFields.activeIntent.set(monster, null);
+        MonsterFields.interceptor.set(monster, main.interceptor);
+        MonsterFields.replacedIntendedMove.set(monster, main.replacedIntendedMove);
     }
 
-    public static void setActivePayload(AbstractMonster monster, IntentPayload pl) {
+    public static void writeMainPayload(AbstractMonster monster) {
+        writePayload(monster, getMainIntent(monster));
+    }
+
+    public static void readMainPayload(AbstractMonster monster) {
+        readPayload(monster, getMainIntent(monster));
+    }
+
+    public static void writePayload(AbstractMonster monster, IntentPayload pl) {
         MonsterFields.activeIntent.set(monster, pl);
         pl.writeFields(monster);
     }
 
-    public static void releaseActivePayload(AbstractMonster monster, IntentPayload pl) {
+    public static void readPayload(AbstractMonster monster, IntentPayload pl) {
         pl.readFields(monster);
-        MonsterFields.activeIntent.set(monster, null);
     }
 
     public static boolean hasExtraIntents(AbstractMonster monster) {
@@ -61,8 +83,9 @@ public class IntentManager {
     }
 
     public static void addExtraIntent(AbstractMonster monster, IntentPayload pl, boolean andRoll) {
-        backupMainIntent(monster);
-        setActivePayload(monster, pl);
+        checkStoreMainIntent(monster);
+        readMainPayload(monster);
+        writePayload(monster, pl);
         if (andRoll) {
             monster.rollMove();
         }
@@ -74,8 +97,8 @@ public class IntentManager {
         if (pl.damage != null) {
             monster.damage.add(pl.damage);
         }
-        releaseActivePayload(monster, pl);
-        restoreMainIntent(monster);
+        readPayload(monster, pl);
+        writeMainPayload(monster);
         if (MoveManipulationPatches.getMove(monster) != null)
         {
             // TODO Handle battle setup better, may be other problems
@@ -88,6 +111,7 @@ public class IntentManager {
         if (pl.damage != null) {
             monster.damage.remove(pl.damage);
         }
+        checkReleaseMainIntent(monster);
     }
 
     public static IntentPayload getActiveIntent(AbstractMonster monster) {
@@ -105,10 +129,7 @@ public class IntentManager {
     public static IntentInterceptingPower getInterceptor(AbstractMonster monster) {
         IntentPayload pl = getActiveIntent(monster);
         if (pl != null) {
-            if (pl.interceptor != null) {
-                return pl.interceptor;
-            }
-            return null;
+            return pl.interceptor;
         }
         return MonsterFields.interceptor.get(monster);
     }
@@ -150,23 +171,16 @@ public class IntentManager {
 
     public static void organizeIntentOrder(AbstractMonster monster) {
         if (!hasExtraIntents(monster)) return;
-        IntentPayload current = payloadFromBaseIntent(monster);
+        IntentPayload current = getMainIntent(monster);
         ArrayList<IntentPayload> all = new ArrayList<>();
         all.add(current);
         all.addAll(extraIntents(monster));
         Collections.sort(all);
         IntentPayload first = all.remove(0);
         if (current != first) {
-            IntentInterceptingPower currentInterceptor = MonsterFields.interceptor.get(monster);
-            EnemyMoveInfo currentReplacedMove = MonsterFields.replacedIntendedMove.get(monster);
-            HashMap<String, Object> currentData = DataUtil.getDataMap(monster);
-            MonsterFields.interceptor.set(monster, first.interceptor);
-            MonsterFields.replacedIntendedMove.set(monster, first.replacedIntendedMove);
-            DataUtil.setDataMap(monster, DataUtil.getDataMap(first));
-            current.interceptor = currentInterceptor;
-            current.replacedIntendedMove = currentReplacedMove;
-            DataUtil.setDataMap(current, currentData);
-            first.writeFields(monster);
+            readPayload(monster, current);
+            MonsterFields.mainIntent.set(monster, first);
+            writeMainPayload(monster);
             extraIntents(monster).clear();
             extraIntents(monster).addAll(all);
         }
