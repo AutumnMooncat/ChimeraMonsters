@@ -43,7 +43,7 @@
             <!--<systemPath>${Steam.path}/common/SlayTheSpire/mods/BaseMod.jar</systemPath>-->
         </dependency>
         <dependency>
-            <groupId>sltslib</groupId>
+            <groupId>stslib</groupId>
             <artifactId>StSLib</artifactId>
             <version>1.21.3</version>
             <scope>system</scope>
@@ -58,13 +58,13 @@
             <scope>system</scope>
             <systemPath>${Steam.path}/workshop/content/646570/3526263450/SpirePeople.jar</systemPath>
         </dependency>-->
-        <!--<dependency>
+        <dependency>
             <groupId>gk</groupId>
             <artifactId>MintySpire</artifactId>
             <version>2.5.5</version>
             <scope>system</scope>
-            <systemPath>${Steam.path}/workshop/content/646570/1812723899/MintySpire.jar</systemPath>
-        </dependency>-->
+            <systemPath>${Steam.path}/workshop/content/646570/1812723899/mintySpire.jar</systemPath>
+        </dependency>
         <!--<dependency>
             <groupId>pan</groupId>
             <artifactId>SpireLocations</artifactId>
