@@ -52,6 +52,7 @@ public class HarbingerPower extends AbstractEasyPower implements NonStackablePow
 
     @Override
     public void onInitialApplication() {
+        if (!(owner instanceof AbstractMonster)) return;
         IntentPayload pl = new IntentPayload();
         pl.owner = (AbstractMonster) owner;
         pl.fields.move = new EnemyMoveInfo((byte) -1, AbstractMonster.Intent.UNKNOWN, -1, 0, false);
