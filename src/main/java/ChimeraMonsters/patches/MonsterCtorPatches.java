@@ -12,6 +12,8 @@ public class MonsterCtorPatches {
         public static void plz(AbstractMonster __instance, String name, String id, int maxHealth, float hb_x, float hb_y, float hb_w, float hb_h, String imgUrl, float offsetX, float offsetY, boolean ignoreBlights) {
             MonsterFields.originalName.set(__instance, name);
             MonsterFields.baseMaxHP.set(__instance, maxHealth);
+            MonsterFields.rawOffsetX.set(__instance, offsetX);
+            MonsterFields.rawOffsetY.set(__instance, offsetY);
         }
     }
 }
