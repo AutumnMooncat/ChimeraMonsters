@@ -1,9 +1,24 @@
 package ChimeraMonsters.util;
 
+import basemod.ReflectionHacks;
 import com.evacipated.cardcrawl.modthespire.Loader;
 import javassist.*;
 
 public interface PatchHelper {
+    static ReflectionHacks.RMethod findOverride(Object o, String methodName, Class<?>... paramtypez) {
+        Class<?> clazz = o.getClass();
+        ReflectionHacks.RMethod method = null;
+        while (method == null && clazz != null) {
+            try {
+                if (clazz.getMethod(methodName, paramtypez).getDeclaringClass().equals(clazz)) {
+                    method = ReflectionHacks.privateMethod(clazz, methodName, paramtypez);
+                }
+                clazz = clazz.getSuperclass();
+            } catch (Exception ignored) {}
+        }
+        return method;
+    }
+
     static CtClass ctClassOf(Class<?> clazz) {
         try {
             return getClassPool().getCtClass(clazz.getName());
