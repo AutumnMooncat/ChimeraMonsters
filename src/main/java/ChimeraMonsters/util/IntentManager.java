@@ -83,6 +83,10 @@ public class IntentManager {
     }
 
     public static void addExtraIntent(AbstractMonster monster, IntentPayload pl, boolean andRoll) {
+        addExtraIntent(monster, pl, andRoll, false);
+    }
+
+    public static void addExtraIntent(AbstractMonster monster, IntentPayload pl, boolean andRoll, boolean andCreate) {
         checkStoreMainIntent(monster);
         readMainPayload(monster);
         writePayload(monster, pl);
@@ -92,7 +96,10 @@ public class IntentManager {
         IntentUpdatePatches.PlzMoveHitbox.needsRefresh = true;
         monster.refreshIntentHbLocation();
         IntentUpdatePatches.PlzMoveHitbox.needsRefresh = false;
-        monster.createIntent();
+        if (andCreate)
+        {
+            monster.createIntent();
+        }
         IntentManager.extraIntents(monster).add(pl);
         if (pl.damage != null) {
             monster.damage.add(pl.damage);

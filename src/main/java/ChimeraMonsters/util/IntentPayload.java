@@ -1,6 +1,5 @@
 package ChimeraMonsters.util;
 
-import ChimeraMonsters.patches.MoveManipulationPatches;
 import ChimeraMonsters.powers.interfaces.IntentInterceptingPower;
 import basemod.ReflectionHacks;
 import com.badlogic.gdx.Gdx;
@@ -40,7 +39,7 @@ public class IntentPayload implements Comparable<IntentPayload> {
         public PowerTip intentTip = new PowerTip();
         public Color intentColor = Color.WHITE.cpy();
         public float intentAlpha = 0f;
-        public float intentAlphaTarget = 1f;
+        public float intentAlphaTarget = 0f;
         public float intentParticleTimer = 0f;
         public float intentAngle = 0f;
     }
