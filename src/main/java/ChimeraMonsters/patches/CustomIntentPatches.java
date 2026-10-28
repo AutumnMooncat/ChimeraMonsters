@@ -33,6 +33,8 @@ public class CustomIntentPatches {
     public static AbstractMonster.Intent CHIMERA_MONSTERS_INTERCEPTING;
     @SpireEnum
     public static AbstractMonster.Intent CHIMERA_MONSTERS_METEOR_ATTACK;
+    @SpireEnum
+    public static AbstractMonster.Intent CHIMERA_MONSTERS_EVOKE;
 
     private static boolean didInitHandlers;
     private static final ArrayList<CustomHandler> handlers = new ArrayList<>();
@@ -43,6 +45,7 @@ public class CustomIntentPatches {
         handlers.add(new InterceptingHandler());
         handlers.add(new FeralHandler());
         handlers.add(new MeteorHandler());
+        handlers.add(new EvokeHandler());
     }
 
     @SpirePatch2(clz = AbstractMonster.class, method = "renderDamageRange")
@@ -250,6 +253,26 @@ public class CustomIntentPatches {
 
             tip.header = TEXT[0];
             tip.body = text;
+            tip.img = tipTex;
+        }
+    }
+
+    public static class EvokeHandler extends CustomHandler {
+        public static String[] TEXT = CardCrawlGame.languagePack.getUIString(ChimeraMonstersMod.makeID(EvokeHandler.class.getSimpleName())).TEXT;
+
+        public EvokeHandler() {
+            super("ui/IntentEvokeL.png", "ui/IntentEvoke.png");
+        }
+
+        @Override
+        public boolean handles(AbstractMonster mon, AbstractMonster.Intent intent) {
+            return intent == CHIMERA_MONSTERS_EVOKE;
+        }
+
+        @Override
+        public void handleTip(AbstractMonster mon, AbstractMonster.Intent intent, PowerTip tip, int damage, int multi) {
+            tip.header = TEXT[0];
+            tip.body = TEXT[1];
             tip.img = tipTex;
         }
     }

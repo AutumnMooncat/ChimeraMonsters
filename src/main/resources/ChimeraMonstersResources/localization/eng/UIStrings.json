@@ -147,6 +147,12 @@
       " times."
     ]
   },
+  "${ModID}:EvokeHandler": {
+    "TEXT": [
+      "Evoking",
+      "This enemy will evoke its next orb this turn."
+    ]
+  },
   "${ModID}:CantUseText": {
     "TEXT": [
       "This monster is hidden.",
