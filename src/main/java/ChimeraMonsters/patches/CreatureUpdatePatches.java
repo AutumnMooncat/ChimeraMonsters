@@ -2,6 +2,7 @@ package ChimeraMonsters.patches;
 
 import ChimeraMonsters.ui.HoveringCardManager;
 import ChimeraMonsters.util.MonsterOrbHelper;
+import basemod.ReflectionHacks;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch2;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePostfixPatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePrefixPatch;
@@ -28,7 +29,10 @@ public class CreatureUpdatePatches {
                     orb.update();
                     orb.updateAnimation();
                     if (orbs.indexOf(orb) < evokes) {
-                        orb.showEvokeValue();
+                        if (!ReflectionHacks.<Boolean>getPrivate(orb, AbstractOrb.class, "showEvokeValue"))
+                        {
+                            orb.showEvokeValue();
+                        }
                     } else {
                         orb.hideEvokeValues();
                     }

@@ -8,6 +8,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
+import com.megacrit.cardcrawl.core.Settings;
+import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.PowerTip;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.vfx.AbstractGameEffect;
@@ -51,8 +53,17 @@ public class CustomIntentPatches {
     @SpirePatch2(clz = AbstractMonster.class, method = "renderDamageRange")
     public static class RenderDamage {
         @SpirePostfixPatch
-        public static void plz(AbstractMonster __instance, SpriteBatch sb, int ___intentDmg, BobEffect ___bobEffect, Color ___intentColor) {
-            // We might still want this patch later, but not needed for now
+        public static SpireReturn<Void> plz(AbstractMonster __instance, SpriteBatch sb, int ___intentDmg, boolean ___isMultiDmg, int ___intentMultiAmt, BobEffect ___bobEffect, Color ___intentColor) {
+            if (!didInitHandlers) {
+                initHandlers();
+            }
+            for (CustomHandler handler : handlers) {
+                if (handler.handles(__instance, __instance.intent)) {
+                    handler.handleDamageRange(__instance, __instance.intent, sb, ___intentDmg, ___isMultiDmg ? ___intentMultiAmt : 0, ___bobEffect, ___intentColor);
+                    return SpireReturn.Return();
+                }
+            }
+            return SpireReturn.Continue();
         }
     }
 
@@ -126,6 +137,24 @@ public class CustomIntentPatches {
         }
 
         public void handleVfx(AbstractMonster mon, AbstractMonster.Intent intent, ArrayList<AbstractGameEffect> effects, float[] timer) {}
+
+        public void handleDamageRange(AbstractMonster mon, AbstractMonster.Intent intent, SpriteBatch sb, int damage, int multi, BobEffect bob, Color color) {
+            if (intent.name().contains("ATTACK")) {
+                if (multi > 0) {
+                    renderMultiValue(mon, sb, damage, multi, bob, color);
+                } else {
+                    renderValue(mon, sb, damage, bob, color);
+                }
+            }
+        }
+
+        public void renderValue(AbstractMonster mon, SpriteBatch sb, int value, BobEffect bob, Color color) {
+            FontHelper.renderFontLeftTopAligned(sb, FontHelper.topPanelInfoFont, Integer.toString(value), mon.intentHb.cX - 30.0F * Settings.scale, mon.intentHb.cY + bob.y - 12.0F * Settings.scale, color);
+        }
+
+        public void renderMultiValue(AbstractMonster mon, SpriteBatch sb, int value, int multi, BobEffect bob, Color color) {
+            FontHelper.renderFontLeftTopAligned(sb, FontHelper.topPanelInfoFont, value + "x" + multi, mon.intentHb.cX - 30.0F * Settings.scale, mon.intentHb.cY + bob.y - 12.0F * Settings.scale, color);
+        }
     }
 
     public static class WarningHandler extends CustomHandler {
@@ -271,9 +300,19 @@ public class CustomIntentPatches {
 
         @Override
         public void handleTip(AbstractMonster mon, AbstractMonster.Intent intent, PowerTip tip, int damage, int multi) {
+            int evokes = EnemyMoveInfoFields.evokes.get(MoveManipulationPatches.getMove(mon));
             tip.header = TEXT[0];
-            tip.body = TEXT[1];
+            if (evokes == 1) {
+                tip.body = TEXT[1];
+            } else {
+                tip.body = TEXT[2] + evokes + TEXT[3];
+            }
             tip.img = tipTex;
+        }
+
+        @Override
+        public void handleDamageRange(AbstractMonster mon, AbstractMonster.Intent intent, SpriteBatch sb, int damage, int multi, BobEffect bob, Color color) {
+            renderValue(mon, sb, EnemyMoveInfoFields.evokes.get(MoveManipulationPatches.getMove(mon)), bob, color);
         }
     }
 }
