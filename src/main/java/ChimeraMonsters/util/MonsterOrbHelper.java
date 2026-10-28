@@ -1,17 +1,21 @@
 package ChimeraMonsters.util;
 
-import ChimeraMonsters.patches.ActionCapturePatch;
+import ChimeraMonsters.patches.CustomIntentPatches;
+import ChimeraMonsters.patches.EnemyMoveInfoFields;
 import ChimeraMonsters.patches.MonsterFields;
+import ChimeraMonsters.patches.MoveManipulationPatches;
 import basemod.ReflectionHacks;
 import com.badlogic.gdx.math.MathUtils;
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.megacrit.cardcrawl.actions.AbstractGameAction;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
+import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.MathHelper;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
+import com.megacrit.cardcrawl.monsters.EnemyMoveInfo;
 import com.megacrit.cardcrawl.orbs.AbstractOrb;
 import com.megacrit.cardcrawl.orbs.EmptyOrbSlot;
 import com.megacrit.cardcrawl.orbs.Plasma;
@@ -23,15 +27,48 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class MonsterOrbHelper {
-    public static ArrayList<AbstractOrb> getOrbs(AbstractMonster owner) {
+    public static ArrayList<AbstractOrb> getOrbs(AbstractCreature owner) {
+        if (!(owner instanceof AbstractMonster)) return null;
         return MonsterFields.orbs.get(owner);
     }
 
-    public static int getMaxOrbs(AbstractMonster owner) {
+    public static int getMaxOrbs(AbstractCreature owner) {
+        if (!(owner instanceof AbstractMonster)) return 0;
         return MonsterFields.maxOrbs.get(owner);
     }
 
-    public static void applyFocus(AbstractMonster owner, AbstractOrb orb) {
+    public static AbstractMonster findOwner(AbstractOrb orb) {
+        return MonsterOrbField.monsterOwner.get(orb);
+    }
+
+    public static EnemyMoveInfo makeEvokeMove(int amount) {
+        EnemyMoveInfo move = new EnemyMoveInfo((byte) -1, CustomIntentPatches.CHIMERA_MONSTERS_EVOKE, -1, 0, false);
+        EnemyMoveInfoFields.evokes.set(move, amount);
+        return move;
+    }
+
+    public static EnemyMoveInfo makeChannelMove(int amount) {
+        EnemyMoveInfo move = new EnemyMoveInfo((byte) -1, AbstractMonster.Intent.MAGIC, -1, 0, false);
+        EnemyMoveInfoFields.channels.set(move, amount);
+        return move;
+    }
+
+    public static int intendedEvokes(AbstractCreature owner) {
+        if (!(owner instanceof AbstractMonster)) return 0;
+        ArrayList<AbstractOrb> orbs = MonsterFields.orbs.get(owner);
+        int evokes = 0;
+        if (orbs != null) {
+            evokes += EnemyMoveInfoFields.evokes.get(MoveManipulationPatches.getMove(owner));
+            for (IntentPayload pl : IntentManager.extraIntents((AbstractMonster) owner)) {
+                evokes += EnemyMoveInfoFields.evokes.get(pl.fields.move);
+            }
+            evokes = Math.min(evokes, orbs.size());
+        }
+        return evokes;
+    }
+
+    public static void applyFocus(AbstractCreature owner, AbstractOrb orb) {
+        if (!(owner instanceof AbstractMonster)) return;
         AbstractPower power = owner.getPower(FocusPower.POWER_ID);
         if (power != null && !orb.ID.equals(Plasma.ORB_ID)) {
             orb.passiveAmount = Math.max(0, getBasePassive(orb) + power.amount);
@@ -50,7 +87,9 @@ public class MonsterOrbHelper {
         return ReflectionHacks.getPrivate(orb, AbstractOrb.class, "baseEvokeAmount");
     }
 
-    public static void setSlot(AbstractMonster owner, AbstractOrb orb, int slotNum, int maxOrbs) {
+    public static void setSlot(AbstractCreature owner, AbstractOrb orb, int slotNum, int maxOrbs) {
+        if (!(owner instanceof AbstractMonster)) return;
+        MonsterOrbField.monsterOwner.set(orb, (AbstractMonster) owner);
         float dist = 160.0F * Settings.scale + (float)maxOrbs * 10.0F * Settings.scale;
         float angle = 100.0F + (float)maxOrbs * 12.0F;
         float offsetAngle = angle / 2.0F;
@@ -66,7 +105,8 @@ public class MonsterOrbHelper {
         orb.hb.move(orb.tX, orb.tY);
     }
 
-    public static ArrayList<AbstractOrb> initSlots(AbstractMonster owner, int amount) {
+    public static ArrayList<AbstractOrb> initSlots(AbstractCreature owner, int amount) {
+        if (!(owner instanceof AbstractMonster)) return null;
         ArrayList<AbstractOrb> orbs = new ArrayList<>();
         MonsterFields.orbs.set(owner, orbs);
         for (int i = 0; i < amount; i++) {
@@ -76,7 +116,8 @@ public class MonsterOrbHelper {
         return orbs;
     }
 
-    public static void channelOrb(AbstractMonster owner, AbstractOrb orb) {
+    public static void channelOrb(AbstractCreature owner, AbstractOrb orb) {
+        if (!(owner instanceof AbstractMonster)) return;
         ArrayList<AbstractOrb> orbs = getOrbs(owner);
         int max = getMaxOrbs(owner);
         if (orbs == null) {
@@ -110,22 +151,22 @@ public class MonsterOrbHelper {
         }
     }
 
-    public static void triggerEvokeAnimation(AbstractMonster owner, int slot) {
+    public static void triggerEvokeAnimation(AbstractCreature owner, int slot) {
+        if (!(owner instanceof AbstractMonster)) return;
         ArrayList<AbstractOrb> orbs = getOrbs(owner);
         if (orbs != null && getMaxOrbs(owner) > 0) {
             orbs.get(slot).triggerEvokeAnimation();
         }
     }
 
-    public static void evokeOrb(AbstractMonster owner) {
+    public static void evokeOrb(AbstractCreature owner) {
+        if (!(owner instanceof AbstractMonster)) return;
         ArrayList<AbstractOrb> orbs = getOrbs(owner);
         int maxOrbs = getMaxOrbs(owner);
         if (orbs != null && !orbs.isEmpty()) {
             AbstractOrb orb = orbs.get(0);
             if (!(orb instanceof EmptyOrbSlot)) {
-                ActionCapturePatch.instigator = orb.evokeAmount;
                 orb.onEvoke();
-                ActionCapturePatch.instigator = null;
                 AbstractOrb orbSlot = new EmptyOrbSlot();
 
                 int i;
@@ -136,41 +177,40 @@ public class MonsterOrbHelper {
                 orbs.set(orbs.size() - 1, orbSlot);
 
                 for(i = 0; i < orbs.size(); ++i) {
-                    orbs.get(i).setSlot(i, maxOrbs);
+                    setSlot(owner, orbs.get(i), i, maxOrbs);
                 }
             }
         }
     }
 
-    public static void evokeNewestOrb(AbstractMonster owner) {
+    public static void evokeNewestOrb(AbstractCreature owner) {
+        if (!(owner instanceof AbstractMonster)) return;
         ArrayList<AbstractOrb> orbs = getOrbs(owner);
         if (orbs != null && !orbs.isEmpty()) {
             AbstractOrb orb = orbs.get(orbs.size() - 1);
             if (!(orb instanceof EmptyOrbSlot)) {
-                ActionCapturePatch.instigator = orb.evokeAmount;
                 orb.onEvoke();
-                ActionCapturePatch.instigator = null;
             }
         }
     }
 
-    public static void evokeWithoutLosingOrb(AbstractMonster owner) {
+    public static void evokeWithoutLosingOrb(AbstractCreature owner) {
+        if (!(owner instanceof AbstractMonster)) return;
         ArrayList<AbstractOrb> orbs = getOrbs(owner);
         if (orbs != null && !orbs.isEmpty()) {
             AbstractOrb orb = orbs.get(0);
             if (!(orb instanceof EmptyOrbSlot)) {
-                ActionCapturePatch.instigator = orb.evokeAmount;
                 orb.onEvoke();
-                ActionCapturePatch.instigator = null;
             }
         }
     }
 
-    public static void removeNextOrb(AbstractMonster owner) {
+    public static void removeNextOrb(AbstractCreature owner) {
+        if (!(owner instanceof AbstractMonster)) return;
         ArrayList<AbstractOrb> orbs = getOrbs(owner);
         int maxOrbs = getMaxOrbs(owner);
         if (orbs != null && !orbs.isEmpty() && !(orbs.get(0) instanceof EmptyOrbSlot)) {
-            AbstractOrb orbSlot = new EmptyOrbSlot(orbs.get(0).cX, orbs.get(0).cY);
+            AbstractOrb orbSlot = new EmptyOrbSlot();
 
             int i;
             for(i = 1; i < orbs.size(); ++i) {
@@ -180,12 +220,13 @@ public class MonsterOrbHelper {
             orbs.set(orbs.size() - 1, orbSlot);
 
             for(i = 0; i < orbs.size(); ++i) {
-                setSlot(owner, orbSlot, i, maxOrbs);
+                setSlot(owner, orbs.get(i), i, maxOrbs);
             }
         }
     }
 
-    public static boolean hasEmptyOrb(AbstractMonster owner) {
+    public static boolean hasEmptyOrb(AbstractCreature owner) {
+        if (!(owner instanceof AbstractMonster)) return false;
         ArrayList<AbstractOrb> orbs = getOrbs(owner);
         if (orbs == null || orbs.isEmpty()) {
             return false;
@@ -194,7 +235,8 @@ public class MonsterOrbHelper {
         }
     }
 
-    public static boolean hasOrb(AbstractMonster owner) {
+    public static boolean hasOrb(AbstractCreature owner) {
+        if (!(owner instanceof AbstractMonster)) return false;
         ArrayList<AbstractOrb> orbs = getOrbs(owner);
         if (orbs == null || orbs.isEmpty()) {
             return false;
@@ -203,7 +245,8 @@ public class MonsterOrbHelper {
         }
     }
 
-    public static int filledOrbCount(AbstractMonster owner) {
+    public static int filledOrbCount(AbstractCreature owner) {
+        if (!(owner instanceof AbstractMonster)) return 0;
         ArrayList<AbstractOrb> orbs = getOrbs(owner);
         if (orbs == null) {
             return 0;
@@ -211,7 +254,8 @@ public class MonsterOrbHelper {
         return (int) orbs.stream().filter(o -> !(o instanceof EmptyOrbSlot)).count();
     }
 
-    public static void increaseMaxOrbSlots(AbstractMonster owner, int amount, boolean playSfx) {
+    public static void increaseMaxOrbSlots(AbstractCreature owner, int amount, boolean playSfx) {
+        if (!(owner instanceof AbstractMonster)) return;
         ArrayList<AbstractOrb> orbs = getOrbs(owner);
         int maxOrbs = getMaxOrbs(owner);
         if (orbs == null) {
@@ -238,7 +282,8 @@ public class MonsterOrbHelper {
         }
     }
 
-    public static void decreaseMaxOrbSlots(AbstractMonster owner, int amount) {
+    public static void decreaseMaxOrbSlots(AbstractCreature owner, int amount) {
+        if (!(owner instanceof AbstractMonster)) return;
         ArrayList<AbstractOrb> orbs = getOrbs(owner);
         int maxOrbs = getMaxOrbs(owner);
         if (orbs == null) {
@@ -252,56 +297,52 @@ public class MonsterOrbHelper {
             }
 
             for (int i = 0; i < orbs.size(); ++i) {
-                orbs.get(i).setSlot(i, maxOrbs);
+                setSlot(owner, orbs.get(i), i, maxOrbs);
             }
 
         }
     }
 
-    public static void applyStartOfTurnOrbs(AbstractMonster owner) {
+    public static void applyStartOfTurnOrbs(AbstractCreature owner) {
+        if (!(owner instanceof AbstractMonster)) return;
         ArrayList<AbstractOrb> orbs = getOrbs(owner);
         if (orbs != null && !orbs.isEmpty()) {
             for (AbstractOrb o : orbs) {
-                ActionCapturePatch.instigator = o.passiveAmount;
                 o.onStartOfTurn();
-                ActionCapturePatch.instigator = null;
             }
         }
     }
 
-    public static void applyEndOfTurnOrbs(AbstractMonster owner) {
+    public static void applyEndOfTurnOrbs(AbstractCreature owner) {
+        if (!(owner instanceof AbstractMonster)) return;
         ArrayList<AbstractOrb> orbs = getOrbs(owner);
         if (orbs != null && !orbs.isEmpty()) {
             for (AbstractOrb o : orbs) {
-                ActionCapturePatch.instigator = o.passiveAmount;
                 o.onEndOfTurn();
-                ActionCapturePatch.instigator = null;
             }
         }
     }
 
     public static class AnimateMonsterOrbAction extends AbstractGameAction {
-        private final AbstractMonster owner;
         private final int orbCount;
 
-        public AnimateMonsterOrbAction(AbstractMonster owner, int amount) {
-            this.owner = owner;
+        public AnimateMonsterOrbAction(AbstractCreature owner, int amount) {
+            this.source = owner;
             this.orbCount = amount;
         }
 
         public void update() {
             for (int i = 0; i < orbCount; ++i) {
-                triggerEvokeAnimation(owner, i);
+                triggerEvokeAnimation(source, i);
             }
             this.isDone = true;
         }
     }
 
     public static class EvokeMonsterOrbAction extends AbstractGameAction {
-        private final AbstractMonster owner;
         private final int orbCount;
 
-        public EvokeMonsterOrbAction(AbstractMonster owner, int amount) {
+        public EvokeMonsterOrbAction(AbstractCreature owner, int amount) {
             if (Settings.FAST_MODE) {
                 startDuration = Settings.ACTION_DUR_XFAST;
             } else {
@@ -309,7 +350,7 @@ public class MonsterOrbHelper {
             }
 
             this.duration = this.startDuration;
-            this.owner = owner;
+            this.source = owner;
             this.orbCount = amount;
             this.actionType = ActionType.DAMAGE;
         }
@@ -317,7 +358,7 @@ public class MonsterOrbHelper {
         public void update() {
             if (this.duration == this.startDuration) {
                 for (int i = 0; i < this.orbCount; ++i) {
-                    evokeOrb(owner);
+                    evokeOrb(source);
                 }
             }
             this.tickDuration();
@@ -325,17 +366,16 @@ public class MonsterOrbHelper {
     }
 
     public static class MonsterChannelAction extends AbstractGameAction {
-        private final AbstractMonster owner;
         private final AbstractOrb orbType;
         private final boolean autoEvoke;
 
-        public MonsterChannelAction(AbstractMonster owner, AbstractOrb newOrbType) {
+        public MonsterChannelAction(AbstractCreature owner, AbstractOrb newOrbType) {
             this(owner, newOrbType, true);
         }
 
-        public MonsterChannelAction(AbstractMonster owner, AbstractOrb newOrbType, boolean autoEvoke) {
+        public MonsterChannelAction(AbstractCreature owner, AbstractOrb newOrbType, boolean autoEvoke) {
             this.duration = Settings.ACTION_DUR_FAST;
-            this.owner = owner;
+            this.source = owner;
             this.orbType = newOrbType;
             this.autoEvoke = autoEvoke;
         }
@@ -343,11 +383,11 @@ public class MonsterOrbHelper {
         public void update() {
             if (this.duration == Settings.ACTION_DUR_FAST) {
                 if (this.autoEvoke) {
-                    channelOrb(owner, orbType);
+                    channelOrb(source, orbType);
                 } else {
                     for (AbstractOrb o : AbstractDungeon.player.orbs) {
                         if (o instanceof EmptyOrbSlot) {
-                            channelOrb(owner, orbType);
+                            channelOrb(source, orbType);
                             break;
                         }
                     }
