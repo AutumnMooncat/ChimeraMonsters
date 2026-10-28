@@ -4,14 +4,15 @@ import ChimeraMonsters.ChimeraMonstersMod;
 import ChimeraMonsters.modifiers.Modifier;
 import ChimeraMonsters.modifiers.monsters.AbstractMonsterModifier;
 import ChimeraMonsters.util.AnalysisHelper;
+import ChimeraMonsters.util.AscensionScaling;
+import ChimeraMonsters.util.MonsterManipulator;
 import ChimeraMonsters.util.Wiz;
 import com.megacrit.cardcrawl.actions.AbstractGameAction;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.localization.UIStrings;
-import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
 
-public abstract class AbstractMonsterGroupModifier implements Modifier<MonsterGroup>, AnalysisHelper {
+public abstract class AbstractMonsterGroupModifier implements Modifier<MonsterGroup>, AscensionScaling, AnalysisHelper, MonsterManipulator {
     private static final String[] BASE_TEXT = CardCrawlGame.languagePack.getUIString(ChimeraMonstersMod.makeID(AbstractMonsterModifier.class.getSimpleName())).TEXT;
     protected String modifierID;
     protected UIStrings uiStrings;
