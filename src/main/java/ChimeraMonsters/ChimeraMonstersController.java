@@ -47,11 +47,15 @@ public class ChimeraMonstersController {
                 explainerPresent = true;
             }
         }
-        monster.name = copy.modifyName(monster);
+        changeName(monster, copy.modifyName(monster));
+        MonsterFields.receivedModifiers.get(monster).add(copy);
+    }
+
+    public static void changeName(AbstractMonster monster, String name) {
+        monster.name = name;
         if (Loader.isModLoaded("SpirePeople")) {
             SpirePeopleCompat.fixName(monster);
         }
-        MonsterFields.receivedModifiers.get(monster).add(copy);
     }
 
     public static List<Modifier<?>> currentCombatModifiers() {
