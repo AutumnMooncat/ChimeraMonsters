@@ -1,5 +1,7 @@
 package ChimeraMonsters.util;
 
+import ChimeraMonsters.orbs.MonsterDark;
+import ChimeraMonsters.orbs.MonsterLightning;
 import ChimeraMonsters.patches.CustomIntentPatches;
 import ChimeraMonsters.patches.EnemyMoveInfoFields;
 import ChimeraMonsters.patches.MonsterFields;
@@ -65,6 +67,28 @@ public class MonsterOrbHelper {
             evokes = Math.min(evokes, orbs.size());
         }
         return evokes;
+    }
+
+    public static int intendedOrbDamage(AbstractCreature owner) {
+        if (!(owner instanceof AbstractMonster)) return 0;
+        int dmg = 0;
+        ArrayList<AbstractOrb> orbs = getOrbs(owner);
+        if (orbs != null) {
+            int evokes = intendedEvokes(owner);
+
+            for (int i = 0 ; i < evokes ; i++) {
+                if (orbs.get(i) instanceof MonsterLightning || orbs.get(i) instanceof MonsterDark) {
+                    dmg += AbstractOrb.applyLockOn(AbstractDungeon.player, orbs.get(i).evokeAmount);
+                }
+            }
+
+            for (int i = evokes ; i < orbs.size() ; i++) {
+                if (orbs.get(i) instanceof MonsterLightning) {
+                    dmg += AbstractOrb.applyLockOn(AbstractDungeon.player, orbs.get(i).passiveAmount);
+                }
+            }
+        }
+        return dmg;
     }
 
     public static void applyFocus(AbstractCreature owner, AbstractOrb orb) {

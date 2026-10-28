@@ -2,6 +2,7 @@ package ChimeraMonsters.patches;
 
 import ChimeraMonsters.util.IntentManager;
 import ChimeraMonsters.util.IntentPayload;
+import ChimeraMonsters.util.MonsterOrbHelper;
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import javassist.CtBehavior;
@@ -21,6 +22,8 @@ public class CompatibilityPatches {
                     dmg[0] += tmp;
                 }
             }
+
+            dmg[0] += MonsterOrbHelper.intendedOrbDamage(m);
         }
 
         public static class Locator extends SpireInsertLocator {
