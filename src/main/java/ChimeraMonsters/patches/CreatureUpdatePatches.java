@@ -1,6 +1,7 @@
 package ChimeraMonsters.patches;
 
 import ChimeraMonsters.ui.HoveringCardManager;
+import ChimeraMonsters.util.MonsterOrbHelper;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch2;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePostfixPatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePrefixPatch;
@@ -19,11 +20,18 @@ public class CreatureUpdatePatches {
             if (stance != null) {
                 stance.update();
             }
-            ArrayList<AbstractOrb> orbs = MonsterFields.orbs.get(__instance);
+
+            ArrayList<AbstractOrb> orbs = MonsterOrbHelper.getOrbs(__instance);
             if (orbs != null) {
+                int evokes = MonsterOrbHelper.intendedEvokes(__instance);
                 for (AbstractOrb orb : orbs) {
                     orb.update();
                     orb.updateAnimation();
+                    if (orbs.indexOf(orb) < evokes) {
+                        orb.showEvokeValue();
+                    } else {
+                        orb.hideEvokeValues();
+                    }
                 }
             }
         }
