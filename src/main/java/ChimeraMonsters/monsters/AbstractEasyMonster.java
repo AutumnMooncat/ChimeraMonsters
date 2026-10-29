@@ -15,7 +15,7 @@ public abstract class AbstractEasyMonster extends CustomMonster implements Ascen
     protected HashMap<Byte, EnemyMoveInfo> moveInfos = new HashMap<>();
     protected HashMap<Byte, DamageInfo> moveDamages = new HashMap<>();
     protected MonsterStrings monStrings;
-    protected boolean firstMove;
+    protected boolean firstMove = true;
 
     public AbstractEasyMonster(String id, EnemyType type, int maxHealth, float hb_x, float hb_y, float hb_w, float hb_h, String imgUrl, float offsetX, float offsetY) {
         super(CardCrawlGame.languagePack.getMonsterStrings(id).NAME, id, maxHealth, hb_x, hb_y, hb_w, hb_h, imgUrl, offsetX, offsetY);
