@@ -1,12 +1,14 @@
 package ChimeraMonsters;
 
 import ChimeraMonsters.modifiers.Modifier;
+import ChimeraMonsters.modifiers.groups.AbstractMonsterGroupModifier;
 import ChimeraMonsters.modifiers.groups.addon.AbstractAddonModifier;
 import ChimeraMonsters.modifiers.groups.curated.AbstractCuratedModifier;
 import ChimeraMonsters.modifiers.groups.themed.AbstractThemedModifier;
 import ChimeraMonsters.modifiers.groups.themed.SimpleThemedModifier;
 import ChimeraMonsters.modifiers.monsters.AbstractMonsterModifier;
 import ChimeraMonsters.patches.MonsterFields;
+import ChimeraMonsters.patches.MonsterGroupFields;
 import ChimeraMonsters.powers.ModifierExplainerPower;
 import ChimeraMonsters.ui.TopPanelExplainer;
 import ChimeraMonsters.util.Wiz;
@@ -14,6 +16,7 @@ import ChimeraMonsters.util.compat.SpirePeopleCompat;
 import basemod.patches.com.megacrit.cardcrawl.helpers.TopPanel.TopPanelHelper;
 import com.evacipated.cardcrawl.modthespire.Loader;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
+import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
 
@@ -51,6 +54,26 @@ public class ChimeraMonstersController {
         MonsterFields.receivedModifiers.get(monster).add(copy);
     }
 
+    public static void applyModifier(MonsterGroup group, AbstractMonsterGroupModifier mod) {
+        AbstractMonsterGroupModifier copy = mod.makeCopy();
+        if (CardCrawlGame.isInARun()) {
+            copy.applyTo(group);
+            if (!explainerPresent) {
+                TopPanelHelper.topPanelGroup.addPanelItem(explainer);
+                explainerPresent = true;
+            }
+        }
+
+        String fightName = MonsterGroupFields.fightName.get(group);
+        String modName = copy.getModifierName();
+        if (fightName.isEmpty()) {
+            MonsterGroupFields.fightName.set(group, modName);
+        } else {
+            MonsterGroupFields.fightName.set(group, fightName + " & " + modName);
+        }
+        MonsterGroupFields.receivedModifiers.get(group).add(copy);
+    }
+
     public static void changeName(AbstractMonster monster, String name) {
         monster.name = name;
         if (Loader.isModLoaded("SpirePeople")) {
@@ -61,6 +84,7 @@ public class ChimeraMonstersController {
     public static List<Modifier<?>> currentCombatModifiers() {
         List<Modifier<?>> mods = new ArrayList<>();
         if (Wiz.isInCombat()) {
+            mods.addAll(MonsterGroupFields.receivedModifiers.get(AbstractDungeon.getMonsters()));
             Wiz.forAllMonstersLiving(mon ->
                     mods.addAll(MonsterFields.receivedModifiers.get(mon)
                             .stream().filter(check ->

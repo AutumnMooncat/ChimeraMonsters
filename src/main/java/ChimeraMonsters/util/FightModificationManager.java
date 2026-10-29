@@ -42,9 +42,7 @@ public class FightModificationManager {
             if (curatedMod == null) {
                 return;
             }
-            MonsterGroupFields.fightName.set(monsterGroup, curatedMod.getModifierName());
-            curatedMod.applyTo(monsterGroup);
-            MonsterGroupFields.receivedModifiers.get(monsterGroup).add(curatedMod);
+            ChimeraMonstersController.applyModifier(monsterGroup, curatedMod);
             if (ChimeraMonstersConfig.BoolSetting.ENHANCE_IN_CURATED.getVal()) {
                 rollRandomModifiers(monsterGroup);
             }
@@ -56,9 +54,7 @@ public class FightModificationManager {
             if (themedMod == null) {
                 return;
             }
-            MonsterGroupFields.fightName.set(monsterGroup, themedMod.getModifierName());
-            themedMod.applyTo(monsterGroup);
-            MonsterGroupFields.receivedModifiers.get(monsterGroup).add(themedMod);
+            ChimeraMonstersController.applyModifier(monsterGroup, themedMod);
             if (ChimeraMonstersConfig.BoolSetting.ENHANCE_IN_THEMED.getVal()) {
                 rollRandomModifiers(monsterGroup);
             }
@@ -77,8 +73,7 @@ public class FightModificationManager {
             if (AbstractDungeon.miscRng.random(99) < ChimeraMonstersConfig.IntSetting.ADDON_CHANCE.getVal()) {
                 AbstractAddonModifier mod = getWeighted(ChimeraMonstersController.getValidAddonMods(monsterGroup), getStrongestEnemyType(monsterGroup));
                 if (mod != null) {
-                    mod.applyTo(monsterGroup);
-                    MonsterGroupFields.receivedModifiers.get(monsterGroup).add(mod);
+                    ChimeraMonstersController.applyModifier(monsterGroup, mod);
                 }
             }
         }
