@@ -156,5 +156,8 @@
   },
   "${ModID}:HarbingerMod": {
     "TEXT": ["", ", the Harbinger", "After #b2 turns, also attacks everyone with increasing intensity every turn."]
+  },
+  "${ModID}:ResupplyMod": {
+    "TEXT": ["", ", with supplies", "Arrives on the second turn of combat, granting #yStrength and #yBlock to all enemies."]
   }
 }

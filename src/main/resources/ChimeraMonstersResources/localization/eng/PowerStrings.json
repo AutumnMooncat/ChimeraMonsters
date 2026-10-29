@@ -189,5 +189,13 @@
     "DESCRIPTIONS": [
       "At the end of its turn, gains #b", " #yFocus."
     ]
+  },
+  "${ModID}:DelayedMonsterPower": {
+    "NAME": "Delayed Monster",
+    "DESCRIPTIONS": [
+      "Next turn, ",
+      "In #b", " turns, ",
+      " will arrive."
+    ]
   }
 }
