@@ -8,6 +8,7 @@ import ChimeraMonsters.util.DataUtil;
 import ChimeraMonsters.util.IntentManager;
 import ChimeraMonsters.util.IntentPayload;
 import ChimeraMonsters.util.Wiz;
+import basemod.ReflectionHacks;
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.megacrit.cardcrawl.actions.GameActionManager;
 import com.megacrit.cardcrawl.actions.common.RollMoveAction;
@@ -277,6 +278,12 @@ public class MoveManipulationPatches {
     public static class OnIntentCreated {
         @SpirePrefixPatch
         public static void plz (AbstractMonster __instance) {
+            // Fix intentDmg never updating if baseIntentDmg is -1
+            EnemyMoveInfo move = getMove(__instance);
+            if (move != null && move.baseDamage == -1) {
+                ReflectionHacks.setPrivate(__instance, AbstractMonster.class, "intentDmg", -1);
+            }
+
             IntentInterceptingPower interceptor = IntentManager.getInterceptor(__instance);
             if (interceptor != null) {
                 interceptor.onInterceptedIntentCreated();

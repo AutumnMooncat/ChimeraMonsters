@@ -33,4 +33,20 @@ public class CompatibilityPatches {
             }
         }
     }
+
+    @SpirePatch2(cls = "mintySpire.patches.ui.RenderIncomingDamagePatches", method = "isAttacking", requiredModId = "mintyspire")
+    public static class MintyDamageIsAttacking {
+        @SpirePostfixPatch
+        public static boolean plz(boolean __result, AbstractMonster m) {
+            for (IntentPayload pl : IntentManager.extraIntents(m)) {
+                if (pl.fields.intentBaseDmg >= 0) {
+                    return true;
+                }
+            }
+            if (MonsterOrbHelper.intendedOrbDamage(m) > 0) {
+                return true;
+            }
+            return __result;
+        }
+    }
 }
