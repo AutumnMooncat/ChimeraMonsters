@@ -150,7 +150,8 @@
   "${ModID}:EvokeHandler": {
     "TEXT": [
       "Evoking",
-      "This enemy will evoke its next orb this turn."
+      "This enemy will evoke its next orb this turn.",
+      "This enemy will evoke its next #b"," orbs this turn."
     ]
   },
   "${ModID}:CantUseText": {
