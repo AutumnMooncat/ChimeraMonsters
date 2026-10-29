@@ -300,7 +300,7 @@ public class MonsterOrbHelper {
             }
 
             for (i = 0; i < orbs.size(); ++i) {
-                setSlot(owner, orbs.get(i), i, maxOrbs);
+                setSlot(owner, orbs.get(i), i, orbs.size());
             }
 
         }
@@ -321,7 +321,7 @@ public class MonsterOrbHelper {
             }
 
             for (int i = 0; i < orbs.size(); ++i) {
-                setSlot(owner, orbs.get(i), i, maxOrbs);
+                setSlot(owner, orbs.get(i), i, orbs.size());
             }
 
         }

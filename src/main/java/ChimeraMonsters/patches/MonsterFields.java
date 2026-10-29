@@ -34,7 +34,7 @@ public class MonsterFields {
     public static SpireField<HoveringCardManager> cardManager = new SpireField<>(() -> null);
     public static SpireField<ArrayList<AbstractOrb>> orbs = new SpireField<>(() -> null);
     public static SpireField<AbstractStance> stance = new SpireField<>(() -> null); // TODO stances not implemented
-    public static SpireField<Integer> maxOrbs = new SpireField<>(() -> 3);
+    public static SpireField<Integer> maxOrbs = new SpireField<>(() -> 1);
     // Misc
     public static SpireField<Boolean> stunOnArmorBreak = new SpireField<>(() -> false);
     public static SpireField<Float> rawOffsetX = new SpireField<>(() -> 0f);
