@@ -312,7 +312,11 @@ public class CustomIntentPatches {
 
         @Override
         public void handleDamageRange(AbstractMonster mon, AbstractMonster.Intent intent, SpriteBatch sb, int damage, int multi, BobEffect bob, Color color) {
-            renderValue(mon, sb, EnemyMoveInfoFields.evokes.get(MoveManipulationPatches.getMove(mon)), bob, color);
+            int evokes = EnemyMoveInfoFields.evokes.get(MoveManipulationPatches.getMove(mon));
+            if (evokes > 0)
+            {
+                renderValue(mon, sb, evokes, bob, color);
+            }
         }
     }
 }
