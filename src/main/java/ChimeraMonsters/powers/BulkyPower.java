@@ -35,6 +35,13 @@ public class BulkyPower extends AbstractInternalLogicPower implements RenderModi
     }
 
     @Override
+    public void otherIntentPicked(EnemyMoveInfo nextMove) {
+        if (cooldown > 0) {
+            cooldown--;
+        }
+    }
+
+    @Override
     public float interceptRate(EnemyMoveInfo intendedMove) {
         if (cooldown > 0) return 0f;
         return Math.max(0.2f, 1f - 0.2f*activations);
