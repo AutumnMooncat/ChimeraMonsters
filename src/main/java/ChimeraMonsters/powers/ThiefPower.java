@@ -111,7 +111,7 @@ public class ThiefPower extends AbstractInternalLogicPower {
         if (action instanceof ChannelAction) {
             AbstractOrb orb = ReflectionHacks.getPrivate(action, ChannelAction.class, "orbType");
             boolean auto = ReflectionHacks.getPrivate(action, ChannelAction.class, "autoEvoke");
-            return new MonsterOrbHelper.MonsterChannelAction(ownerMon, orb, auto);
+            return new MonsterOrbHelper.MonsterChannelAction(ownerMon, orb, true, auto);
         }
         if (ActionAnalyzer.doesDamage(action)) {
             DamageInfo info = ActionAnalyzer.findDamage(action);

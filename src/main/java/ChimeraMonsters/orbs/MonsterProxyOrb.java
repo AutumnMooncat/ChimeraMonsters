@@ -161,7 +161,7 @@ public class MonsterProxyOrb extends AbstractOrb {
         if (action instanceof ChannelAction) {
             AbstractOrb orb = ReflectionHacks.getPrivate(action, ChannelAction.class, "orbType");
             boolean auto = ReflectionHacks.getPrivate(action, ChannelAction.class, "autoEvoke");
-            return new MonsterOrbHelper.MonsterChannelAction(owner, orb, auto);
+            return new MonsterOrbHelper.MonsterChannelAction(owner, orb, true, auto);
         }
         if (ActionAnalyzer.doesDamage(action)) {
             DamageInfo info = ActionAnalyzer.findDamage(action);

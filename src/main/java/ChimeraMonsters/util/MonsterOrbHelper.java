@@ -141,7 +141,7 @@ public class MonsterOrbHelper {
         return orbs;
     }
 
-    public static void channelOrb(AbstractCreature owner, AbstractOrb orb) {
+    public static void channelOrb(AbstractCreature owner, AbstractOrb orb, boolean duringTurn) {
         if (!(owner instanceof AbstractMonster)) return;
         ArrayList<AbstractOrb> orbs = getOrbs(owner);
         int max = getMaxOrbs(owner);
@@ -164,12 +164,12 @@ public class MonsterOrbHelper {
             orbs.set(index, orb);
             setSlot(owner, orb, index, max);
             orb.playChannelSFX();
-            MonsterOrbField.justChanneled.set(orb, true);
+            MonsterOrbField.justChanneled.set(orb, duringTurn);
 
             for (AbstractPower p : owner.powers) {
                 p.onChannel(orb);
             }
-            applyFocus(owner, orb);
+            orb.applyFocus();
         } else {
             AbstractDungeon.actionManager.addToTop(new MonsterChannelAction(owner, orb));
             AbstractDungeon.actionManager.addToTop(new EvokeMonsterOrbAction(owner, 1));
@@ -400,26 +400,32 @@ public class MonsterOrbHelper {
     public static class MonsterChannelAction extends AbstractGameAction {
         private final AbstractOrb orbType;
         private final boolean autoEvoke;
+        private final boolean duringTurn;
 
         public MonsterChannelAction(AbstractCreature owner, AbstractOrb newOrbType) {
-            this(owner, newOrbType, true);
+            this(owner, newOrbType, true, true);
         }
 
-        public MonsterChannelAction(AbstractCreature owner, AbstractOrb newOrbType, boolean autoEvoke) {
+        public MonsterChannelAction(AbstractCreature owner, AbstractOrb newOrbType, boolean duringTurn) {
+            this(owner, newOrbType, duringTurn, true);
+        }
+
+        public MonsterChannelAction(AbstractCreature owner, AbstractOrb newOrbType, boolean duringTurn, boolean autoEvoke) {
             this.duration = Settings.ACTION_DUR_FAST;
             this.source = owner;
             this.orbType = newOrbType;
+            this.duringTurn = duringTurn;
             this.autoEvoke = autoEvoke;
         }
 
         public void update() {
             if (this.duration == Settings.ACTION_DUR_FAST) {
                 if (this.autoEvoke) {
-                    channelOrb(source, orbType);
+                    channelOrb(source, orbType, duringTurn);
                 } else {
                     for (AbstractOrb o : AbstractDungeon.player.orbs) {
                         if (o instanceof EmptyOrbSlot) {
-                            channelOrb(source, orbType);
+                            channelOrb(source, orbType, duringTurn);
                             break;
                         }
                     }
