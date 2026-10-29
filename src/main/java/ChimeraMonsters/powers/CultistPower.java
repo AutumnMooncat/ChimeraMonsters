@@ -41,7 +41,7 @@ public class CultistPower extends AbstractInternalLogicPower implements IntentIn
 
     @Override
     public void setInterceptIntent(EnemyMoveInfo replacedMove) {
-        EnemyMoveInfo newMove = new EnemyMoveInfo((byte) -1, AbstractMonster.Intent.BUFF, 0, 0, true);
+        EnemyMoveInfo newMove = new EnemyMoveInfo((byte) -1, AbstractMonster.Intent.BUFF, 0, 0, false);
         EnemyMoveInfoFields.name.set(newMove, Cultist.MOVES[2]);
         overrideMove(owner, newMove);
         primed = true;
