@@ -9,6 +9,8 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.orbs.AbstractOrb;
 import com.megacrit.cardcrawl.orbs.Dark;
+import com.megacrit.cardcrawl.powers.AbstractPower;
+import com.megacrit.cardcrawl.powers.FocusPower;
 
 public class MonsterDark extends Dark {
     @Override
@@ -31,6 +33,11 @@ public class MonsterDark extends Dark {
     public void applyFocus() {
         AbstractMonster owner = MonsterOrbHelper.findOwner(this);
         if (owner == null) return;
-        MonsterOrbHelper.applyFocus(owner, this);
+        AbstractPower power = owner.getPower(FocusPower.POWER_ID);
+        if (power != null) {
+            passiveAmount = Math.max(0, basePassiveAmount + power.amount);
+        } else {
+            passiveAmount = basePassiveAmount;
+        }
     }
 }
