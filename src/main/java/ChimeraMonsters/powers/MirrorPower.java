@@ -1,10 +1,8 @@
 package ChimeraMonsters.powers;
 
 import ChimeraMonsters.ChimeraMonstersMod;
-import ChimeraMonsters.actions.DoAction;
+import ChimeraMonsters.actions.MakeTemporaryIntentAction;
 import ChimeraMonsters.powers.interfaces.RenderModifierPower;
-import ChimeraMonsters.util.IntentManager;
-import ChimeraMonsters.util.IntentPayload;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.megacrit.cardcrawl.actions.AbstractGameAction;
@@ -51,7 +49,12 @@ public class MirrorPower extends AbstractEasyPower implements RenderModifierPowe
             primed = true;
             flash();
             startFlashing();
-            addToBot(new DoAction(() -> {
+            addToBot(new MakeTemporaryIntentAction(owner, new EnemyMoveInfo((byte) -1, AbstractMonster.Intent.ATTACK, info.output, 0, false),
+                    new DamageInfo(owner, info.output), thiz -> {
+                addToBot(new AnimateSlowAttackAction(thiz.owner));
+                addToBot(new DamageAction(AbstractDungeon.player, thiz.damage, thiz.damage.base > 10 ? AbstractGameAction.AttackEffect.BLUNT_HEAVY : AbstractGameAction.AttackEffect.BLUNT_LIGHT));
+            }));
+            /*addToBot(new DoAction(() -> {
                 IntentPayload pl = new IntentPayload();
                 pl.owner = (AbstractMonster) owner;
                 pl.fields.move = new EnemyMoveInfo((byte) -1, AbstractMonster.Intent.ATTACK, info.output, 0, false);
@@ -62,7 +65,7 @@ public class MirrorPower extends AbstractEasyPower implements RenderModifierPowe
                     addToBot(new DoAction(() -> IntentManager.removeExtraIntent(thiz.owner, thiz)));
                 };
                 IntentManager.addExtraIntent((AbstractMonster) owner, pl);
-            }));
+            }));*/
         }
         return damageAmount;
     }
