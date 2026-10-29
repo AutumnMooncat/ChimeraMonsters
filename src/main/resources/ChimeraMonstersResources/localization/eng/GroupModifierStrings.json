@@ -8,5 +8,9 @@
   "${ModID}:ExampleGroupMod": {
     "TEXT": ["Modifier name", "Modifier description"],
     "EXTRA_TEXT": ["Anything else needed"]
+  },
+  "${ModID}:TheOrbMaster": {
+    "TEXT": ["The Orb Master", "An Orb Walker that has mastered the power of the orbs."],
+    "EXTRA_TEXT": [""]
   }
 }

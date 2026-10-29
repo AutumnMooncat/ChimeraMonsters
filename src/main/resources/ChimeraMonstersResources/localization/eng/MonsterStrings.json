@@ -5,8 +5,13 @@
     "DIALOG": [""]
   },
   "${ModID}:You": {
-    "MOVES": ["Anger","Envy","Sadness","Panic"],
     "NAME": "You",
+    "MOVES": ["Anger","Envy","Sadness","Panic"],
+    "DIALOG": [""]
+  },
+  "${ModID}:OrbMaster": {
+    "NAME": "Orb Master",
+    "MOVES": ["Anger","Envy","Sadness","Panic"],
     "DIALOG": [""]
   }
 }

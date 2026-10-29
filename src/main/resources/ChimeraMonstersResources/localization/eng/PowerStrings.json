@@ -183,5 +183,11 @@
       "Attacks #rEveryone for #b",
       " damage and increases this damage by #b","."
     ]
+  },
+  "${ModID}:OrbMasterPower": {
+    "NAME": "Focus Up",
+    "DESCRIPTIONS": [
+      "At the end of its turn, gains #b", " #yFocus."
+    ]
   }
 }
