@@ -58,7 +58,7 @@ public class DynamicPatches {
                         if (m.getName().equals("damage")) {
                             m.insertBefore(MoveManipulationPatches.class.getName() + ".beginStateChange($0);");
                             m.insertAfter(MoveManipulationPatches.class.getName() + ".endStateChange($0);");
-                            if (!CtClassAnalyzer.performTest(m, damageCall)) {
+                            if (!CtClassAnalyzer.callsSuper(m)) {
                                 ChimeraMonstersMod.logger.info("Manually account for class {} that overrides damage and does not call super", ctClass.getName());
                                 m.insertAfter(MonsterCantDiePatches.DontBonkDamage.class.getName() + ".plz($0);");
                             }

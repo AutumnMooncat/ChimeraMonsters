@@ -273,4 +273,43 @@ public class CtClassAnalyzer {
         } catch (CannotCompileException ignored) {}
         return foundClasses;
     }
+
+    public static boolean callsSuper(CtMethod method) {
+        boolean[] ret = {false};
+        try {
+            method.getDeclaringClass().defrost();
+            method.instrument(new ExprEditor() {
+                @Override
+                public void edit(MethodCall m) throws CannotCompileException {
+                    if (m.getMethodName().equals(method.getName()) && m.getSignature().equals(method.getSignature()) && m.isSuper()) {
+                        ret[0] = true;
+                    }
+                }
+            });
+        } catch (CannotCompileException ignored) {}
+        return ret[0];
+    }
+
+    public static boolean callsSuperRecursively(CtMethod method, Class<?> clazz) {
+        boolean[] ret = {false};
+        try {
+            method.getDeclaringClass().defrost();
+            method.instrument(new ExprEditor() {
+                @Override
+                public void edit(MethodCall m) throws CannotCompileException {
+                    try {
+                        if (m.getMethodName().equals(method.getName()) && m.getSignature().equals(method.getSignature()) && m.isSuper()) {
+                            CtMethod found = m.getMethod();
+                            if (found.getDeclaringClass().getName().equals(clazz.getName())) {
+                                ret[0] = true;
+                            } else {
+                                ret[0] = callsSuperRecursively(found, clazz);
+                            }
+                        }
+                    } catch (NotFoundException ignored) {}
+                }
+            });
+        } catch (CannotCompileException ignored) {}
+        return ret[0];
+    }
 }
