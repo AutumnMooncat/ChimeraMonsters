@@ -1,5 +1,6 @@
 package ChimeraMonsters.util;
 
+import ChimeraMonsters.actions.DoAction;
 import ChimeraMonsters.orbs.MonsterDark;
 import ChimeraMonsters.orbs.MonsterLightning;
 import ChimeraMonsters.patches.CustomIntentPatches;
@@ -163,6 +164,7 @@ public class MonsterOrbHelper {
             orbs.set(index, orb);
             setSlot(owner, orb, index, max);
             orb.playChannelSFX();
+            MonsterOrbField.justChanneled.set(orb, true);
 
             for (AbstractPower p : owner.powers) {
                 p.onChannel(orb);
@@ -339,12 +341,18 @@ public class MonsterOrbHelper {
 
     public static void applyEndOfTurnOrbs(AbstractCreature owner) {
         if (!(owner instanceof AbstractMonster)) return;
-        ArrayList<AbstractOrb> orbs = getOrbs(owner);
-        if (orbs != null && !orbs.isEmpty()) {
-            for (AbstractOrb o : orbs) {
-                o.onEndOfTurn();
+        AbstractDungeon.actionManager.addToBottom(new DoAction(() -> {
+            ArrayList<AbstractOrb> orbs = getOrbs(owner);
+            if (orbs != null && !orbs.isEmpty()) {
+                for (AbstractOrb o : orbs) {
+                    if (MonsterOrbField.justChanneled.get(o)) {
+                        MonsterOrbField.justChanneled.set(o, false);
+                    } else {
+                        o.onEndOfTurn();
+                    }
+                }
             }
-        }
+        }));
     }
 
     public static class AnimateMonsterOrbAction extends AbstractGameAction {
@@ -429,6 +437,7 @@ public class MonsterOrbHelper {
     @SpirePatch2(clz = AbstractOrb.class, method = SpirePatch.CLASS)
     public static class MonsterOrbField {
         public static SpireField<AbstractMonster> monsterOwner = new SpireField<>(() -> null);
+        public static SpireField<Boolean> justChanneled = new SpireField<>(() -> false);
     }
 
     @SpirePatch2(clz = AbstractOrb.class, method = "updateAnimation")
