@@ -32,6 +32,11 @@ public interface SimpleThemedModifier {
         }
 
         @Override
+        public String identifier() {
+            return monsterMod.identifier()+"Themed";
+        }
+
+        @Override
         public void preBattleActions(MonsterGroup context) {
             ((SimpleThemedModifier) monsterMod).themedPreBattle(context);
         }
