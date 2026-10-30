@@ -159,5 +159,8 @@
   },
   "${ModID}:ResupplyMod": {
     "TEXT": ["", ", with supplies", "Arrives on the second turn of combat, granting #yStrength and #yBlock to all enemies."]
+  },
+  "${ModID}:AvengingMod": {
+    "TEXT": ["Avenging ", "", "Intends to gain #yStrength whenever an ally dies."]
   }
 }

@@ -197,5 +197,11 @@
       "In #b", " turns, ",
       " will arrive."
     ]
+  },
+  "${ModID}:AvengingPower": {
+    "NAME": "Avenger",
+    "DESCRIPTIONS": [
+      "Whenever an ally dies, it will instead intend to gain #b"," #yStrength."
+    ]
   }
 }
