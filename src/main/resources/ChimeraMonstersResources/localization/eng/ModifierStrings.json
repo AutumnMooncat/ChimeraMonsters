@@ -144,7 +144,8 @@
     ]
   },
   "${ModID}:MirrorMod": {
-    "TEXT": ["", " of Mirrors", "Reduces base damage by #b33%. NL The first time it is attacked each turn, gains an equal attack intent."]
+    "TEXT": ["", " of Mirrors", "Reduces base damage by #b33%. NL The first time it is attacked each turn, gains an equal attack intent."],
+    "EXTRA_TEXT": ["Hall of Mirrors"]
   },
   "${ModID}:SicklyMod": {
     "TEXT": ["Sickly ", "", "Starts with #ySick, making the creature deal less damage but able to spread it."]
