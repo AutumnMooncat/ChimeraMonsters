@@ -30,7 +30,7 @@
   },
   "${ModID}:ShadowMod": {
     "TEXT": ["Shadow ", "", "Decreases base damage by #b33%. Has a #yDark orb it evokes after 5 turns."],
-    "EXTRA_TEXT": ["Shadelings"]
+    "EXTRA_TEXT": ["Black Hole Sun"]
   },
   "${ModID}:VampiricMod": {
     "TEXT": ["Vampiric ", "", "Heals for #b50% of unblocked damage dealt. Starts with #b70% of it's maximum #yHP."],
