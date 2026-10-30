@@ -1,4 +1,4 @@
-package ChimeraMonsters.modifiers.monsters.rare;
+package ChimeraMonsters.modifiers.monsters.special;
 
 import ChimeraMonsters.ChimeraMonstersMod;
 import ChimeraMonsters.modifiers.monsters.AbstractMonsterModifier;
@@ -10,7 +10,7 @@ public class NormalMod extends AbstractMonsterModifier {
     public static final String ID = ChimeraMonstersMod.makeID(NormalMod.class.getSimpleName());
 
     public NormalMod() {
-        super(ID, ModifierRarity.RARE);
+        super(ID, ModifierRarity.SPECIAL);
     }
 
     @Override
