@@ -171,5 +171,9 @@
   },
   "${ModID}:AvengingMod": {
     "TEXT": ["Avenging ", "", "Intends to gain #yStrength whenever an ally dies."]
+  },
+  "${ModID}:WideMod": {
+    "TEXT": ["Wide ", "", "Increases #yHP by #b33%. NL Reduces base damage by #b25%."],
+    "EXTRA_TEXT": ["B a t t l e   S t a r t"]
   }
 }
