@@ -65,7 +65,7 @@ public abstract class AbstractMonsterGroupModifier implements Modifier<MonsterGr
         try {
             return getClass().newInstance();
         } catch (InstantiationException | IllegalAccessException e) {
-            throw new RuntimeException("Chimera Monsters failed to make copy of " + getClass().getName());
+            throw new RuntimeException("Chimera Monsters failed to make copy of " + identifier() + " -> " + getClass().getName());
         }
     }
 }

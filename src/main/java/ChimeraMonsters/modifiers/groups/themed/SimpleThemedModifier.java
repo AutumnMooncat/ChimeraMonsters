@@ -7,7 +7,11 @@ import com.megacrit.cardcrawl.monsters.MonsterGroup;
 public interface SimpleThemedModifier {
     default String fightName() {
         if (this instanceof AbstractMonsterModifier) {
-            return ((AbstractMonsterModifier) this).getStrings().EXTRA_TEXT[0];
+            try {
+                return ((AbstractMonsterModifier) this).getStrings().EXTRA_TEXT[0];
+            } catch (Exception e) {
+                throw new RuntimeException("Chimera Monsters failed to get themed fight name for " + ((AbstractMonsterModifier) this).identifier());
+            }
         }
         return null;
     }
