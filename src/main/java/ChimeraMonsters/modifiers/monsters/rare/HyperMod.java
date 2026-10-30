@@ -4,6 +4,8 @@ import ChimeraMonsters.ChimeraMonstersMod;
 import ChimeraMonsters.modifiers.groups.themed.SimpleThemedModifier;
 import ChimeraMonsters.modifiers.monsters.AbstractMonsterModifier;
 import ChimeraMonsters.powers.HyperPower;
+import com.megacrit.cardcrawl.actions.common.ApplyPowerAction;
+import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
 
@@ -26,6 +28,11 @@ public class HyperMod extends AbstractMonsterModifier implements SimpleThemedMod
     public void applyTo(AbstractMonster monster) {
         manipulateBaseHealth(monster, DEBUFF_33);
         applyPowersToCreature(monster, new HyperPower(monster, 0));
+    }
+
+    @Override
+    public void themedPreBattle(MonsterGroup context) {
+        addToBot(new ApplyPowerAction(AbstractDungeon.player, AbstractDungeon.player, new HyperPower(AbstractDungeon.player, 0)));
     }
 
     @Override
