@@ -1,8 +1,11 @@
 package ChimeraMonsters.modifiers.monsters.uncommon;
 
 import ChimeraMonsters.ChimeraMonstersMod;
+import ChimeraMonsters.modifiers.groups.themed.SimpleThemedModifier;
 import ChimeraMonsters.modifiers.monsters.AbstractMonsterModifier;
 import ChimeraMonsters.powers.SpikyPower;
+import com.megacrit.cardcrawl.actions.common.ApplyPowerAction;
+import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
 import com.megacrit.cardcrawl.powers.BarricadePower;
@@ -10,7 +13,7 @@ import com.megacrit.cardcrawl.powers.MetallicizePower;
 import com.megacrit.cardcrawl.powers.PlatedArmorPower;
 import com.megacrit.cardcrawl.powers.ThornsPower;
 
-public class SpikyMod extends AbstractMonsterModifier {
+public class SpikyMod extends AbstractMonsterModifier implements SimpleThemedModifier {
     public static final String ID = ChimeraMonstersMod.makeID(SpikyMod.class.getSimpleName());
 
     public SpikyMod() {
@@ -36,5 +39,11 @@ public class SpikyMod extends AbstractMonsterModifier {
     @Override
     public AbstractMonsterModifier makeCopy() {
         return new SpikyMod();
+    }
+
+    @Override
+    public void themedPreBattle(MonsterGroup context) {
+        int thorns = 3;
+        addToBot(new ApplyPowerAction(AbstractDungeon.player, AbstractDungeon.player, new ThornsPower(AbstractDungeon.player, thorns)));
     }
 }

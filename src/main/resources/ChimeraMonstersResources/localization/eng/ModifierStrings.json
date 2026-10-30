@@ -66,7 +66,8 @@
     "TEXT": ["Pacifist ", "", "Every other attack is replaced with an interruptable heal."]
   },
   "${ModID}:SpikyMod": {
-    "TEXT": ["Spiky ", "", "Reduces #yHP by #b25%. NL Starts with, and has an intent to gain, #yThorns."]
+    "TEXT": ["Spiky ", "", "Reduces #yHP by #b25%. NL Starts with, and has an intent to gain, #yThorns."],
+    "EXTRA_TEXT": ["Oops, all Spiky"]
   },
   "${ModID}:AwakeningMod": {
     "TEXT": ["Awakening ", "", "Reduces #yHP by #b50%. NL Can revive once in #yWrath."]
