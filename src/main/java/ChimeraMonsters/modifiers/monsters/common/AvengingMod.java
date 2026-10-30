@@ -16,11 +16,12 @@ public class AvengingMod extends AbstractMonsterModifier {
 
     @Override
     protected boolean validMonster(AbstractMonster monster, MonsterGroup context) {
-        return checkContext(context, multiCombat);
+        return checkContext(context, multiCombat) && noBossCheck(monster, context);
     }
 
     @Override
     public void applyTo(AbstractMonster monster) {
+        manipulateBaseDamage(monster, DEBUFF_25);
         int str = AbstractDungeon.actNum * scaleAbilities(monster, 5, 6);
         applyPowersToCreature(monster, new AvengingPower(monster, str));
     }
