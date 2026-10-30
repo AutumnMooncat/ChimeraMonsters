@@ -29,7 +29,7 @@
     "EXTRA_TEXT": ["Doppelings"]
   },
   "${ModID}:ShadowMod": {
-    "TEXT": ["Shadow ", "", "Increases base damage by #b50%. NL Reduces #yHP by #b33%."],
+    "TEXT": ["Shadow ", "", "Decreases base damage by #b33%. Has a #yDark orb it evokes after 5 turns."],
     "EXTRA_TEXT": ["Shadelings"]
   },
   "${ModID}:VampiricMod": {
