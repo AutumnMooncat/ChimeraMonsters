@@ -1,6 +1,7 @@
 package ChimeraMonsters.modifiers.monsters.uncommon;
 
 import ChimeraMonsters.ChimeraMonstersMod;
+import ChimeraMonsters.modifiers.groups.themed.SimpleThemedModifier;
 import ChimeraMonsters.modifiers.monsters.AbstractMonsterModifier;
 import ChimeraMonsters.powers.AncientPower;
 import com.megacrit.cardcrawl.actions.common.ApplyPowerAction;
@@ -8,7 +9,7 @@ import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
 import com.megacrit.cardcrawl.powers.ArtifactPower;
 
-public class AncientMod extends AbstractMonsterModifier {
+public class AncientMod extends AbstractMonsterModifier implements SimpleThemedModifier {
     public static final String ID = ChimeraMonstersMod.makeID(AncientMod.class.getSimpleName());
 
     public AncientMod() {

@@ -97,7 +97,8 @@
     "EXTRA_TEXT": ["Cleanup on Aisle %s"]
   },
   "${ModID}:AncientMod": {
-    "TEXT": ["Ancient ", "", "Has #b5 #yArtifact. Loses #yStength for the turn when attacked."]
+    "TEXT": ["Ancient ", "", "Has #b5 #yArtifact. Loses #yStength for the turn when attacked."],
+    "EXTRA_TEXT": ["The Days of Grays"]
   },
   "${ModID}:ShelledMod": {
     "TEXT": ["Shelled ", "", "Has #b[8/12] #yPlated #yArmor. Becomes #yStunned if all armor is removed."]
