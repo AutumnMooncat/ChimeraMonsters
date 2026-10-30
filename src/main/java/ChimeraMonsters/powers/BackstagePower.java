@@ -26,7 +26,7 @@ public class BackstagePower extends AbstractInternalLogicPower implements Render
         Color origColor = sb.getColor();
         if (!isLast()) {
             sb.setColor(new Color(0.75f, 0.7f, 0.75f, 1f));
-            render(sb, tex, 0, 150, 0.6f, 10);
+            render(sb, tex, 0, 15, 0.6f, 10);
         } else {
             sb.setColor(Color.WHITE);
             render(sb, tex);
