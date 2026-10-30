@@ -127,7 +127,8 @@
     "EXTRA_TEXT": ["Null and Void"]
   },
   "${ModID}:TemporalMod": {
-    "TEXT": ["Temporal ", "", "All damage received is delayed until the start of your next turn."]
+    "TEXT": ["Temporal ", "", "All damage received is delayed until the start of your next turn."],
+    "EXTRA_TEXT": ["Borrowed Time"]
   },
   "${ModID}:VoidboundMod": {
     "TEXT": ["Voidbound ", "", "On death, puts a #yVoid onto the top of your draw pile."]

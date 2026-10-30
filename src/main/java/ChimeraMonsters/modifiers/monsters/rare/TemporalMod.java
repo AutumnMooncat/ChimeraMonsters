@@ -1,6 +1,7 @@
 package ChimeraMonsters.modifiers.monsters.rare;
 
 import ChimeraMonsters.ChimeraMonstersMod;
+import ChimeraMonsters.modifiers.groups.themed.SimpleThemedModifier;
 import ChimeraMonsters.modifiers.monsters.AbstractMonsterModifier;
 import ChimeraMonsters.powers.TemporalPower;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
@@ -10,7 +11,7 @@ import com.megacrit.cardcrawl.powers.RegenerateMonsterPower;
 import com.megacrit.cardcrawl.powers.SharpHidePower;
 import com.megacrit.cardcrawl.powers.ThornsPower;
 
-public class TemporalMod extends AbstractMonsterModifier {
+public class TemporalMod extends AbstractMonsterModifier implements SimpleThemedModifier {
     public static final String ID = ChimeraMonstersMod.makeID(TemporalMod.class.getSimpleName());
 
     public TemporalMod() {
