@@ -151,7 +151,8 @@
     "TEXT": ["Sickly ", "", "Starts with #ySick, making the creature deal less damage but able to spread it."]
   },
   "${ModID}:StabbingMod": {
-    "TEXT": ["", " of Stabbing", "Starts with #yPainful #yStabs."]
+    "TEXT": ["", " of Stabbing", "Starts with #yPainful #yStabs."],
+    "EXTRA_TEXT": ["Room of Stabbing"]
   },
   "${ModID}:CultistMod": {
     "TEXT": ["", " of the Flock", "Caw Caw!"],
