@@ -11,6 +11,7 @@ import ChimeraMonsters.patches.MonsterFields;
 import ChimeraMonsters.patches.MonsterGroupFields;
 import ChimeraMonsters.powers.ModifierExplainerPower;
 import ChimeraMonsters.ui.TopPanelExplainer;
+import ChimeraMonsters.util.RewardHelper;
 import ChimeraMonsters.util.Wiz;
 import ChimeraMonsters.util.compat.SpirePeopleCompat;
 import basemod.patches.com.megacrit.cardcrawl.helpers.TopPanel.TopPanelHelper;
@@ -214,6 +215,9 @@ public class ChimeraMonstersController {
                 addonMods.put(modifier.getModRarity(), new ArrayList<>());
             }
             addonMods.get(modifier.getModRarity()).add((AbstractAddonModifier) modifier);
+        }
+        if (modifier instanceof RewardHelper) {
+            ((RewardHelper) modifier).registerReward();
         }
     }
 }
