@@ -154,7 +154,8 @@
     "TEXT": ["", " of Stabbing", "Starts with #yPainful #yStabs."]
   },
   "${ModID}:CultistMod": {
-    "TEXT": ["", " of the Flock", "Caw Caw!"]
+    "TEXT": ["", " of the Flock", "Caw Caw!"],
+    "EXTRA_TEXT": ["Cult of Personality"]
   },
   "${ModID}:HyperMod": {
     "TEXT": ["Hyper", "", "Deals #b10% more damage per card played each turn.", "TL Note: Hyper is added to last part of the monster name"],
