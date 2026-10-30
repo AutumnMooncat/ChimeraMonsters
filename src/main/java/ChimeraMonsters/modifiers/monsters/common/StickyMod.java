@@ -1,13 +1,14 @@
 package ChimeraMonsters.modifiers.monsters.common;
 
 import ChimeraMonsters.ChimeraMonstersMod;
+import ChimeraMonsters.modifiers.groups.themed.SimpleThemedModifier;
 import ChimeraMonsters.modifiers.monsters.AbstractMonsterModifier;
 import ChimeraMonsters.powers.StickyPower;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
 
-public class StickyMod extends AbstractMonsterModifier {
+public class StickyMod extends AbstractMonsterModifier implements SimpleThemedModifier {
     public static final String ID = ChimeraMonstersMod.makeID(StickyMod.class.getSimpleName());
 
     public StickyMod() {
@@ -28,5 +29,10 @@ public class StickyMod extends AbstractMonsterModifier {
     @Override
     public AbstractMonsterModifier makeCopy() {
         return new StickyMod();
+    }
+
+    @Override
+    public String fightName() {
+        return String.format(uiStrings.EXTRA_TEXT[0], AbstractDungeon.floorNum);
     }
 }

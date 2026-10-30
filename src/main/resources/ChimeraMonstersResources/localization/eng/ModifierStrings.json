@@ -93,7 +93,8 @@
     "EXTRA_TEXT": ["Fungal Growths"]
   },
   "${ModID}:StickyMod": {
-    "TEXT": ["Sticky ", "", "Shuffles #b[1/2] #ySlimed into your discard pile when dealing attack damage."]
+    "TEXT": ["Sticky ", "", "Shuffles #b[1/2] #ySlimed into your discard pile when dealing attack damage."],
+    "EXTRA_TEXT": ["Cleanup on Aisle %s"]
   },
   "${ModID}:AncientMod": {
     "TEXT": ["Ancient ", "", "Has #b5 #yArtifact. Loses #yStength for the turn when attacked."]
