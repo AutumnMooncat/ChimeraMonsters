@@ -1,12 +1,13 @@
 package ChimeraMonsters.modifiers.monsters.rare;
 
 import ChimeraMonsters.ChimeraMonstersMod;
+import ChimeraMonsters.modifiers.groups.themed.SimpleThemedModifier;
 import ChimeraMonsters.modifiers.monsters.AbstractMonsterModifier;
 import ChimeraMonsters.powers.AbyssalPower;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
 
-public class AbyssalMod extends AbstractMonsterModifier {
+public class AbyssalMod extends AbstractMonsterModifier implements SimpleThemedModifier {
     public static final String ID = ChimeraMonstersMod.makeID(AbyssalMod.class.getSimpleName());
 
     public AbyssalMod() {

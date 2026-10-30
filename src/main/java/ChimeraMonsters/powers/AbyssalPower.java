@@ -1,6 +1,7 @@
 package ChimeraMonsters.powers;
 
 import ChimeraMonsters.ChimeraMonstersMod;
+import ChimeraMonsters.actions.MakeTemporaryIntentAction;
 import ChimeraMonsters.powers.interfaces.RenderModifierPower;
 import ChimeraMonsters.util.ColorUtil;
 import ChimeraMonsters.vfx.ParticleEffect;
@@ -17,6 +18,8 @@ import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.localization.PowerStrings;
+import com.megacrit.cardcrawl.monsters.AbstractMonster;
+import com.megacrit.cardcrawl.monsters.EnemyMoveInfo;
 
 public class AbyssalPower extends AbstractEasyPower implements RenderModifierPower {
     public static final String POWER_ID = ChimeraMonstersMod.makeID(AbyssalPower.class.getSimpleName());
@@ -41,6 +44,7 @@ public class AbyssalPower extends AbstractEasyPower implements RenderModifierPow
             flash();
             startFlashing();
             primed = true;
+            addToBot(new MakeTemporaryIntentAction(owner, new EnemyMoveInfo((byte) -1, AbstractMonster.Intent.DEBUFF, -1, 0, false), thiz -> addToBot(new MakeTempCardInDiscardAction(new VoidCard(), amount))));
         }
     }
     @Override
@@ -48,7 +52,7 @@ public class AbyssalPower extends AbstractEasyPower implements RenderModifierPow
         if (primed) {
             stopFlashing();
             primed = false;
-            addToBot(new MakeTempCardInDiscardAction(new VoidCard(), amount));
+            //addToBot(new MakeTempCardInDiscardAction(new VoidCard(), amount));
         }
     }
 

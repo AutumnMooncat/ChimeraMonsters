@@ -123,7 +123,8 @@
     "TEXT": ["Cloaked ", "", "Hides intent each turn until attacked."]
   },
   "${ModID}:AbyssalMod": {
-    "TEXT": ["Abyssal ", "", "If directly targeted by a card, adds a #yVoid into your discard pile during its turn."]
+    "TEXT": ["Abyssal ", "", "If directly targeted by a card, adds a #yVoid into your discard pile during its turn."],
+    "EXTRA_TEXT": ["Null and Void"]
   },
   "${ModID}:TemporalMod": {
     "TEXT": ["Temporal ", "", "All damage received is delayed until the start of your next turn."]
