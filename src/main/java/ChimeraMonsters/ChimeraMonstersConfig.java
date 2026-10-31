@@ -30,6 +30,7 @@ public class ChimeraMonstersConfig {
 
     public enum BoolSetting implements TypedSetting<Boolean> {
         ENABLE_MOD("enableMods", true),
+        ENABLE_EVENT_CHANGES("enableEventChanges", true),
         ENABLE_SHADERS("enableShaders", true),
         ENABLE_TOOLTIPS("enableTooltips", false),
         SHOW_BREAKDOWN("showBreakdown", true),
@@ -188,5 +189,9 @@ public class ChimeraMonstersConfig {
 
     public static boolean canRollWeights() {
         return IntSetting.COMMON_WEIGHT.getVal() + IntSetting.UNCOMMON_WEIGHT.getVal() + IntSetting.RARE_WEIGHT.getVal() + IntSetting.RARITY_BIAS.getVal() > 0;
+    }
+
+    public static boolean changeEvents() {
+        return BoolSetting.ENABLE_EVENT_CHANGES.getVal();
     }
 }

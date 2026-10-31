@@ -6,6 +6,8 @@
       "General Settings",
       "Enable Mod",
       "Toggles functionality of the entire mod. NL #yDefault: #b%s",
+      "Enable Event Changes",
+      "Toggles new options in events. NL #yDefault: #b%s",
       "Enable Shaders",
       "Toggles global usage of shaders, disable to improve performance. Shaders which fail to process on your gpu should automatically disable themselves. NL #yDefault: #b%s",
       "Enable Modifier Tooltips",

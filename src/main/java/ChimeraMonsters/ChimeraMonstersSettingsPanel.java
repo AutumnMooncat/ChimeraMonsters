@@ -76,6 +76,8 @@ public class ChimeraMonstersSettingsPanel {
         makeHeader(getNextText());
         // Enable mod
         makeToggler(getNextText(), getNextText(), ChimeraMonstersConfig.BoolSetting.ENABLE_MOD);
+        // Enable event changes
+        makeToggler(getNextText(), getNextText(), ChimeraMonstersConfig.BoolSetting.ENABLE_EVENT_CHANGES);
         // Enable shaders
         makeToggler(getNextText(), getNextText(), ChimeraMonstersConfig.BoolSetting.ENABLE_SHADERS);
         // Enable tips

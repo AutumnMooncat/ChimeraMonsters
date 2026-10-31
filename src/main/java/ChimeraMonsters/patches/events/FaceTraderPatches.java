@@ -1,5 +1,6 @@
 package ChimeraMonsters.patches.events;
 
+import ChimeraMonsters.ChimeraMonstersConfig;
 import ChimeraMonsters.ChimeraMonstersMod;
 import ChimeraMonsters.util.EventHelper;
 import basemod.ReflectionHacks;
@@ -25,6 +26,8 @@ public class FaceTraderPatches {
 
         @SpirePrefixPatch
         public static SpireReturn<?> capture(FaceTrader __instance, @ByRef int[] buttonPressed, Object ___screen) {
+            if (!ChimeraMonstersConfig.changeEvents()) return SpireReturn.Continue();
+
             if (EventHelper.screenIs(___screen, "INTRO")) {
                 shouldAdd = true;
             } else if (EventHelper.screenIs(___screen, "MAIN")) {
@@ -49,6 +52,8 @@ public class FaceTraderPatches {
 
         @SpirePostfixPatch
         public static void process(FaceTrader __instance, int buttonPressed, Object ___screen) {
+            if (!ChimeraMonstersConfig.changeEvents()) return;
+
             if (shouldAdd) {
                 shouldAdd = false;
                 replacedButtonIndex = __instance.imageEventText.optionList.size();
