@@ -30,6 +30,7 @@ public class TextureLoader {
                 loadTexture(textureString);
             } catch (GdxRuntimeException e) {
                 logger.error("Could not find texture: {}", textureString);
+                textures.put(textureString, missingTexture);
                 return missingTexture;
             }
         }
