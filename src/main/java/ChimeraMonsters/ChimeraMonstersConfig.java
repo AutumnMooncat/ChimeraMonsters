@@ -32,6 +32,7 @@ public class ChimeraMonstersConfig {
         ENABLE_MOD("enableMods", true),
         ENABLE_EVENT_CHANGES("enableEventChanges", true),
         ENABLE_SHADERS("enableShaders", true),
+        ENABLE_VISUAL_PERMUTATIONS("enableVisualPermutations", false),
         ENABLE_TOOLTIPS("enableTooltips", false),
         SHOW_BREAKDOWN("showBreakdown", true),
         ADDON_IN_THEMED("addonInThemed", true),
@@ -193,5 +194,9 @@ public class ChimeraMonstersConfig {
 
     public static boolean changeEvents() {
         return BoolSetting.ENABLE_EVENT_CHANGES.getVal();
+    }
+
+    public static boolean permuteVisuals() {
+        return BoolSetting.ENABLE_VISUAL_PERMUTATIONS.getVal();
     }
 }

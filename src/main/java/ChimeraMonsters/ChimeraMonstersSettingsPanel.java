@@ -80,6 +80,8 @@ public class ChimeraMonstersSettingsPanel {
         makeToggler(getNextText(), getNextText(), ChimeraMonstersConfig.BoolSetting.ENABLE_EVENT_CHANGES);
         // Enable shaders
         makeToggler(getNextText(), getNextText(), ChimeraMonstersConfig.BoolSetting.ENABLE_SHADERS);
+        // Enable visual permutations
+        makeToggler(getNextText(), getNextText(), ChimeraMonstersConfig.BoolSetting.ENABLE_VISUAL_PERMUTATIONS);
         // Enable tips
         makeToggler(getNextText(), getNextText(), ChimeraMonstersConfig.BoolSetting.ENABLE_TOOLTIPS);
 

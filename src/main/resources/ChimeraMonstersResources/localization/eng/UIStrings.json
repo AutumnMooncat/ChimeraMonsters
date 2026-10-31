@@ -10,6 +10,8 @@
       "Toggles new options in events. NL #yDefault: #b%s",
       "Enable Shaders",
       "Toggles global usage of shaders, disable to improve performance. Shaders which fail to process on your gpu should automatically disable themselves. NL #yDefault: #b%s",
+      "Enable Visual Permutations",
+      "Toggles random small visual changes to each monster. NL #yDefault: #b%s",
       "Enable Modifier Tooltips",
       "Toggles additional rendering of modifiers as tips on the monsters. NL #yDefault: #b%s",
 

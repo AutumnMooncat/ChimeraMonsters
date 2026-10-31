@@ -1,7 +1,10 @@
 package ChimeraMonsters.patches;
 
+import ChimeraMonsters.ChimeraMonstersConfig;
+import ChimeraMonsters.powers.VisualPermutationPower;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch2;
+import com.evacipated.cardcrawl.modthespire.lib.SpirePostfixPatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePrefixPatch;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 
@@ -14,6 +17,13 @@ public class MonsterCtorPatches {
             MonsterFields.baseMaxHP.set(__instance, maxHealth);
             MonsterFields.rawOffsetX.set(__instance, offsetX);
             MonsterFields.rawOffsetY.set(__instance, offsetY);
+        }
+
+        @SpirePostfixPatch
+        public static void permute(AbstractMonster __instance) {
+            if (ChimeraMonstersConfig.permuteVisuals()) {
+                __instance.powers.add(new VisualPermutationPower(__instance));
+            }
         }
     }
 }
