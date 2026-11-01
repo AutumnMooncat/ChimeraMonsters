@@ -21,7 +21,7 @@ public class HoverMod extends AbstractMonsterModifier {
 
     @Override
     public void applyTo(AbstractMonster monster) {
-        int amount = AbstractDungeon.actNum == 1 ? 3 : 6;
+        int amount = AbstractDungeon.actNum == 1 ? 6 : 9;
         applyPowersToCreature(monster, new HoverPower(monster, scaleAbilities(monster, amount, amount + 2)));
     }
 
