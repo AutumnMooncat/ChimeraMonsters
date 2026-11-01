@@ -14,6 +14,8 @@
       "Toggles random small visual changes to each monster. NL #yDefault: #b%s",
       "Enable Modifier Tooltips",
       "Toggles additional rendering of modifiers as tips on the monsters. NL #yDefault: #b%s",
+      "Always Show Monster Names",
+      "Toggles name rendering always being visible above the health bar. NL #yDefault: #b%s",
 
       "Monster Settings",
       "Modifier Chance:",

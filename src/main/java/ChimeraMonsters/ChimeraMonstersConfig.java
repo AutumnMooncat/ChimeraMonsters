@@ -34,6 +34,7 @@ public class ChimeraMonstersConfig {
         ENABLE_SHADERS("enableShaders", true),
         ENABLE_VISUAL_PERMUTATIONS("enableVisualPermutations", false),
         ENABLE_TOOLTIPS("enableTooltips", false),
+        ALWAYS_SHOW_NAME("alwaysShowName", true),
         SHOW_BREAKDOWN("showBreakdown", true),
         ADDON_IN_THEMED("addonInThemed", true),
         ADDON_IN_CURATED("addonInCurated", false),
@@ -198,5 +199,10 @@ public class ChimeraMonstersConfig {
 
     public static boolean permuteVisuals() {
         return BoolSetting.ENABLE_VISUAL_PERMUTATIONS.getVal();
+    }
+
+    // Called by CreatureRenderPatches instrument
+    public static boolean alwaysShowName() {
+        return BoolSetting.ALWAYS_SHOW_NAME.getVal();
     }
 }

@@ -1,5 +1,6 @@
 package ChimeraMonsters.patches;
 
+import ChimeraMonsters.ChimeraMonstersConfig;
 import ChimeraMonsters.monsters.You;
 import ChimeraMonsters.powers.interfaces.OnIntentRenderPower;
 import ChimeraMonsters.powers.interfaces.RenderModifierPower;
@@ -18,6 +19,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.Interpolation;
 import com.esotericsoftware.spine.Skeleton;
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
@@ -29,7 +31,11 @@ import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.orbs.AbstractOrb;
 import com.megacrit.cardcrawl.powers.AbstractPower;
 import com.megacrit.cardcrawl.stances.AbstractStance;
+import javassist.CannotCompileException;
 import javassist.CtBehavior;
+import javassist.expr.ExprEditor;
+import javassist.expr.FieldAccess;
+import javassist.expr.MethodCall;
 
 import java.util.ArrayList;
 import java.util.WeakHashMap;
@@ -398,6 +404,68 @@ public class CreatureRenderPatches {
         @SpirePostfixPatch
         public static float speedAdjustment(float result, LwjglGraphics self) {
             return result * timeFlux;
+        }
+    }
+
+    @SpirePatch2(clz = AbstractMonster.class, method = "renderName")
+    public static class NameStuff {
+        @SpireInstrumentPatch
+        public static ExprEditor plz() {
+            return new ExprEditor() {
+                @Override
+                public void edit(FieldAccess f) throws CannotCompileException {
+                    if (f.isReader() && f.getClassName().equals(AbstractPlayer.class.getName()) && f.getFieldName().equals("isDraggingCard")) {
+                        f.replace(String.format("if (%s.alwaysShowName()) { this.hoverTimer = 1f; $_ = false; } else { $_ = $proceed($$); }", ChimeraMonstersConfig.class.getName()));
+                    }
+                }
+            };
+        }
+
+        public static float nameOffset() {
+            // Undo 8px offset + Undo 16px healthHb offset + Add shift
+            return (8f + 16f + 28f) * Settings.scale;
+        }
+
+        @SpireInsertPatch(locator = Locator.class, localvars = {"y"})
+        public static void plz2(AbstractMonster __instance, SpriteBatch sb, @ByRef float[] y) {
+            if (ChimeraMonstersConfig.alwaysShowName()) {
+                // Undo 8px offset + Undo 16px healthHb offset + Add shift
+                y[0] += nameOffset();
+            }
+        }
+
+        public static class Locator extends SpireInsertLocator {
+            @Override
+            public int[] Locate(CtBehavior ctBehavior) throws Exception {
+                return LineFinder.findInOrder(ctBehavior, new Matcher.MethodCallMatcher(SpriteBatch.class, "setColor"));
+            }
+        }
+    }
+
+    @SpirePatch2(clz = AbstractCreature.class, method = "renderHealth")
+    public static class HealthBarStuff {
+        @SpireInsertPatch(locator = Locator.class, localvars = {"y"})
+        public static void plz(AbstractCreature __instance, SpriteBatch sb, @ByRef float[] y) {
+            if (__instance instanceof AbstractMonster && ChimeraMonstersConfig.alwaysShowName()) {
+                y[0] -= 16f * Settings.scale;
+            }
+        }
+
+        public static class Locator extends SpireInsertLocator {
+            @Override
+            public int[] Locate(CtBehavior ctBehavior) throws Exception {
+                return LineFinder.findInOrder(ctBehavior, new Matcher.MethodCallMatcher(AbstractCreature.class, "renderHealthBg"));
+            }
+        }
+    }
+
+    @SpirePatch2(clz = AbstractCreature.class, method = "refreshHitboxLocation")
+    public static class MoreHealthBarStuff {
+        @SpirePostfixPatch
+        public static void plz(AbstractCreature __instance) {
+            if (__instance instanceof AbstractMonster && ChimeraMonstersConfig.alwaysShowName()) {
+                __instance.healthHb.moveY(__instance.healthHb.cY - 16f * Settings.scale);
+            }
         }
     }
 }

@@ -84,6 +84,8 @@ public class ChimeraMonstersSettingsPanel {
         makeToggler(getNextText(), getNextText(), ChimeraMonstersConfig.BoolSetting.ENABLE_VISUAL_PERMUTATIONS);
         // Enable tips
         makeToggler(getNextText(), getNextText(), ChimeraMonstersConfig.BoolSetting.ENABLE_TOOLTIPS);
+        // Show Monster Names
+        makeToggler(getNextText(), getNextText(), ChimeraMonstersConfig.BoolSetting.ALWAYS_SHOW_NAME);
 
         // Monster Settings
         makePageBreak();

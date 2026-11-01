@@ -1,11 +1,16 @@
 package ChimeraMonsters.patches;
 
+import ChimeraMonsters.ChimeraMonstersConfig;
 import ChimeraMonsters.util.IntentManager;
 import ChimeraMonsters.util.IntentPayload;
 import ChimeraMonsters.util.MonsterOrbHelper;
 import com.evacipated.cardcrawl.modthespire.lib.*;
+import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
+import javassist.CannotCompileException;
 import javassist.CtBehavior;
+import javassist.expr.ExprEditor;
+import javassist.expr.FieldAccess;
 
 public class CompatibilityPatches {
     @SpirePatch2(cls = "mintySpire.patches.ui.RenderIncomingDamagePatches$TIDHook", method = "hook", requiredModId = "mintyspire")
@@ -47,6 +52,35 @@ public class CompatibilityPatches {
                 return true;
             }
             return __result;
+        }
+    }
+
+    @SpirePatch2(cls = "spirepeople.patches.AlwaysDisplayNamesPatch", method = "renderColoredOrAnimatedName", requiredModId = "SpirePeople")
+    public static class SpirePeopleFancyNames {
+        @SpireInstrumentPatch
+        public static ExprEditor plz() {
+            return new ExprEditor() {
+                @Override
+                public void edit(FieldAccess f) throws CannotCompileException {
+                    if (f.isReader() && f.getFieldName().equals("alwaysDisplayNames")) {
+                        f.replace(String.format("$_ = $proceed($$) || %s.alwaysShowName();", ChimeraMonstersConfig.class.getName()));
+                    }
+                }
+            };
+        }
+
+        @SpireInsertPatch(locator = Locator.class, localvars = {"y"})
+        public static void plz2(Object[] __args, @ByRef float[] y) {
+            if (ChimeraMonstersConfig.alwaysShowName()) {
+                y[0] += CreatureRenderPatches.NameStuff.nameOffset();
+            }
+        }
+
+        public static class Locator extends SpireInsertLocator {
+            @Override
+            public int[] Locate(CtBehavior ctBehavior) throws Exception {
+                return LineFinder.findInOrder(ctBehavior, new Matcher.MethodCallMatcher(SpireField.class, "get"));
+            }
         }
     }
 }
