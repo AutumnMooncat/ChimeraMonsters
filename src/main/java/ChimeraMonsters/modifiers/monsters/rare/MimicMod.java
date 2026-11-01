@@ -30,6 +30,7 @@ public class MimicMod extends AbstractMonsterModifier {
     public void applyTo(AbstractMonster monster) {
         disguise = getDisguise();
         disguise.hb.move(monster.hb.cX, monster.hb.cY);
+        disguise.powers.clear();
         applyPowersToCreature(monster, new MimicPower(monster, disguise, scaleAbilities(monster, 0.15f, 0.2f)));
     }
 
