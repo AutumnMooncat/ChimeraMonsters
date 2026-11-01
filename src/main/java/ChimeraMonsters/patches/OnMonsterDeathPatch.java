@@ -1,12 +1,16 @@
 package ChimeraMonsters.patches;
 
 import ChimeraMonsters.powers.interfaces.OnOtherMonsterKilledPower;
+import ChimeraMonsters.util.MonsterOrbHelper;
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
+import com.megacrit.cardcrawl.orbs.AbstractOrb;
 import com.megacrit.cardcrawl.powers.AbstractPower;
 import javassist.CtBehavior;
+
+import java.util.ArrayList;
 
 public class OnMonsterDeathPatch {
     @SpirePatch2(clz = AbstractMonster.class, method = "die", paramtypez = {boolean.class})
@@ -21,6 +25,11 @@ public class OnMonsterDeathPatch {
                         }
                     }
                 }
+            }
+            ArrayList<AbstractOrb> orbs = MonsterOrbHelper.getOrbs(__instance);
+            if (orbs != null)
+            {
+                orbs.clear();
             }
         }
 
