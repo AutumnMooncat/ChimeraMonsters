@@ -62,6 +62,7 @@ public class CreatureRenderPatches {
         return referenceTransforms.get(requested);
     }
 
+    // TODO - Corrupts state if we have to render manip in the middle of another render manip (such as Mimic)
     private static void beginCapture(AbstractCreature __instance, SpriteBatch sb) {
         capturing = false;
         if (shouldCapture(__instance)) {
