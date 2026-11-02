@@ -161,7 +161,7 @@
     "EXTRA_TEXT": ["Cult of Personality"]
   },
   "${ModID}:HyperMod": {
-    "TEXT": ["Hyper", "", "Deals #b10% more damage per card played each turn.", "TL Note: Hyper is added to last part of the monster name"],
+    "TEXT": ["Hyper", "", "Reduces #yHP by #b33%. NL Deals #b10% more damage per card played each turn.", "TL Note: Hyper is added to last part of the monster name"],
     "EXTRA_TEXT": ["Caffeine Rush"]
   },
   "${ModID}:HarbingerMod": {
