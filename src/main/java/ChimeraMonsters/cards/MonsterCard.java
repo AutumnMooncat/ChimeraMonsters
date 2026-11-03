@@ -4,6 +4,7 @@ import ChimeraMonsters.ChimeraMonstersMod;
 import ChimeraMonsters.patches.CantUpgradeFieldPatches;
 import ChimeraMonsters.patches.TypeOverridePatch;
 import basemod.abstracts.CustomCard;
+import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.colorless.Metamorphosis;
 import com.megacrit.cardcrawl.cards.status.VoidCard;
 import com.megacrit.cardcrawl.cards.tempCards.Miracle;
@@ -65,4 +66,9 @@ public class MonsterCard extends CustomCard {
 
     @Override
     public void use(AbstractPlayer abstractPlayer, AbstractMonster abstractMonster) {}
+
+    @Override
+    public AbstractCard makeCopy() {
+        return new MonsterCard(storedMonster);
+    }
 }
