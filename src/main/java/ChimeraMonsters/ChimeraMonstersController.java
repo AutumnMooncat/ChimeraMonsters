@@ -20,6 +20,7 @@ import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
+import com.megacrit.cardcrawl.rooms.AbstractRoom;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -36,8 +37,32 @@ public class ChimeraMonstersController {
     public static final HashMap<Modifier.ModifierRarity, ArrayList<AbstractAddonModifier>> addonMods = new HashMap<>();
     public static final HashMap<String, Modifier<?>> modifierMap = new HashMap<>();
 
+    public static final String SEEN_GROUP_MODS_KEY = ChimeraMonstersMod.makeID(ChimeraMonstersController.class.getSimpleName()+":SeenGroupModifiers");
+    public static final ArrayList<String> seenGroupModifiers = new ArrayList<>();
+
     public static TopPanelExplainer explainer;
     public static boolean explainerPresent;
+
+    public static void onLoad(ArrayList<String> data) {
+        if (data == null) return;
+        seenGroupModifiers.clear();
+        seenGroupModifiers.addAll(data);
+    }
+
+    public static ArrayList<String> onSave() {
+        return seenGroupModifiers;
+    }
+
+    public static void onActStart() {
+        seenGroupModifiers.clear();
+    }
+
+    public static void postBattle(AbstractRoom room) {
+        //seenGroupModifiers.addAll(MonsterGroupFields.receivedModifiers.get(room.monsters).stream().map(AbstractMonsterGroupModifier::identifier).collect(Collectors.toList()));
+        for (AbstractMonsterGroupModifier mod : MonsterGroupFields.receivedModifiers.get(room.monsters)) {
+            seenGroupModifiers.add(mod.identifier());
+        }
+    }
 
     public static void applyModifier(AbstractMonster monster, AbstractMonsterModifier mod) {
         AbstractMonsterModifier copy = mod.makeCopy();
@@ -122,12 +147,20 @@ public class ChimeraMonstersController {
         return false;
     }
 
+    public static boolean isValid(AbstractMonsterModifier mod, AbstractMonster mon, MonsterGroup ctx) {
+        return mod.canApplyTo(mon, ctx);
+    }
+
+    public static boolean isValid(AbstractMonsterGroupModifier mod, MonsterGroup ctx) {
+        return mod.canApplyTo(ctx) && !seenGroupModifiers.contains(mod.identifier());
+    }
+
     public static Stream<AbstractMonsterModifier> getMonsterMods() {
         return monsterMods.values().stream().flatMap(Collection::stream).filter(ChimeraMonstersConfig::isModifierEnabled);
     }
 
     public static Stream<AbstractMonsterModifier> getValidMonsterMods(AbstractMonster mon, MonsterGroup context) {
-        return getMonsterMods().filter(mod -> mod.canApplyTo(mon, context));
+        return getMonsterMods().filter(mod -> isValid(mod, mon, context));
     }
 
     public static Stream<AbstractMonsterModifier> getMonsterModsOfRarity(Modifier.ModifierRarity rarity) {
@@ -135,7 +168,7 @@ public class ChimeraMonstersController {
     }
 
     public static Stream<AbstractMonsterModifier> getValidMonsterModsOfRarity(AbstractMonster mon, MonsterGroup context, Modifier.ModifierRarity rarity) {
-        return getMonsterModsOfRarity(rarity).filter(mod -> mod.canApplyTo(mon, context));
+        return getMonsterModsOfRarity(rarity).filter(mod -> isValid(mod, mon, context));
     }
 
     public static Stream<AbstractThemedModifier> getThemedMods() {
@@ -143,7 +176,7 @@ public class ChimeraMonstersController {
     }
 
     public static Stream<AbstractThemedModifier> getValidThemedMods(MonsterGroup group) {
-        return getThemedMods().filter(mod -> mod.canApplyTo(group));
+        return getThemedMods().filter(mod -> isValid(mod, group));
     }
 
     public static Stream<AbstractThemedModifier> getThemedModsOfRarity(Modifier.ModifierRarity rarity) {
@@ -151,7 +184,7 @@ public class ChimeraMonstersController {
     }
 
     public static Stream<AbstractThemedModifier> getValidThemedModsOfRarity(MonsterGroup group, Modifier.ModifierRarity rarity) {
-        return getThemedModsOfRarity(rarity).filter(mod -> mod.canApplyTo(group));
+        return getThemedModsOfRarity(rarity).filter(mod -> isValid(mod, group));
     }
 
     public static Stream<AbstractCuratedModifier> getCuratedMods() {
@@ -159,7 +192,7 @@ public class ChimeraMonstersController {
     }
 
     public static Stream<AbstractCuratedModifier> getValidCuratedMods(MonsterGroup group) {
-        return getCuratedMods().filter(mod -> mod.canApplyTo(group));
+        return getCuratedMods().filter(mod -> isValid(mod, group));
     }
 
     public static Stream<AbstractCuratedModifier> getCuratedModsOfRarity(Modifier.ModifierRarity rarity) {
@@ -167,7 +200,7 @@ public class ChimeraMonstersController {
     }
 
     public static Stream<AbstractCuratedModifier> getValidCuratedModsOfRarity(MonsterGroup group, Modifier.ModifierRarity rarity) {
-        return getCuratedModsOfRarity(rarity).filter(mod -> mod.canApplyTo(group));
+        return getCuratedModsOfRarity(rarity).filter(mod -> isValid(mod, group));
     }
 
     public static Stream<AbstractAddonModifier> getAddonMods() {
@@ -175,7 +208,7 @@ public class ChimeraMonstersController {
     }
 
     public static Stream<AbstractAddonModifier> getValidAddonMods(MonsterGroup group) {
-        return getAddonMods().filter(mod -> mod.canApplyTo(group));
+        return getAddonMods().filter(mod -> isValid(mod, group));
     }
 
     public static Stream<AbstractAddonModifier> getAddonModsOfRarity(Modifier.ModifierRarity rarity) {
@@ -183,7 +216,7 @@ public class ChimeraMonstersController {
     }
 
     public static Stream<AbstractAddonModifier> getValidAddonModsOfRarity(MonsterGroup group, Modifier.ModifierRarity rarity) {
-        return getAddonModsOfRarity(rarity).filter(mod -> mod.canApplyTo(group));
+        return getAddonModsOfRarity(rarity).filter(mod -> isValid(mod, group));
     }
 
     public static void handleRegistry(Modifier<?> modifier) {

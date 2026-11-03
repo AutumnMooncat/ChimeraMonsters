@@ -10,6 +10,7 @@ import ChimeraMonsters.patches.events.FaceTraderPatches;
 import ChimeraMonsters.ui.TopPanelExplainer;
 import ChimeraMonsters.util.KeywordManager;
 import basemod.*;
+import basemod.abstracts.CustomSavable;
 import basemod.devcommands.ConsoleCommand;
 import basemod.interfaces.*;
 import basemod.patches.whatmod.WhatMod;
@@ -45,7 +46,9 @@ public class ChimeraMonstersMod implements
         PostInitializeSubscriber,
         EditKeywordsSubscriber,
         OnStartBattleSubscriber,
-        PostRenderSubscriber {
+        PostRenderSubscriber,
+        StartActSubscriber,
+        PostBattleSubscriber {
     public static final Logger logger = LogManager.getLogger(ChimeraMonstersMod.class.getName());
     public static final HashMap<Modifier<?>, String> crossoverMap = new HashMap<>();
     public static final HashMap<String, Integer> crossoverSizeMap = new HashMap<>();
@@ -166,6 +169,17 @@ public class ChimeraMonstersMod implements
 
         logger.info("Misc setup");
         ChimeraMonstersController.explainer = new TopPanelExplainer();
+        BaseMod.addSaveField(ChimeraMonstersController.SEEN_GROUP_MODS_KEY, new CustomSavable<ArrayList<String>>() {
+            @Override
+            public ArrayList<String> onSave() {
+                return ChimeraMonstersController.onSave();
+            }
+
+            @Override
+            public void onLoad(ArrayList<String> strings) {
+                ChimeraMonstersController.onLoad(strings);
+            }
+        });
         logger.info("Done misc setup");
     }
 
@@ -322,4 +336,13 @@ public class ChimeraMonstersMod implements
 
     }
 
+    @Override
+    public void receiveStartAct() {
+        ChimeraMonstersController.onActStart();
+    }
+
+    @Override
+    public void receivePostBattle(AbstractRoom abstractRoom) {
+        ChimeraMonstersController.postBattle(abstractRoom);
+    }
 }
