@@ -23,7 +23,7 @@ public class ResupplyMod extends AbstractMonsterModifier {
 
     @Override
     protected boolean validMonster(AbstractMonster monster, MonsterGroup context) {
-        return checkContext(context, multiCombat) && checkContext(context, monster, lastMonster) && noBossCheck(monster, context);
+        return checkContext(context, multiCombat.and(noSummoning)) && checkContext(context, monster, lastMonster) && noBossCheck(monster, context);
     }
 
     @Override
