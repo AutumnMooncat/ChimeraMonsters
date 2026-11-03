@@ -5,6 +5,7 @@ import ChimeraMonsters.util.IntentPayload;
 import com.megacrit.cardcrawl.actions.AbstractGameAction;
 import com.megacrit.cardcrawl.cards.DamageInfo;
 import com.megacrit.cardcrawl.core.AbstractCreature;
+import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.EnemyMoveInfo;
 
@@ -35,7 +36,7 @@ public class MakeTemporaryIntentAction extends AbstractGameAction {
     @Override
     public void update() {
         if (pl != null) {
-            IntentManager.addExtraIntent(pl.owner, pl);
+            IntentManager.addExtraIntent(pl.owner, pl, false, !AbstractDungeon.actionManager.turnHasEnded);
         }
         this.isDone = true;
     }

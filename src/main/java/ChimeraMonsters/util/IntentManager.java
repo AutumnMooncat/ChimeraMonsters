@@ -62,11 +62,13 @@ public class IntentManager {
     }
 
     public static void writePayload(AbstractMonster monster, IntentPayload pl) {
+        if (pl == null) return;
         MonsterFields.activeIntent.set(monster, pl);
         pl.writeFields(monster);
     }
 
     public static void readPayload(AbstractMonster monster, IntentPayload pl) {
+        if (pl == null) return;
         pl.readFields(monster);
     }
 
