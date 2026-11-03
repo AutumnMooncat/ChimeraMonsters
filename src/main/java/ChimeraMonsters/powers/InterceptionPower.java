@@ -44,7 +44,8 @@ public class InterceptionPower extends AbstractInternalLogicPower implements Int
     @Override
     public boolean performIntercept() {
         if (getData(BLOCK_KEY)) {
-            return false;
+            setData(BLOCK_KEY, false);
+            return restoreReplacedMove(owner);
         }
         setData(BLOCK_KEY, true);
         addToBot(new GainBlockAction(owner, owner, amount));
