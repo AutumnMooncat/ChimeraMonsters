@@ -14,6 +14,7 @@ public class DamagePatches {
     public static class RetargetDamage {
         @SpirePrefixPatch
         public static SpireReturn<Void> plz(AbstractMonster __instance, DamageInfo info) {
+            // TODO - Wallop doesnt work with this, need to redirect actions
             if (__instance.intent != CustomIntentPatches.CHIMERA_MONSTERS_INTERCEPTING && info.type == DamageInfo.DamageType.NORMAL) {
                 for (AbstractMonster monster : AbstractDungeon.getMonsters().monsters) {
                     if (monster != __instance && !monster.isDeadOrEscaped() && monster.intent == CustomIntentPatches.CHIMERA_MONSTERS_INTERCEPTING) {
