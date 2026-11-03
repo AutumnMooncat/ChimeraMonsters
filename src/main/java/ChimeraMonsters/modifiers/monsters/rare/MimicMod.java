@@ -3,6 +3,10 @@ package ChimeraMonsters.modifiers.monsters.rare;
 import ChimeraMonsters.ChimeraMonstersMod;
 import ChimeraMonsters.modifiers.monsters.AbstractMonsterModifier;
 import ChimeraMonsters.powers.MimicPower;
+import com.megacrit.cardcrawl.actions.common.HealAction;
+import com.megacrit.cardcrawl.actions.common.SuicideAction;
+import com.megacrit.cardcrawl.actions.unique.CanLoseAction;
+import com.megacrit.cardcrawl.actions.unique.CannotLoseAction;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
@@ -23,7 +27,7 @@ public class MimicMod extends AbstractMonsterModifier {
 
     @Override
     protected boolean validMonster(AbstractMonster monster, MonsterGroup context) {
-        return true;
+        return noHalfDead(monster) && !hasAnyAnywhere(monster, CannotLoseAction.class, CanLoseAction.class, SuicideAction.class, HealAction.class);
     }
 
     @Override

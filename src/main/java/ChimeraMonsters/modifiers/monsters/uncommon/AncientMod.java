@@ -5,11 +5,13 @@ import ChimeraMonsters.modifiers.groups.themed.SimpleThemedModifier;
 import ChimeraMonsters.modifiers.monsters.AbstractMonsterModifier;
 import ChimeraMonsters.powers.AncientPower;
 import com.megacrit.cardcrawl.actions.common.ApplyPowerAction;
+import com.megacrit.cardcrawl.actions.unique.RemoveDebuffsAction;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
 import com.megacrit.cardcrawl.powers.ArtifactPower;
+import com.megacrit.cardcrawl.powers.BarricadePower;
 
-public class AncientMod extends AbstractMonsterModifier implements SimpleThemedModifier {
+public class AncientMod extends AbstractMonsterModifier /*implements SimpleThemedModifier*/ {
     public static final String ID = ChimeraMonstersMod.makeID(AncientMod.class.getSimpleName());
 
     public AncientMod() {
@@ -18,7 +20,7 @@ public class AncientMod extends AbstractMonsterModifier implements SimpleThemedM
 
     @Override
     protected boolean validMonster(AbstractMonster monster, MonsterGroup context) {
-        return true;
+        return !hasAnyAnywhere(monster, ArtifactPower.class, BarricadePower.class, RemoveDebuffsAction.class);
     }
 
     @Override
