@@ -15,6 +15,7 @@ import com.megacrit.cardcrawl.actions.common.ReducePowerAction;
 import com.megacrit.cardcrawl.cards.DamageInfo;
 import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
+import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.localization.PowerStrings;
 
@@ -29,7 +30,11 @@ public class HoverPower extends AbstractEasyPower implements RenderModifierPower
     public HoverPower(AbstractCreature owner, int amount) {
         super(POWER_ID, NAME, PowerType.BUFF, false, owner, amount);
         priority=-20;
+    }
 
+    @Override
+    public void onInitialApplication() {
+        owner.drawY += 150f * Settings.scale;
     }
 
     @Override
@@ -58,7 +63,8 @@ public class HoverPower extends AbstractEasyPower implements RenderModifierPower
     }
 
     public void onRemove() {
-        addToBot(new LoseHPAction(owner, owner, (int) (0.25f * this.owner.maxHealth)));
+        owner.drawY -= 150f * Settings.scale;
+        addToTop(new LoseHPAction(owner, owner, (int) (0.25f * this.owner.maxHealth)));
     }
 
     @Override
@@ -69,9 +75,9 @@ public class HoverPower extends AbstractEasyPower implements RenderModifierPower
         sb.setColor(Color.WHITE);
         if (particleTimer <= 0) {
             particleTimer = 0.05f;
-            AbstractDungeon.effectsQueue.add(new GenericWrathParticle(Color.WHITE, owner.hb, 0, 150f));
+            AbstractDungeon.effectsQueue.add(new GenericWrathParticle(Color.WHITE, owner.hb, 0, 0));
         }
-        render(sb, tex, (float) (50 * Math.sin(timePassed)), 150f + (float) (50 * Math.sin(timePassed)), 1f, 15);
+        render(sb, tex, (float) (50 * Math.sin(timePassed)), (float) (50 * Math.sin(timePassed)), 1f, 15);
         sb.setColor(origColor);
     }
 }

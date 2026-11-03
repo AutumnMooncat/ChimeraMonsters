@@ -26,6 +26,7 @@ public class CreatureUpdatePatches {
             if (orbs != null) {
                 int evokes = MonsterOrbHelper.intendedEvokes(__instance);
                 for (AbstractOrb orb : orbs) {
+                    // TODO - orbs do not move if monster moves, orbs render in same spot as intents
                     orb.update();
                     orb.updateAnimation();
                     if (orbs.indexOf(orb) < evokes) {
