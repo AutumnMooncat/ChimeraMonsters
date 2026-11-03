@@ -11,7 +11,7 @@ import com.megacrit.cardcrawl.monsters.MonsterGroup;
 import com.megacrit.cardcrawl.powers.ArtifactPower;
 import com.megacrit.cardcrawl.powers.BarricadePower;
 
-public class AncientMod extends AbstractMonsterModifier /*implements SimpleThemedModifier*/ {
+public class AncientMod extends AbstractMonsterModifier implements SimpleThemedModifier {
     public static final String ID = ChimeraMonstersMod.makeID(AncientMod.class.getSimpleName());
 
     public AncientMod() {
