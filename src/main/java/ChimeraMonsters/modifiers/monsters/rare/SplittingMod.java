@@ -4,6 +4,10 @@ import ChimeraMonsters.ChimeraMonstersMod;
 import ChimeraMonsters.modifiers.monsters.AbstractMonsterModifier;
 import ChimeraMonsters.powers.SplittingPower;
 import ChimeraMonsters.util.matchers.SuperFieldAccessMatcher;
+import com.megacrit.cardcrawl.actions.common.HealAction;
+import com.megacrit.cardcrawl.actions.common.SuicideAction;
+import com.megacrit.cardcrawl.actions.unique.CanLoseAction;
+import com.megacrit.cardcrawl.actions.unique.CannotLoseAction;
 import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
@@ -18,12 +22,15 @@ public class SplittingMod extends AbstractMonsterModifier {
 
     @Override
     protected boolean validMonster(AbstractMonster monster, MonsterGroup context) {
-        return monster.type == AbstractMonster.EnemyType.NORMAL && !monster.hasPower(MinionPower.POWER_ID) && noHalfDead(monster);
+        if (monster.type != AbstractMonster.EnemyType.NORMAL || monster.hasPower(MinionPower.POWER_ID)) {
+            return false;
+        }
+        return noHalfDead(monster) && !hasAnyAnywhere(monster, CannotLoseAction.class, CanLoseAction.class, SuicideAction.class, HealAction.class);
     }
 
     @Override
     public void applyTo(AbstractMonster monster) {
-        applyPowersToCreature(monster, new SplittingPower(monster, -1));
+        applyPowersToCreature(monster, new SplittingPower(monster, -1)); // TODO - Failing and ending combat on split?
     }
 
     @Override
