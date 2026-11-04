@@ -4,6 +4,7 @@ import ChimeraMonsters.ChimeraMonstersMod;
 import ChimeraMonsters.modifiers.monsters.AbstractMonsterModifier;
 import ChimeraMonsters.powers.TinyPower;
 import ChimeraMonsters.util.FormatHelper;
+import com.evacipated.cardcrawl.modthespire.lib.Matcher;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
 
@@ -19,7 +20,11 @@ public class TinyMod extends AbstractMonsterModifier {
 
     @Override
     protected boolean validMonster(AbstractMonster monster, MonsterGroup context) {
-        return noBossCheck(monster, context);
+        return noBossCheck(monster, context) &&
+                !hasAnyAnywhere(monster,
+                        new Matcher.FieldAccessMatcher(AbstractMonster.Intent.class, "SLEEP"),
+                        new Matcher.FieldAccessMatcher(AbstractMonster.Intent.class, "STUNNED")
+                );
     }
 
     @Override
