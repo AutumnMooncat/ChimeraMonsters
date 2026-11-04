@@ -17,7 +17,7 @@ public class MimicMod extends AbstractMonsterModifier {
     private AbstractMonster disguise;
 
     public MimicMod() {
-        super(ID, ModifierRarity.RARE);
+        super(ID, ModifierRarity.RARE); // TODO: Raise max hp and damage gate rather than preventing death and resetting values?
     }
 
     @Override

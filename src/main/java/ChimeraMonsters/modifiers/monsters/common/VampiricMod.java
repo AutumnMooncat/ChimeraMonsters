@@ -23,7 +23,7 @@ public class VampiricMod extends AbstractMonsterModifier implements SimpleThemed
     @Override
     public void applyTo(AbstractMonster monster) {
         applyPowersToCreature(monster, new VampiricPower(monster, PERCENTAGE));
-        startDamaged(monster, 0.7f);
+        startDamaged(monster, 0.7f); // TODO: Makes bosses and elites too easy, the lost health cant be healed back without overkilling the playerD
     }
 
     @Override

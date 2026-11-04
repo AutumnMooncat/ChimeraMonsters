@@ -57,6 +57,7 @@ public interface MonsterManipulator {
 
     default void manipulateBaseDamage(AbstractMonster monster, float factor) {
         //TODO: what to do about Hexaghost Turn 2 and similar attacks
+        //TODO: Some monsters (Snake Dagger) hardcode an intent value rather than using the damage info?
         for (DamageInfo di : monster.damage) {
             di.base = (int) (di.base * factor);
         }
