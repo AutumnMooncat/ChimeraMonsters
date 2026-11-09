@@ -16,7 +16,7 @@ public class InfestedMod extends AbstractMonsterModifier implements SimpleThemed
 
     @Override
     protected boolean validMonster(AbstractMonster monster, MonsterGroup context) {
-        return checkContext(context, multiCombat) && noHalfDead(monster);
+        return checkContext(context, multiCombat.and(noSummoning)) && noHalfDead(monster);
     }
 
     @Override
