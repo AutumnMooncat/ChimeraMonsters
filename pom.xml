@@ -4,7 +4,7 @@
     <groupId>ChimeraMonsters</groupId>
     <artifactId>ChimeraMonsters</artifactId>
     <name>Chimera Monsters</name>
-    <version>0.0.0</version>
+    <version>0.1.0</version>
     <description>Adds random modifiers to monsters.</description>
 
     <properties>
