@@ -6,7 +6,9 @@ import ChimeraMonsters.patches.MonsterFields;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
+import com.megacrit.cardcrawl.powers.BarricadePower;
 import com.megacrit.cardcrawl.powers.PlatedArmorPower;
+import com.megacrit.cardcrawl.powers.ThornsPower;
 
 public class ShelledMod extends AbstractMonsterModifier {
     public static final String ID = ChimeraMonstersMod.makeID(ShelledMod.class.getSimpleName());
@@ -17,6 +19,9 @@ public class ShelledMod extends AbstractMonsterModifier {
 
     @Override
     protected boolean validMonster(AbstractMonster monster, MonsterGroup context) {
+        if (hasAnyAnywhere(monster, ThornsPower.class, PlatedArmorPower.class, BarricadePower.class)) {
+            return false;
+        }
         return noEliteOrBossCheck(monster, context) && actAtLeast(2);
     }
 
