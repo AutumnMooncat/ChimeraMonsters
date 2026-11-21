@@ -7,10 +7,8 @@ import ChimeraMonsters.modifiers.monsters.AbstractMonsterModifier;
 import ChimeraMonsters.monsters.You;
 import ChimeraMonsters.patches.MonsterGroupFields;
 import ChimeraMonsters.patches.events.FaceTraderPatches;
-import ChimeraMonsters.ui.TopPanelExplainer;
 import ChimeraMonsters.util.KeywordManager;
 import basemod.*;
-import basemod.abstracts.CustomSavable;
 import basemod.devcommands.ConsoleCommand;
 import basemod.interfaces.*;
 import basemod.patches.whatmod.WhatMod;
@@ -48,7 +46,8 @@ public class ChimeraMonstersMod implements
         OnStartBattleSubscriber,
         PostRenderSubscriber,
         StartActSubscriber,
-        PostBattleSubscriber {
+        PostBattleSubscriber,
+        PostDeathSubscriber {
     public static final Logger logger = LogManager.getLogger(ChimeraMonstersMod.class.getName());
     public static final HashMap<Modifier<?>, String> crossoverMap = new HashMap<>();
     public static final HashMap<String, Integer> crossoverSizeMap = new HashMap<>();
@@ -168,18 +167,7 @@ public class ChimeraMonstersMod implements
         logger.info("Done finding monsters");
 
         logger.info("Misc setup");
-        ChimeraMonstersController.explainer = new TopPanelExplainer();
-        BaseMod.addSaveField(ChimeraMonstersController.SEEN_GROUP_MODS_KEY, new CustomSavable<ArrayList<String>>() {
-            @Override
-            public ArrayList<String> onSave() {
-                return ChimeraMonstersController.onSave();
-            }
-
-            @Override
-            public void onLoad(ArrayList<String> strings) {
-                ChimeraMonstersController.onLoad(strings);
-            }
-        });
+        ChimeraMonstersController.init();
         logger.info("Done misc setup");
     }
 
@@ -344,5 +332,10 @@ public class ChimeraMonstersMod implements
     @Override
     public void receivePostBattle(AbstractRoom abstractRoom) {
         ChimeraMonstersController.postBattle(abstractRoom);
+    }
+
+    @Override
+    public void receivePostDeath() {
+        ChimeraMonstersController.postDeath();
     }
 }

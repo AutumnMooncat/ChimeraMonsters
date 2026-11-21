@@ -14,6 +14,9 @@ import ChimeraMonsters.ui.TopPanelExplainer;
 import ChimeraMonsters.util.RewardHelper;
 import ChimeraMonsters.util.Wiz;
 import ChimeraMonsters.util.compat.SpirePeopleCompat;
+import ChimeraMonsters.util.StateData;
+import basemod.BaseMod;
+import basemod.abstracts.CustomSavable;
 import basemod.patches.com.megacrit.cardcrawl.helpers.TopPanel.TopPanelHelper;
 import com.evacipated.cardcrawl.modthespire.Loader;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
@@ -22,10 +25,8 @@ import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
+import java.lang.reflect.Field;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -37,30 +38,72 @@ public class ChimeraMonstersController {
     public static final HashMap<Modifier.ModifierRarity, ArrayList<AbstractAddonModifier>> addonMods = new HashMap<>();
     public static final HashMap<String, Modifier<?>> modifierMap = new HashMap<>();
 
-    public static final String SEEN_GROUP_MODS_KEY = ChimeraMonstersMod.makeID(ChimeraMonstersController.class.getSimpleName()+":SeenGroupModifiers");
-    public static final ArrayList<String> seenGroupModifiers = new ArrayList<>();
-
+    public static RunState state;
     public static TopPanelExplainer explainer;
     public static boolean explainerPresent;
 
-    public static void onLoad(ArrayList<String> data) {
-        if (data == null) return;
-        seenGroupModifiers.clear();
-        seenGroupModifiers.addAll(data);
+    public static class RunState {
+        public static final String SAVE_KEY = ChimeraMonstersMod.makeID(RunState.class.getSimpleName());
+        public StateData<String> killedMonsters = new StateData<>();
+        public StateData<String> seenGroupModifiers = new StateData<>();
+
+        public void clearRunState() {
+            for (Field field : RunState.class.getFields()) {
+                try {
+                    Object o = field.get(this);
+                    if (o instanceof StateData) {
+                        ((StateData<?>) o).clear();
+                    }
+                } catch (IllegalAccessException ignored) {}
+            }
+        }
+
+        public void clearActState() {
+            for (Field field : RunState.class.getFields()) {
+                try {
+                    Object o = field.get(this);
+                    if (o instanceof StateData) {
+                        ((StateData<?>) o).clearThisAct();
+                    }
+                } catch (IllegalAccessException ignored) {}
+            }
+        }
     }
 
-    public static ArrayList<String> onSave() {
-        return seenGroupModifiers;
+    public static void init() {
+        state = new RunState();
+        explainer = new TopPanelExplainer();
+        BaseMod.addSaveField(RunState.SAVE_KEY, new CustomSavable<RunState>() {
+            @Override
+            public RunState onSave() {
+                return state;
+            }
+
+            @Override
+            public void onLoad(RunState runState) {
+                if (runState == null) return;
+                state = runState;
+            }
+        });
     }
 
     public static void onActStart() {
-        seenGroupModifiers.clear();
+        state.clearActState();
+    }
+
+    public static void postDeath() {
+        state.clearRunState();
     }
 
     public static void postBattle(AbstractRoom room) {
-        //seenGroupModifiers.addAll(MonsterGroupFields.receivedModifiers.get(room.monsters).stream().map(AbstractMonsterGroupModifier::identifier).collect(Collectors.toList()));
         for (AbstractMonsterGroupModifier mod : MonsterGroupFields.receivedModifiers.get(room.monsters)) {
-            seenGroupModifiers.add(mod.identifier());
+            state.seenGroupModifiers.add(mod.identifier());
+        }
+
+        for (AbstractMonster monster : room.monsters.monsters) {
+            if (monster.isDead || monster.isDying) {
+                state.killedMonsters.add(monster.id);
+            }
         }
     }
 
@@ -152,7 +195,7 @@ public class ChimeraMonstersController {
     }
 
     public static boolean isValid(AbstractMonsterGroupModifier mod, MonsterGroup ctx) {
-        return mod.canApplyTo(ctx) && !seenGroupModifiers.contains(mod.identifier());
+        return mod.canApplyTo(ctx) && !state.seenGroupModifiers.containsThisAct(mod.identifier());
     }
 
     public static Stream<AbstractMonsterModifier> getMonsterMods() {
