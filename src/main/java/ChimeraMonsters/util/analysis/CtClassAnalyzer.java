@@ -43,7 +43,7 @@ public class CtClassAnalyzer {
     // We want to check objects which extend these
     public static Class<?>[] importantSuperClasses = {AbstractGameAction.class, AbstractPower.class, AbstractOrb.class, AbstractDamageModifier.class, AbstractCardModifier.class};
     // Built from previous array when needed
-    public static final ArrayList<CtClass> importantCtSuperClasses = new ArrayList<>();
+    public static final List<CtClass> importantCtSuperClasses = new ArrayList<>();
     // Don't look at methods from classes that start with these
     public static final String[] bannedPaths = {"java", "basemod", "com.badlogic"};
 
@@ -111,24 +111,68 @@ public class CtClassAnalyzer {
             new Matcher.NewExprMatcher(ShowCardAndAddToDrawPileEffect.class)
     };
 
-    public static boolean testObject(Object object, Matcher... matchers) {
-        return testClass(object.getClass(), matchers);
+    public static CtClass ctOf(Object object) {
+        return ctOf(object.getClass());
     }
 
-    public static boolean testClass(Class<?> clazz, Matcher... matchers) {
-        return testClasses(Collections.singletonList(clazz), matchers);
-    }
-
-    public static ArrayList<Pair<CtClass, CtMethod>> methodStack = new ArrayList<>();
-    public static boolean testClasses(List<Class<?>> classes, Matcher... matchers) {
+    public static CtClass ctOf(Class<?> clazz) {
         ClassPool pool = Loader.getClassPool();
+        try {
+            return pool.get(clazz.getName());
+        } catch (NotFoundException ignored) {}
+        return null;
+    }
+
+    public static List<CtClass> getImportantCtSupers() {
         if (importantCtSuperClasses.isEmpty()) {
+            ClassPool pool = Loader.getClassPool();
             for (Class<?> clazz : importantSuperClasses) {
                 try {
                     importantCtSuperClasses.add(pool.get(clazz.getName()));
                 } catch (NotFoundException ignored) {}
             }
         }
+        return importantCtSuperClasses;
+    }
+
+    public static List<CtClass> defaultOrImportant(List<CtClass> _default) {
+        if (_default == null) return getImportantCtSupers();
+        return _default;
+    }
+
+    public static boolean testObject(Object object, Matcher... matchers) {
+        return testClass(object.getClass(), matchers);
+    }
+
+    public static boolean testObject(Object object, Class<?>[] ofTypes, Matcher... matchers) {
+        return testClass(object.getClass(), ofTypes, matchers);
+    }
+
+    public static boolean testClass(Class<?> clazz, Matcher... matchers) {
+        return testClasses(Collections.singletonList(clazz), matchers);
+    }
+
+    public static boolean testClass(Class<?> clazz, Class<?>[] ofTypes, Matcher... matchers) {
+        return testClasses(Collections.singletonList(clazz), ofTypes, matchers);
+    }
+
+    public static boolean testClasses(List<Class<?>> classes, Matcher... matchers) {
+        return testClasses(classes, null, matchers);
+    }
+
+    public static boolean testClasses(List<Class<?>> classes, Class<?>[] ofTypes, Matcher... matchers) {
+        ClassPool pool = Loader.getClassPool();
+        List<CtClass> ctTypes = new ArrayList<>();
+        if (ofTypes == null) {
+            ctTypes = getImportantCtSupers();
+        } else {
+            for (Class<?> clazz : ofTypes) {
+                try {
+                    ctTypes.add(pool.get(clazz.getName()));
+                } catch (NotFoundException ignored) {}
+            }
+        }
+
         for (Class<?> clazz : classes) {
             if (!performedClassChecks.containsKey(clazz)) {
                 performedClassChecks.put(clazz, new HashMap<>());
@@ -140,8 +184,7 @@ public class CtClassAnalyzer {
             } else {
                 try {
                     CtClass ctClass = pool.getCtClass(clazz.getName());
-                    methodStack.clear();
-                    if (ctClassTester(ctClass, matchers)) {
+                    if (ctClassTester(ctClass, ctTypes, matchers)) {
                         performedClassChecks.get(clazz).put(matchers, true);
                         return true;
                     }
@@ -153,15 +196,27 @@ public class CtClassAnalyzer {
     }
 
     public static boolean ctClassTester(CtClass ctClass, Matcher... matchers) {
+        return ctClassTester(new ArrayList<>(), ctClass, getImportantCtSupers(), matchers);
+    }
+
+    public static boolean ctClassTester(CtClass ctClass, List<CtClass> ofTypes, Matcher... matchers) {
+        return ctClassTester(new ArrayList<>(), ctClass, ofTypes, matchers);
+    }
+
+    public static boolean ctClassTester(List<Pair<CtClass, CtMethod>> methodStack, CtClass ctClass, Matcher... matchers) {
+        return ctClassTester(methodStack, ctClass, getImportantCtSupers(), matchers);
+    }
+
+    public static boolean ctClassTester(List<Pair<CtClass, CtMethod>> methodStack, CtClass ctClass, List<CtClass> ofTypes, Matcher... matchers) {
         if (!performedCtClassChecks.containsKey(ctClass)) {
             performedCtClassChecks.put(ctClass, new HashMap<>());
         }
         if (performedCtClassChecks.get(ctClass).containsKey(matchers)) {
             return performedCtClassChecks.get(ctClass).get(matchers);
         }
-        ArrayList<CtMethod> foundMethods = ctMethodFinder(ctClass);
+        List<CtMethod> foundMethods = ctMethodFinder(ctClass, ofTypes);
         for (CtMethod currentMethod : foundMethods) {
-            if (ctMethodTester(currentMethod, matchers)) {
+            if (ctMethodTester(methodStack, currentMethod, ofTypes, matchers)) {
                 performedCtClassChecks.get(ctClass).put(matchers, true);
                 return true;
             }
@@ -170,10 +225,14 @@ public class CtClassAnalyzer {
         return false;
     }
 
-    public static ArrayList<CtMethod> ctMethodFinder(CtClass ctClass) {
+    public static List<CtMethod> ctMethodFinder(CtClass ctClass) {
+        return ctMethodFinder(ctClass, getImportantCtSupers());
+    }
+
+    public static List<CtMethod> ctMethodFinder(CtClass ctClass, List<CtClass> ofTypes) {
         ctClass.defrost();
-        ArrayList<CtMethod> foundMethods = new ArrayList<>(Arrays.asList(ctClass.getDeclaredMethods()));
-        if (importantCtSuperClasses.stream().anyMatch(ctc -> ctClass.subclassOf(ctc) && !ctc.getClassFile2().getName().equals(AbstractOrb.class.getName()))) {
+        List<CtMethod> foundMethods = new ArrayList<>(Arrays.asList(ctClass.getDeclaredMethods()));
+        if (ofTypes.stream().anyMatch(ctc -> ctClass.subclassOf(ctc) && !ctc.getClassFile2().getName().equals(AbstractOrb.class.getName()))) {
             CtClass currentCtClass = ctClass;
             while (true) {
                 try {
@@ -195,6 +254,18 @@ public class CtClassAnalyzer {
     }
 
     public static boolean ctMethodTester(CtMethod check, Matcher... matchers) {
+        return ctMethodTester(new ArrayList<>(), check, getImportantCtSupers(), matchers);
+    }
+
+    public static boolean ctMethodTester(CtMethod check, List<CtClass> ofTypes, Matcher... matchers) {
+        return ctMethodTester(new ArrayList<>(), check, ofTypes, matchers);
+    }
+
+    public static boolean ctMethodTester(List<Pair<CtClass, CtMethod>> methodStack, CtMethod check, Matcher... matchers) {
+        return ctMethodTester(methodStack, check, getImportantCtSupers(), matchers);
+    }
+
+    public static boolean ctMethodTester(List<Pair<CtClass, CtMethod>> methodStack, CtMethod check, List<CtClass> ofTypes, Matcher... matchers) {
         Pair<CtClass, CtMethod> key = new Pair<>(check.getDeclaringClass(), check);
         if (performTest(check, matchers)) {
             return true;
@@ -202,12 +273,12 @@ public class CtClassAnalyzer {
         if (!methodStack.contains(key)) {
             methodStack.add(key);
             for (CtMethod next : getReferencedMethods(check)) {
-                if (ctMethodTester(next, matchers)) {
+                if (ctMethodTester(methodStack, next, ofTypes, matchers)) {
                     return true;
                 }
             }
-            for (CtClass next : getReferencedClasses(check)) {
-                if (ctClassTester(next, matchers)) {
+            for (CtClass next : getReferencedClasses(check, ofTypes)) {
+                if (ctClassTester(methodStack, next, ofTypes, matchers)) {
                     return true;
                 }
             }
@@ -232,8 +303,8 @@ public class CtClassAnalyzer {
         return false;
     }
 
-    public static ArrayList<CtMethod> getReferencedMethods(CtMethod method) {
-        ArrayList<CtMethod> foundMethods = new ArrayList<>();
+    public static List<CtMethod> getReferencedMethods(CtMethod method) {
+        List<CtMethod> foundMethods = new ArrayList<>();
         try {
             method.getDeclaringClass().defrost();
             method.instrument(new ExprEditor() {
@@ -253,8 +324,8 @@ public class CtClassAnalyzer {
         return foundMethods;
     }
 
-    public static ArrayList<CtClass> getReferencedClasses(CtMethod method) {
-        ArrayList<CtClass> foundClasses = new ArrayList<>();
+    public static List<CtClass> getReferencedClasses(CtMethod method, List<CtClass> ofTypes) {
+        List<CtClass> foundClasses = new ArrayList<>();
         try {
             method.getDeclaringClass().defrost();
             method.instrument(new ExprEditor() {
@@ -263,7 +334,7 @@ public class CtClassAnalyzer {
                     try {
                         CtClass ctExprClass = e.getConstructor().getDeclaringClass();
                         if (Arrays.stream(bannedClassChecks).noneMatch(clazz -> ctExprClass.getClassFile2().getName().equals(clazz.getName()))) {
-                            if (importantCtSuperClasses.stream().anyMatch(ctExprClass::subclassOf)) {
+                            if (ofTypes.stream().anyMatch(ctExprClass::subclassOf)) {
                                 foundClasses.add(ctExprClass);
                             }
                         }

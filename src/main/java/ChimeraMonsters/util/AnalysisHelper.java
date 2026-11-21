@@ -3,8 +3,10 @@ package ChimeraMonsters.util;
 import ChimeraMonsters.modifiers.monsters.AbstractMonsterModifier;
 import ChimeraMonsters.patches.MonsterFields;
 import ChimeraMonsters.util.analysis.ClassAnalyzer;
+import ChimeraMonsters.util.analysis.CtClassAnalyzer;
 import ChimeraMonsters.util.matchers.SuperFieldAccessMatcher;
 import com.evacipated.cardcrawl.modthespire.lib.Matcher;
+import com.megacrit.cardcrawl.actions.AbstractGameAction;
 import com.megacrit.cardcrawl.actions.common.GainBlockAction;
 import com.megacrit.cardcrawl.actions.common.SpawnMonsterAction;
 import com.megacrit.cardcrawl.actions.unique.SummonGremlinAction;
@@ -15,13 +17,13 @@ import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
-import com.megacrit.cardcrawl.powers.GenericStrengthUpPower;
-import com.megacrit.cardcrawl.powers.MinionPower;
-import com.megacrit.cardcrawl.powers.RitualPower;
-import com.megacrit.cardcrawl.powers.StrengthPower;
+import com.megacrit.cardcrawl.powers.*;
 import com.megacrit.cardcrawl.rooms.MonsterRoomBoss;
 import com.megacrit.cardcrawl.rooms.MonsterRoomElite;
+import javassist.CtClass;
+import javassist.CtMethod;
 
+import java.util.Collections;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
@@ -179,5 +181,53 @@ public interface AnalysisHelper {
 
     default boolean hasAllAnywhere(Object o, Matcher... matchers) {
         return ClassAnalyzer.classHasAllMatchers(o, matchers);
+    }
+
+    default boolean usesActionThat(Object o, Matcher... matchers) {
+        for (CtMethod ctMethod : CtClassAnalyzer.ctMethodFinder(CtClassAnalyzer.ctOf(o))) {
+            for (CtClass ctClass : CtClassAnalyzer.getReferencedClasses(ctMethod, Collections.singletonList(CtClassAnalyzer.ctOf(AbstractGameAction.class)))) {
+                for (CtMethod refCtMethod : CtClassAnalyzer.ctMethodFinder(ctClass)) {
+                    if (CtClassAnalyzer.performTest(refCtMethod, matchers)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    default boolean usesPowerThat(Object o, Matcher... matchers) {
+        for (CtMethod ctMethod : CtClassAnalyzer.ctMethodFinder(CtClassAnalyzer.ctOf(o))) {
+            for (CtClass ctClass : CtClassAnalyzer.getReferencedClasses(ctMethod, Collections.singletonList(CtClassAnalyzer.ctOf(AbstractPower.class)))) {
+                for (CtMethod refCtMethod : CtClassAnalyzer.ctMethodFinder(ctClass)) {
+                    if (CtClassAnalyzer.performTest(refCtMethod, matchers)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    default boolean usesActionThatRecursively(Object o, Matcher... matchers) {
+        for (CtMethod ctMethod : CtClassAnalyzer.ctMethodFinder(CtClassAnalyzer.ctOf(o))) {
+            for (CtClass ctClass : CtClassAnalyzer.getReferencedClasses(ctMethod, Collections.singletonList(CtClassAnalyzer.ctOf(AbstractGameAction.class)))) {
+                if (CtClassAnalyzer.ctClassTester(ctClass, matchers)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    default boolean usesPowerThatRecursively(Object o, Matcher... matchers) {
+        for (CtMethod ctMethod : CtClassAnalyzer.ctMethodFinder(CtClassAnalyzer.ctOf(o))) {
+            for (CtClass ctClass : CtClassAnalyzer.getReferencedClasses(ctMethod, Collections.singletonList(CtClassAnalyzer.ctOf(AbstractPower.class)))) {
+                if (CtClassAnalyzer.ctClassTester(ctClass, matchers)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
