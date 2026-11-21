@@ -63,7 +63,7 @@ public class TemporalPower extends AbstractEasyPower implements RenderModifierPo
 
     @Override
     public boolean shouldDelay(DamageInfo info) {
-        if (DamageInfoFields.temporalDelay.get(info)) {
+        if (DamageInfoFields.temporalDelay.get(info) || owner.currentHealth == 0) {
             return false;
         }
         flash();
