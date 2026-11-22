@@ -1,11 +1,11 @@
 package ChimeraMonsters.util;
 
 import ChimeraMonsters.patches.MonsterFields;
+import ChimeraMonsters.powers.BaseDamageManipPower;
 import basemod.ReflectionHacks;
 import com.esotericsoftware.spine.Bone;
 import com.esotericsoftware.spine.Skeleton;
 import com.evacipated.cardcrawl.mod.stslib.powers.interfaces.InvisiblePower;
-import com.megacrit.cardcrawl.cards.DamageInfo;
 import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.powers.AbstractPower;
@@ -56,12 +56,10 @@ public interface MonsterManipulator {
     }
 
     default void manipulateBaseDamage(AbstractMonster monster, float factor) {
-        //TODO: what to do about Hexaghost Turn 2 and similar attacks
-        //TODO: Some monsters (Snake Dagger) hardcode an intent value rather than using the damage info?
-        //Known monsters: Awakened One, Bronze Orb, Giant Head, Gremlin Leader, Nemesis, Slaver Red, Snake Dagger, Task Master, Torch Head, Transient
-        for (DamageInfo di : monster.damage) {
-            di.base = (int) (di.base * factor);
-        }
+        // TODO: This doesnt feel like a good solution, but should actually function in our problem cases
+        // Problem cases are dynamic damageinfo changes (Hexaghost) and hardcoded intent values (Several, listed below)
+        // Known monsters: Awakened One, Bronze Orb, Giant Head, Gremlin Leader, Nemesis, Slaver Red, Snake Dagger, Task Master, Torch Head, Transient
+        applyPowersToCreature(monster, new BaseDamageManipPower(monster, factor));
     }
 
     default void manipulateFinalBlock(AbstractMonster monster, float factor) {
