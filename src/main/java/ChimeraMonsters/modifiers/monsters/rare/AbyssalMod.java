@@ -16,7 +16,7 @@ public class AbyssalMod extends AbstractMonsterModifier implements SimpleThemedM
 
     @Override
     protected boolean validMonster(AbstractMonster monster, MonsterGroup context) {
-        return noEliteOrBossCheck(monster, context) && actAtLeast(2);
+        return isNormal.test(monster) && actAtLeast(2);
     }
 
     @Override

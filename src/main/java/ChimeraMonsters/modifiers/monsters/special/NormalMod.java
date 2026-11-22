@@ -15,7 +15,7 @@ public class NormalMod extends AbstractMonsterModifier {
 
     @Override
     protected boolean validMonster(AbstractMonster monster, MonsterGroup context) {
-        return noEliteOrBossCheck(monster, context);
+        return isNormal.test(monster);
     }
 
     @Override

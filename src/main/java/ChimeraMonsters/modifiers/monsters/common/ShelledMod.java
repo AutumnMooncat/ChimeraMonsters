@@ -22,7 +22,7 @@ public class ShelledMod extends AbstractMonsterModifier {
         if (hasAnyAnywhere(monster, ThornsPower.class, PlatedArmorPower.class, BarricadePower.class)) {
             return false;
         }
-        return noEliteOrBossCheck(monster, context) && actAtLeast(2);
+        return isNormal.test(monster) && actAtLeast(2);
     }
 
     @Override

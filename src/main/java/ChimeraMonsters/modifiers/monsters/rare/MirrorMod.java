@@ -16,7 +16,7 @@ public class MirrorMod extends AbstractMonsterModifier implements SimpleThemedMo
 
     @Override
     protected boolean validMonster(AbstractMonster monster, MonsterGroup context) {
-        return noEliteOrBossCheck(monster, context);
+        return isNormal.test(monster);
     }
 
     @Override

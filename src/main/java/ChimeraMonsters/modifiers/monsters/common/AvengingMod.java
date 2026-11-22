@@ -16,7 +16,7 @@ public class AvengingMod extends AbstractMonsterModifier {
 
     @Override
     protected boolean validMonster(AbstractMonster monster, MonsterGroup context) {
-        return checkContext(context, multiCombat) && noBossCheck(monster, context);
+        return checkContext(context, multiCombat) && !isBoss.test(monster);
     }
 
     @Override

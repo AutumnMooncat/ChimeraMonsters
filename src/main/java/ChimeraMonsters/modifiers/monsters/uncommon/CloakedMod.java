@@ -15,7 +15,7 @@ public class CloakedMod extends AbstractMonsterModifier {
 
     @Override
     protected boolean validMonster(AbstractMonster monster, MonsterGroup context) {
-        return noBossCheck(monster, context);
+        return !isBoss.test(monster);
     }
 
     @Override

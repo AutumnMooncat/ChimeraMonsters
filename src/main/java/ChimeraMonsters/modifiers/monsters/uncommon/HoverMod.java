@@ -6,6 +6,7 @@ import ChimeraMonsters.powers.HoverPower;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
+import com.megacrit.cardcrawl.powers.FlightPower;
 
 public class HoverMod extends AbstractMonsterModifier {
     public static final String ID = ChimeraMonstersMod.makeID(HoverMod.class.getSimpleName());
@@ -16,7 +17,7 @@ public class HoverMod extends AbstractMonsterModifier {
 
     @Override
     protected boolean validMonster(AbstractMonster monster, MonsterGroup context) {
-        return noBossCheck(monster, context);
+        return !isBoss.test(monster) && !hasAnyAnywhere(monster, FlightPower.class);
     }
 
     @Override

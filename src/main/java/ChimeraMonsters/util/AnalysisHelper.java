@@ -18,8 +18,6 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
 import com.megacrit.cardcrawl.powers.*;
-import com.megacrit.cardcrawl.rooms.MonsterRoomBoss;
-import com.megacrit.cardcrawl.rooms.MonsterRoomElite;
 import javassist.CtClass;
 import javassist.CtMethod;
 
@@ -30,15 +28,25 @@ import java.util.function.Predicate;
 public interface AnalysisHelper {
     String TAKE_TURN = "takeTurn";
     String PRE_BATTLE = "usePreBattleAction";
+    Predicate<AbstractMonster> doesScale = mon -> ClassAnalyzer.classHasAnyClass(mon, RitualPower.class, StrengthPower.class, GenericStrengthUpPower.class);
+    Predicate<AbstractMonster> doesSummon = mon -> ClassAnalyzer.classHasAnyClass(mon, SpawnMonsterAction.class, SummonGremlinAction.class, MinionPower.class);
+    Predicate<AbstractMonster> isNormal = mon -> mon.type == AbstractMonster.EnemyType.NORMAL;
+    Predicate<AbstractMonster> isElite = mon -> mon.type == AbstractMonster.EnemyType.ELITE;
+    Predicate<AbstractMonster> isBoss = mon -> mon.type == AbstractMonster.EnemyType.BOSS;
     Predicate<MonsterGroup> singleCombat = (group) -> group.monsters.size() == 1;
     Predicate<MonsterGroup> multiCombat = (group) -> group.monsters.size() > 1;
-    Predicate<MonsterGroup> noBosses = (group) -> group.monsters.stream().noneMatch(mon -> mon.type == AbstractMonster.EnemyType.BOSS);
-    Predicate<MonsterGroup> noElites = (group) -> group.monsters.stream().noneMatch(mon -> mon.type == AbstractMonster.EnemyType.ELITE);
-    Predicate<MonsterGroup> noElitesOrBosses = (group) -> group.monsters.stream().allMatch(mon -> mon.type == AbstractMonster.EnemyType.NORMAL);
-    Predicate<MonsterGroup> noScaling = (group) -> group.monsters.stream().noneMatch(mon -> ClassAnalyzer.classHasAnyClass(mon, RitualPower.class, StrengthPower.class, GenericStrengthUpPower.class));
-    Predicate<MonsterGroup> noSummoning = (group) -> group.monsters.stream().noneMatch(mon -> ClassAnalyzer.classHasAnyClass(mon, SpawnMonsterAction.class, SummonGremlinAction.class, MinionPower.class));
+    Predicate<MonsterGroup> noBosses = (group) -> group.monsters.stream().noneMatch(isBoss);
+    Predicate<MonsterGroup> noElites = (group) -> group.monsters.stream().noneMatch(isElite);
+    Predicate<MonsterGroup> noElitesOrBosses = (group) -> group.monsters.stream().allMatch(isNormal);
+    Predicate<MonsterGroup> noScaling = (group) -> group.monsters.stream().noneMatch(doesScale);
+    Predicate<MonsterGroup> noSummoning = (group) -> group.monsters.stream().noneMatch(doesSummon);
     BiPredicate<MonsterGroup, AbstractMonsterModifier> onePerFight = (group, toCheck) -> group.monsters.stream().noneMatch(mon -> MonsterFields.receivedModifiers.get(mon).stream().anyMatch(mod -> mod.identifier().equals(toCheck.identifier())));
     BiPredicate<MonsterGroup, AbstractMonster> lastMonster = (group, mon) -> group.monsters.get(group.monsters.size() - 1) == mon;
+
+    default boolean checkContext(MonsterGroup context, Predicate<AbstractMonster> check, boolean all) {
+        if (context == null) return true;
+        return all ? context.monsters.stream().allMatch(check) : context.monsters.stream().anyMatch(check);
+    }
 
     default boolean checkContext(MonsterGroup context, Predicate<MonsterGroup> check) {
         return context == null || check.test(context);
@@ -50,45 +58,6 @@ public interface AnalysisHelper {
 
     default boolean checkContext(MonsterGroup context, AbstractMonsterModifier mod, BiPredicate<MonsterGroup, AbstractMonsterModifier> check) {
         return context == null || check.test(context, mod);
-    }
-
-    default boolean noEliteCheck(AbstractMonster monster, MonsterGroup context) {
-        if (monster.type == AbstractMonster.EnemyType.ELITE) {
-            return false;
-        }
-        if (!checkContext(context, noElites)) {
-            return false;
-        }
-        if (AbstractDungeon.currMapNode == null || AbstractDungeon.getCurrRoom() == null) {
-            return true;
-        }
-        return !(AbstractDungeon.getCurrRoom() instanceof MonsterRoomElite);
-    }
-
-    default boolean noBossCheck(AbstractMonster monster, MonsterGroup context) {
-        if (monster.type == AbstractMonster.EnemyType.BOSS) {
-            return false;
-        }
-        if (!checkContext(context, noBosses)) {
-            return false;
-        }
-        if (AbstractDungeon.currMapNode == null || AbstractDungeon.getCurrRoom() == null) {
-            return true;
-        }
-        return !(AbstractDungeon.getCurrRoom() instanceof MonsterRoomBoss);
-    }
-
-    default boolean noEliteOrBossCheck(AbstractMonster monster, MonsterGroup context) {
-        if (monster.type != AbstractMonster.EnemyType.NORMAL) {
-            return false;
-        }
-        if (!checkContext(context, noElitesOrBosses)) {
-            return false;
-        }
-        if (AbstractDungeon.currMapNode == null || AbstractDungeon.getCurrRoom() == null) {
-            return true;
-        }
-        return !((AbstractDungeon.getCurrRoom() instanceof MonsterRoomElite) || (AbstractDungeon.getCurrRoom() instanceof MonsterRoomBoss));
     }
 
     default boolean noHalfDead(AbstractMonster monster) {

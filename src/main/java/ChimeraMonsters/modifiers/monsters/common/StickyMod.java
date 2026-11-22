@@ -17,7 +17,7 @@ public class StickyMod extends AbstractMonsterModifier implements SimpleThemedMo
 
     @Override
     protected boolean validMonster(AbstractMonster monster, MonsterGroup context) {
-        return noBossCheck(monster, context);
+        return !isBoss.test(monster);
     }
 
     @Override

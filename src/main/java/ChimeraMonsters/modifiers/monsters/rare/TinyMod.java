@@ -20,7 +20,7 @@ public class TinyMod extends AbstractMonsterModifier {
 
     @Override
     protected boolean validMonster(AbstractMonster monster, MonsterGroup context) {
-        return noBossCheck(monster, context) &&
+        return!isBoss.test(monster) &&
                 !hasAnyAnywhere(monster,
                         new Matcher.FieldAccessMatcher(AbstractMonster.Intent.class, "SLEEP"),
                         new Matcher.FieldAccessMatcher(AbstractMonster.Intent.class, "STUNNED")

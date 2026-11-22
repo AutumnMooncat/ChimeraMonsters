@@ -15,7 +15,7 @@ public class DilatantMod extends AbstractMonsterModifier {
 
     @Override
     protected boolean validMonster(AbstractMonster monster, MonsterGroup context) {
-        return noEliteOrBossCheck(monster, context) && checkContext(context, multiCombat);
+        return isNormal.test(monster) && checkContext(context, multiCombat);
     }
 
     @Override

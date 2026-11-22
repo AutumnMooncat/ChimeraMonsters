@@ -17,7 +17,7 @@ public class BulkyMod extends AbstractMonsterModifier implements SimpleThemedMod
 
     @Override
     protected boolean validMonster(AbstractMonster monster, MonsterGroup context) {
-        return noEliteOrBossCheck(monster, context) && checkContext(context, noScaling);
+        return isNormal.and(doesScale.negate()).test(monster);
     }
 
     @Override

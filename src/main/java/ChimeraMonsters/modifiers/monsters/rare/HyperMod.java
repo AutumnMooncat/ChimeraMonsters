@@ -21,7 +21,7 @@ public class HyperMod extends AbstractMonsterModifier implements SimpleThemedMod
         if (getConstructedBaseHealth(monster) >= 500) {
             return false;
         }
-        return noEliteOrBossCheck(monster, context);
+        return isNormal.test(monster);
     }
 
     @Override

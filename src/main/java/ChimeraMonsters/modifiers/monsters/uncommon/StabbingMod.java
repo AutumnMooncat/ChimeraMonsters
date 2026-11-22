@@ -23,7 +23,7 @@ public class StabbingMod extends AbstractMonsterModifier implements SimpleThemed
 
     @Override
     protected boolean validMonster(AbstractMonster monster, MonsterGroup context) {
-        return noBossCheck(monster, context) && actAtLeast(2) && !hasAnyAnywhere(monster, PainfulStabsPower.class);
+        return !isBoss.test(monster) && actAtLeast(2) && !hasAnyAnywhere(monster, PainfulStabsPower.class);
     }
 
     @Override

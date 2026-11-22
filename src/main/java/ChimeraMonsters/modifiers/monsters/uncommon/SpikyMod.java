@@ -22,7 +22,7 @@ public class SpikyMod extends AbstractMonsterModifier implements SimpleThemedMod
 
     @Override
     protected boolean validMonster(AbstractMonster monster, MonsterGroup context) {
-        if (getConstructedBaseHealth(monster) >= 100 || !noEliteOrBossCheck(monster, context) || !actAtLeast(2)) {
+        if (getConstructedBaseHealth(monster) >= 100 || !isNormal.test(monster) || !actAtLeast(2)) {
             return false;
         }
         return !hasAnyAnywhere(monster, PlatedArmorPower.class, BarricadePower.class, MetallicizePower.class, ThornsPower.class);

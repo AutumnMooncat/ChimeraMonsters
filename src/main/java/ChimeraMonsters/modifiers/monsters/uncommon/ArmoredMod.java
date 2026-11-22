@@ -19,7 +19,7 @@ public class ArmoredMod extends AbstractMonsterModifier {
         if (hasAnyAnywhere(monster, PlatedArmorPower.class, BarricadePower.class, MetallicizePower.class, ThornsPower.class)) {
             return false;
         }
-        return hasBlockTurn(monster) && noBossCheck(monster, context) && actAtMost(3);
+        return hasBlockTurn(monster) && !isBoss.test(monster) && actAtMost(3);
     }
 
     @Override

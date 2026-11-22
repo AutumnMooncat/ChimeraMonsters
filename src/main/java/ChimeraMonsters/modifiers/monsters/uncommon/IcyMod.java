@@ -18,7 +18,7 @@ public class IcyMod extends AbstractMonsterModifier implements SimpleThemedModif
 
     @Override
     protected boolean validMonster(AbstractMonster monster, MonsterGroup context) {
-        return noEliteOrBossCheck(monster, context);
+        return isNormal.test(monster);
     }
 
     @Override
