@@ -27,13 +27,17 @@
     "NAME": "Vampiric",
     "DESCRIPTIONS": ["Heals for #b", "% of unblocked damage dealt."]
   },
+  "${ModID}:BloodlustPower": {
+    "NAME": "Bloodlust",
+    "DESCRIPTIONS": ["Deals and receives #b","% more attack damage. Each turn, #yBloodlust increases by #b1 or is reset to #b"," if it had dealt unblocked attack damage."]
+  },
   "${ModID}:SplittingPower": {
     "NAME": "Splitting",
     "DESCRIPTIONS": ["When its #yHP is at or below #b50%, will split into two copies of itself with its current #yHP."]
   },
   "${ModID}:HoverPower": {
     "NAME": "Hover",
-    "DESCRIPTIONS": ["Receives 50% less attack damage. Cancelled if dealt attack damage #b", " times. Loses #b25% of Max HP upon landing."]
+    "DESCRIPTIONS": ["Receives #b50% less attack damage. Cancelled if dealt attack damage #b", " times. Loses #b25% of Max HP upon landing."]
   },
   "${ModID}:BurningPower": {
     "NAME": "Burning",

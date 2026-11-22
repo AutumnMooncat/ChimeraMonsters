@@ -3,9 +3,14 @@ package ChimeraMonsters.modifiers.monsters.common;
 import ChimeraMonsters.ChimeraMonstersMod;
 import ChimeraMonsters.modifiers.groups.themed.SimpleThemedModifier;
 import ChimeraMonsters.modifiers.monsters.AbstractMonsterModifier;
+import ChimeraMonsters.powers.BloodlustPower;
 import ChimeraMonsters.powers.VampiricPower;
+import ChimeraMonsters.util.matchers.OverrideMatcher;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
+import com.megacrit.cardcrawl.powers.AbstractPower;
+import com.megacrit.cardcrawl.powers.IntangiblePlayerPower;
+import com.megacrit.cardcrawl.powers.IntangiblePower;
 
 public class VampiricMod extends AbstractMonsterModifier implements SimpleThemedModifier {
     public static final String ID = ChimeraMonstersMod.makeID(VampiricMod.class.getSimpleName());
@@ -17,13 +22,17 @@ public class VampiricMod extends AbstractMonsterModifier implements SimpleThemed
 
     @Override
     protected boolean validMonster(AbstractMonster monster, MonsterGroup context) {
-        return true; //TODO: Scaling,Multi Enemy Fight or On-hit check
+        if (doesScale.test(monster) || hasAnyAnywhere(monster, IntangiblePlayerPower.class, IntangiblePower.class)) {
+            return false;
+        }
+        return !usesPowerThat(monster, new OverrideMatcher(AbstractPower.class, "onInflictDamage"));
     }
 
     @Override
     public void applyTo(AbstractMonster monster) {
         applyPowersToCreature(monster, new VampiricPower(monster, PERCENTAGE));
-        startDamaged(monster, 0.7f); // TODO: Makes bosses and elites too easy, the lost health cant be healed back without overkilling the playerD
+        int blood = monster.type == AbstractMonster.EnemyType.BOSS ? 2 : 1;
+        applyPowersToCreature(monster, new BloodlustPower(monster, scaleAbilities(monster, blood, blood + 1)));
     }
 
     @Override
