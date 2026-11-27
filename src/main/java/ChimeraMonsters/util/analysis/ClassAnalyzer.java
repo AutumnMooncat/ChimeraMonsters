@@ -7,6 +7,7 @@ import javassist.CtClass;
 import javassist.CtMethod;
 
 import java.util.HashMap;
+import java.util.function.Predicate;
 
 public class ClassAnalyzer {
     public static boolean doesntOverride(Object o, Class<?> superClazz, String method, Class<?>... paramtypez) {
@@ -110,6 +111,14 @@ public class ClassAnalyzer {
     }
 
     public static boolean classHasAllClass(Class<?> source, Class<?>... clazzez) {
+        return classHasAllClassWhere(source, ctm -> true, clazzez);
+    }
+
+    public static boolean classHasAllClassWhere(Object o, Predicate<CtMethod> where, Class<?>... clazzez) {
+        return classHasAllClassWhere(o.getClass(), where, clazzez);
+    }
+
+    public static boolean classHasAllClassWhere(Class<?> source, Predicate<CtMethod> where, Class<?>... clazzez) {
         try {
             HashMap<Class<?>, Boolean> checks = new HashMap<>();
             for (Class<?> clazz : clazzez) {
@@ -118,9 +127,11 @@ public class ClassAnalyzer {
             ClassPool pool = Loader.getClassPool();
             CtClass ctClass = pool.get(source.getName());
             for (CtMethod ctMethod : ctClass.getDeclaredMethods()) {
-                for (Class<?> clazz : clazzez) {
-                    if (CtClassAnalyzer.performTest(ctMethod, new Matcher.NewExprMatcher(clazz.getName()))) {
-                        checks.put(clazz, true);
+                if (where.test(ctMethod)) {
+                    for (Class<?> clazz : clazzez) {
+                        if (CtClassAnalyzer.performTest(ctMethod, new Matcher.NewExprMatcher(clazz.getName()))) {
+                            checks.put(clazz, true);
+                        }
                     }
                 }
             }
@@ -134,13 +145,23 @@ public class ClassAnalyzer {
     }
 
     public static boolean classHasAnyClass(Class<?> source, Class<?>... clazzez) {
+        return classHasAnyClassWhere(source, ctm -> true, clazzez);
+    }
+
+    public static boolean classHasAnyClassWhere(Object o, Predicate<CtMethod> where, Class<?>... clazzez) {
+        return classHasAnyClassWhere(o.getClass(), where, clazzez);
+    }
+
+    public static boolean classHasAnyClassWhere(Class<?> source, Predicate<CtMethod> where, Class<?>... clazzez) {
         try {
             ClassPool pool = Loader.getClassPool();
             CtClass ctClass = pool.get(source.getName());
             for (CtMethod ctMethod : ctClass.getDeclaredMethods()) {
-                for (Class<?> clazz : clazzez) {
-                    if (CtClassAnalyzer.performTest(ctMethod, new Matcher.NewExprMatcher(clazz.getName()))) {
-                        return true;
+                if (where.test(ctMethod)) {
+                    for (Class<?> clazz : clazzez) {
+                        if (CtClassAnalyzer.performTest(ctMethod, new Matcher.NewExprMatcher(clazz.getName()))) {
+                            return true;
+                        }
                     }
                 }
             }
@@ -153,13 +174,23 @@ public class ClassAnalyzer {
     }
 
     public static boolean classHasAnyMatchers(Class<?> source, Matcher... matchers) {
+        return classHasAnyMatchersWhere(source, ctm -> true, matchers);
+    }
+
+    public static boolean classHasAnyMatchersWhere(Object o, Predicate<CtMethod> where, Matcher... matchers) {
+        return classHasAnyMatchersWhere(o.getClass(), where, matchers);
+    }
+
+    public static boolean classHasAnyMatchersWhere(Class<?> source, Predicate<CtMethod> where, Matcher... matchers) {
         try {
             ClassPool pool = Loader.getClassPool();
             CtClass ctClass = pool.get(source.getName());
             for (CtMethod ctMethod : ctClass.getDeclaredMethods()) {
-                for (Matcher match : matchers) {
-                    if (CtClassAnalyzer.performTest(ctMethod, match)) {
-                        return true;
+                if (where.test(ctMethod)) {
+                    for (Matcher match : matchers) {
+                        if (CtClassAnalyzer.performTest(ctMethod, match)) {
+                            return true;
+                        }
                     }
                 }
             }
@@ -172,6 +203,14 @@ public class ClassAnalyzer {
     }
 
     public static boolean classHasAllMatchers(Class<?> source, Matcher... matchers) {
+        return classHasAnyMatchersWhere(source, ctm -> true, matchers);
+    }
+
+    public static boolean classHasAllMatchersWhere(Object o, Predicate<CtMethod> where, Matcher... matchers) {
+        return classHasAllMatchersWhere(o.getClass(), where, matchers);
+    }
+
+    public static boolean classHasAllMatchersWhere(Class<?> source, Predicate<CtMethod> where, Matcher... matchers) {
         try {
             HashMap<Matcher, Boolean> checks = new HashMap<>();
             for (Matcher match : matchers) {
@@ -180,9 +219,11 @@ public class ClassAnalyzer {
             ClassPool pool = Loader.getClassPool();
             CtClass ctClass = pool.get(source.getName());
             for (CtMethod ctMethod : ctClass.getDeclaredMethods()) {
-                for (Matcher match : matchers) {
-                    if (CtClassAnalyzer.performTest(ctMethod, match)) {
-                        checks.put(match, true);
+                if (where.test(ctMethod)) {
+                    for (Matcher match : matchers) {
+                        if (CtClassAnalyzer.performTest(ctMethod, match)) {
+                            checks.put(match, true);
+                        }
                     }
                 }
             }
@@ -196,12 +237,22 @@ public class ClassAnalyzer {
     }
 
     public static boolean classReferencesField(Class<?> source, Class<?> containingClazz, String fieldName) {
+        return classReferencesFieldWhere(source, containingClazz, fieldName, ctm -> true);
+    }
+
+    public static boolean classReferencesFieldWhere(Object o, Class<?> containingClazz, String fieldName, Predicate<CtMethod> where) {
+        return classReferencesFieldWhere(o.getClass(), containingClazz, fieldName, where);
+    }
+
+    public static boolean classReferencesFieldWhere(Class<?> source, Class<?> containingClazz, String fieldName, Predicate<CtMethod> where) {
         try {
             ClassPool pool = Loader.getClassPool();
             CtClass ctClass = pool.get(source.getName());
             for (CtMethod ctMethod : ctClass.getDeclaredMethods()) {
-                if (CtClassAnalyzer.performTest(ctMethod, new Matcher.FieldAccessMatcher(containingClazz, fieldName))) {
-                    return true;
+                if (where.test(ctMethod)) {
+                    if (CtClassAnalyzer.performTest(ctMethod, new Matcher.FieldAccessMatcher(containingClazz, fieldName))) {
+                        return true;
+                    }
                 }
             }
         } catch (Exception ignored) {}

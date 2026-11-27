@@ -8,6 +8,7 @@ import ChimeraMonsters.util.matchers.SuperFieldAccessMatcher;
 import com.evacipated.cardcrawl.modthespire.lib.Matcher;
 import com.megacrit.cardcrawl.actions.AbstractGameAction;
 import com.megacrit.cardcrawl.actions.common.GainBlockAction;
+import com.megacrit.cardcrawl.actions.common.RollMoveAction;
 import com.megacrit.cardcrawl.actions.common.SpawnMonsterAction;
 import com.megacrit.cardcrawl.actions.unique.SummonGremlinAction;
 import com.megacrit.cardcrawl.cards.AbstractCard;
@@ -28,6 +29,8 @@ import java.util.function.Predicate;
 public interface AnalysisHelper {
     String TAKE_TURN = "takeTurn";
     String PRE_BATTLE = "usePreBattleAction";
+    Predicate<CtMethod> isNotTakeTurn = ctm -> !ctm.getName().equals(TAKE_TURN);
+    Predicate<CtMethod> isNotPreBattle = ctm -> !ctm.getName().equals(PRE_BATTLE);
     Predicate<AbstractMonster> doesScale = mon -> ClassAnalyzer.classHasAnyClass(mon, RitualPower.class, StrengthPower.class, GenericStrengthUpPower.class);
     Predicate<AbstractMonster> doesSummon = mon -> ClassAnalyzer.classHasAnyClass(mon, SpawnMonsterAction.class, SummonGremlinAction.class, MinionPower.class);
     Predicate<AbstractMonster> isNormal = mon -> mon.type == AbstractMonster.EnemyType.NORMAL;
@@ -104,6 +107,13 @@ public interface AnalysisHelper {
         return ClassAnalyzer.methodHasAnyClass(monster, TAKE_TURN, GainBlockAction.class);
     }
 
+    // TODO - Extra intents banned or rectified for reactive enemies? Recursive search?
+    default boolean hasReactiveIntent(AbstractMonster monster) {
+        return ClassAnalyzer.classHasAnyClass(monster, ReactivePower.class) ||
+                ClassAnalyzer.classHasAnyClassWhere(monster, isNotTakeTurn, RollMoveAction.class) ||
+                ClassAnalyzer.classHasAnyMatchers(monster, new Matcher.MethodCallMatcher(AbstractMonster.class, "createIntent"));
+    }
+
     default boolean hasAnyInTurn(AbstractMonster monster, Class<?>... clazzez) {
         return ClassAnalyzer.methodHasAnyClass(monster, TAKE_TURN, clazzez);
     }
@@ -120,6 +130,22 @@ public interface AnalysisHelper {
         return ClassAnalyzer.methodHasAllMatchers(monster, TAKE_TURN, matchers);
     }
 
+    default boolean hasAnyNonTurn(AbstractMonster mon, Class<?>... clazzez) {
+        return ClassAnalyzer.classHasAnyClassWhere(mon, isNotTakeTurn, clazzez);
+    }
+
+    default boolean hasAnyNonTurn(AbstractMonster mon, Matcher... matchers) {
+        return ClassAnalyzer.classHasAnyMatchersWhere(mon, isNotTakeTurn, matchers);
+    }
+
+    default boolean hasAllNonTurn(AbstractMonster mon, Class<?>... clazzez) {
+        return ClassAnalyzer.classHasAllClassWhere(mon, isNotTakeTurn, clazzez);
+    }
+
+    default boolean hasAllNonTurn(AbstractMonster mon, Matcher... matchers) {
+        return ClassAnalyzer.classHasAllMatchersWhere(mon, isNotTakeTurn, matchers);
+    }
+
     default boolean hasAnyInSetup(AbstractMonster monster, Class<?>... clazzez) {
         return ClassAnalyzer.methodHasAnyClass(monster, PRE_BATTLE, clazzez);
     }
@@ -134,6 +160,22 @@ public interface AnalysisHelper {
 
     default boolean hasAllInSetup(AbstractMonster monster, Matcher... matchers) {
         return ClassAnalyzer.methodHasAllMatchers(monster, PRE_BATTLE, matchers);
+    }
+
+    default boolean hasAnyNonSetup(AbstractMonster mon, Class<?>... clazzez) {
+        return ClassAnalyzer.classHasAnyClassWhere(mon, isNotPreBattle, clazzez);
+    }
+
+    default boolean hasAnyNonSetup(AbstractMonster mon, Matcher... matchers) {
+        return ClassAnalyzer.classHasAnyMatchersWhere(mon, isNotPreBattle, matchers);
+    }
+
+    default boolean hasAllNonSetup(AbstractMonster mon, Class<?>... clazzez) {
+        return ClassAnalyzer.classHasAllClassWhere(mon, isNotPreBattle, clazzez);
+    }
+
+    default boolean hasAllNonSetup(AbstractMonster mon, Matcher... matchers) {
+        return ClassAnalyzer.classHasAllMatchersWhere(mon, isNotPreBattle, matchers);
     }
 
     default boolean hasAnyAnywhere(Object o, Class<?>... clazzez) {
