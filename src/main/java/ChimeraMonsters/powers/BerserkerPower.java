@@ -54,19 +54,18 @@ public class BerserkerPower extends AbstractEasyPower implements IntentIntercept
             addToBot(new ApplyPowerAction(owner, owner, new StrengthPower(owner, amount)));
             addToBot(new DoAction(() -> {
                 // TODO multi intent check
-                removeAndResetInterceptor(owner);
-                nextIntentInstant = true;
-                applyInterceptor(owner, this, getMove(owner));
+                if (currentInterceptor(owner) == null && isAttackIntent(((AbstractMonster) owner).intent)) {
+                    nextIntentInstant = true;
+                    applyInterceptor(owner, this, getMove(owner));
+                }
             }));
         }
     }
 
     @Override
     public float interceptRate(EnemyMoveInfo intendedMove) {
-        if (activated) {
-            if (intendedMove.intent == AbstractMonster.Intent.ATTACK || intendedMove.intent == AbstractMonster.Intent.ATTACK_BUFF || intendedMove.intent == AbstractMonster.Intent.ATTACK_DEBUFF || intendedMove.intent == AbstractMonster.Intent.ATTACK_DEFEND) {
-                return 1f;
-            }
+        if (activated && isAttackIntent(intendedMove.intent)) {
+            return 1f;
         }
         return 0f;
     }
@@ -121,6 +120,10 @@ public class BerserkerPower extends AbstractEasyPower implements IntentIntercept
         return false;
     }
 
+    private boolean isAttackIntent(AbstractMonster.Intent intent) {
+        return intent == AbstractMonster.Intent.ATTACK || intent == AbstractMonster.Intent.ATTACK_BUFF || intent == AbstractMonster.Intent.ATTACK_DEBUFF || intent == AbstractMonster.Intent.ATTACK_DEFEND;
+    }
+
     private void changeIntent(EnemyMoveInfo replacedMove, boolean instant) {
         if (replacedMove.intent == AbstractMonster.Intent.ATTACK) {
             overrideMove(owner, new EnemyMoveInfo(replacedMove.nextMove, CustomIntentPatches.CHIMERA_MONSTERS_SWEEPING_ATTACK, replacedMove.baseDamage, replacedMove.multiplier, replacedMove.isMultiDamage), instant);
@@ -128,7 +131,7 @@ public class BerserkerPower extends AbstractEasyPower implements IntentIntercept
             overrideMove(owner, new EnemyMoveInfo(replacedMove.nextMove, CustomIntentPatches.CHIMERA_MONSTERS_SWEEPING_ATTACK_BUFF, replacedMove.baseDamage, replacedMove.multiplier, replacedMove.isMultiDamage), instant);
         } else if (replacedMove.intent == AbstractMonster.Intent.ATTACK_DEBUFF) {
             overrideMove(owner, new EnemyMoveInfo(replacedMove.nextMove, CustomIntentPatches.CHIMERA_MONSTERS_SWEEPING_ATTACK_DEBUFF, replacedMove.baseDamage, replacedMove.multiplier, replacedMove.isMultiDamage), instant);
-        } else {
+        } else if (replacedMove.intent == AbstractMonster.Intent.ATTACK_DEFEND) {
             overrideMove(owner, new EnemyMoveInfo(replacedMove.nextMove, CustomIntentPatches.CHIMERA_MONSTERS_SWEEPING_ATTACK_BLOCK, replacedMove.baseDamage, replacedMove.multiplier, replacedMove.isMultiDamage), instant);
         }
     }

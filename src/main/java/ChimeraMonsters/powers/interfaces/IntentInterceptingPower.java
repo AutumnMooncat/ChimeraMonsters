@@ -176,6 +176,18 @@ public interface IntentInterceptingPower {
     }
 
     /**
+     * Returns {@link IntentManager#getInterceptor(AbstractMonster)} if the creature is a monster.
+     * @param creature The creature to try getting the interceptor for
+     * @return The current interceptor, or null if no active interceptor or if the creature is not a monster
+     */
+    default IntentInterceptingPower currentInterceptor(AbstractCreature creature) {
+        if (creature instanceof AbstractMonster) {
+            return IntentManager.getInterceptor((AbstractMonster) creature);
+        }
+        return null;
+    }
+
+    /**
      * Calls {@link IntentManager#applyInterceptor(AbstractMonster, IntentInterceptingPower, EnemyMoveInfo)} to apply an interceptor and store the original intended move if the creature is a monster.
      * This is normally done automatically if the interceptor rolls to intercept, but is required if the interceptor actives by trigger.
      * @param creature The creature to try applying an interceptor to
