@@ -39,4 +39,5 @@ public class MonsterFields {
     public static SpireField<Boolean> stunOnArmorBreak = new SpireField<>(() -> false);
     public static SpireField<Float> rawOffsetX = new SpireField<>(() -> 0f);
     public static SpireField<Float> rawOffsetY = new SpireField<>(() -> 0f);
+    public static SpireField<Object[]> rawCtorArgs = new SpireField<>(() -> null);
 }

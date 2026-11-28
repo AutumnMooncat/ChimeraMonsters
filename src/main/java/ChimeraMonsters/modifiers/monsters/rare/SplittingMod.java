@@ -30,7 +30,7 @@ public class SplittingMod extends AbstractMonsterModifier {
 
     @Override
     public void applyTo(AbstractMonster monster) {
-        applyPowersToCreature(monster, new SplittingPower(monster, -1)); // TODO - Failing and ending combat on split?
+        applyPowersToCreature(monster, new SplittingPower(monster));
     }
 
     @Override

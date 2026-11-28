@@ -2,26 +2,14 @@ package ChimeraMonsters.powers;
 
 import ChimeraMonsters.ChimeraMonstersMod;
 import ChimeraMonsters.actions.DoAction;
-import ChimeraMonsters.patches.MonsterGroupFields;
+import ChimeraMonsters.actions.SplitMonsterAction;
 import ChimeraMonsters.powers.interfaces.IntentInterceptingPower;
-import ChimeraMonsters.util.MonsterSpawnHelper;
-import com.megacrit.cardcrawl.actions.animations.AnimateShakeAction;
-import com.megacrit.cardcrawl.actions.common.SpawnMonsterAction;
-import com.megacrit.cardcrawl.actions.common.SuicideAction;
-import com.megacrit.cardcrawl.actions.unique.CanLoseAction;
-import com.megacrit.cardcrawl.actions.unique.CannotLoseAction;
-import com.megacrit.cardcrawl.actions.utility.HideHealthBarAction;
-import com.megacrit.cardcrawl.actions.utility.SFXAction;
-import com.megacrit.cardcrawl.actions.utility.WaitAction;
 import com.megacrit.cardcrawl.cards.DamageInfo;
 import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
-import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.localization.PowerStrings;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.EnemyMoveInfo;
-
-import java.util.ArrayList;
 
 public class SplittingPower extends AbstractEasyPower implements IntentInterceptingPower {
     public static final String POWER_ID = ChimeraMonstersMod.makeID(SplittingPower.class.getSimpleName());
@@ -30,8 +18,8 @@ public class SplittingPower extends AbstractEasyPower implements IntentIntercept
     public static final String[] DESCRIPTIONS = powerStrings.DESCRIPTIONS;
     private boolean activated;
 
-    public SplittingPower(AbstractCreature owner, int amount) {
-        super(POWER_ID, NAME, PowerType.BUFF, false, owner, amount);
+    public SplittingPower(AbstractCreature owner) {
+        super(POWER_ID, NAME, PowerType.BUFF, false, owner, -1);
         priority = -5;
     }
 
@@ -70,21 +58,9 @@ public class SplittingPower extends AbstractEasyPower implements IntentIntercept
     @Override
     public boolean performIntercept() {
         if (owner instanceof AbstractMonster) {
-            addToBot(new CannotLoseAction());
-            addToBot(new AnimateShakeAction(owner, 1.0F, 0.1F));
-            addToBot(new HideHealthBarAction(owner));
-            addToBot(new SuicideAction((AbstractMonster) owner, false));
-            addToBot(new WaitAction(1.0F));
-            addToBot(new SFXAction("SLIME_SPLIT"));
-
-            ArrayList<AbstractMonster> splitMonsters = MonsterSpawnHelper.getSplitMonsters((AbstractMonster) owner, MonsterGroupFields.encounterID.get(AbstractDungeon.getCurrRoom().monsters));
-            for (AbstractMonster splitMonster : splitMonsters) {
-                addToBot(new SpawnMonsterAction(splitMonster, false));
-                splitMonster.usePreBattleAction();
-            }
-            addToBot(new CanLoseAction());
+            addToBot(new SplitMonsterAction((AbstractMonster) owner));
         }
-        return true;
+        return restoreReplacedMove(owner);
     }
 
     @Override

@@ -49,6 +49,11 @@ public class DynamicPatches {
                 Matcher damageCall = new Matcher.MethodCallMatcher(AbstractMonster.class, "damage");
                 Matcher dieCall = new Matcher.MethodCallMatcher(AbstractMonster.class, "die");
                 try {
+                    CtConstructor[] ctors = ctClass.getDeclaredConstructors();
+                    for (CtConstructor ctor : ctors) {
+                        ctor.insertBeforeBody(AbstractMonsterDynamicPatch.class.getName() + ".ctorState($0, $args);");
+                    }
+
                     CtMethod[] methods = ctClass.getDeclaredMethods();
                     for (CtMethod m : methods) {
                         if (m.getName().equals("changeState")) {
@@ -74,6 +79,10 @@ public class DynamicPatches {
             }
             long end = System.currentTimeMillis();
             ChimeraMonstersMod.logger.info("AbstractMonster dynamic patch finished in {}ms", end-start);
+        }
+
+        public static void ctorState(AbstractMonster mon, Object[] args) {
+            MonsterFields.rawCtorArgs.set(mon, args);
         }
 
         /*@SpireRawPatch
