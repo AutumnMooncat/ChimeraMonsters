@@ -12,6 +12,7 @@ import com.megacrit.cardcrawl.actions.utility.SFXAction;
 import com.megacrit.cardcrawl.actions.utility.WaitAction;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 
+import java.util.Collections;
 import java.util.List;
 
 public class SplitMonsterAction extends AbstractGameAction {
@@ -23,13 +24,14 @@ public class SplitMonsterAction extends AbstractGameAction {
 
     @Override
     public void update() {
+        isDone = true;
         List<AbstractMonster> splitMonsters = MonsterSpawnHelper.getSplitMonsters(mon);
         if (splitMonsters.isEmpty()) {
-            isDone = true;
             return;
         }
 
         addToTop(new CanLoseAction());
+        Collections.reverse(splitMonsters);
         for (AbstractMonster splitMonster : splitMonsters) {
             addToTop(new SpawnMonsterAction(splitMonster, false));
         }
