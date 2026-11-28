@@ -8,7 +8,7 @@
     "EXTRA_TEXT": ["Simple Themed Name","Anything else needed"]
   },
   "${ModID}:AugerMod": {
-    "TEXT": ["Drill ", "", "Reduces #yHP by #b20%. NL Applies #yVulnerable when breaking #yBlock."]
+    "TEXT": ["Drill ", "", "Reduces HP by #b20%. NL Applies #yVulnerable when breaking #yBlock."]
   },
   "${ModID}:BulkyMod": {
     "TEXT": ["Bulky ", "", "Reduces base damage by #b20%. Has a new intent to gain #yStrength and #yBlock."],
@@ -22,7 +22,7 @@
     "TEXT": ["", " the Tank", "Can Block and intercept attacks."]
   },
   "${ModID}:BerserkerMod": {
-    "TEXT": ["Raging ", "", "Upon reaching half #yhealth, gains #yStrength and also attacks its allies."]
+    "TEXT": ["Raging ", "", "When its HP is at or below #b50%, will gain #yStrength and begin attacking its allies as well."]
   },
   "${ModID}:DoppelMod": {
     "TEXT": ["Doppel", "", "Hits twice as many times but base damage is halved.", "TL Note: Doppel is added to last part of the monster name"],
@@ -37,11 +37,11 @@
     "EXTRA_TEXT": ["Bloodlust"]
   },
   "${ModID}:RegenerationMod": {
-    "TEXT": ["Regenerating ", "", "Starts with #b[4/7/10] #yRegeneration. Starts with #b70% of it's maximum #yHP."],
+    "TEXT": ["Regenerating ", "", "Starts with #b[4/7/10] #yRegeneration. Starts with #b70% of it's maximum HP."],
     "EXTRA_TEXT": ["Rejuvenating Springs"]
   },
   "${ModID}:SplittingMod": {
-    "TEXT": ["Splitting ", "", "When its #yHP is at or below #b50%, will split into two copies of itself with its current #yHP."]
+    "TEXT": ["Splitting ", "", "When its HP is at or below #b50%, will split into two copies of itself with its current HP."]
   },
   "${ModID}:ThiefMod": {
     "TEXT": ["", " the Thief", "Reduces base damage and health by #b25%. Copies your cards as you play them, playing one per turn."]
@@ -56,7 +56,7 @@
     "TEXT": ["Normal ", "", "You cannot play more than 3 cards per turn."]
   },
   "${ModID}:HoverMod": {
-    "TEXT": ["Hovering ", "", "Has #b[6/9] #yHover. Loses #b25% #yHP on impact."]
+    "TEXT": ["Hovering ", "", "Has #b[6/9] #yHover. Loses #b25% HP on impact."]
   },
   "${ModID}:BurningMod": {
     "TEXT": ["Burning ", "", "Has #b[2/4/6] #yBurning."],
@@ -66,20 +66,20 @@
     "TEXT": ["Pacifist ", "", "Every other attack is replaced with an interruptable heal."]
   },
   "${ModID}:SpikyMod": {
-    "TEXT": ["Spiky ", "", "Reduces #yHP by #b25%. NL Starts with, and has an intent to gain, #yThorns."],
+    "TEXT": ["Spiky ", "", "Reduces HP by #b25%. NL Starts with, and has an intent to gain, #yThorns."],
     "EXTRA_TEXT": ["Oops, all Spiky"]
   },
   "${ModID}:AwakeningMod": {
-    "TEXT": ["Awakening ", "", "Reduces #yHP by #b50%. NL Can revive once in #yWrath."]
+    "TEXT": ["Awakening ", "", "Reduces HP by #b50%. NL Can revive once in #yWrath."]
   },
   "${ModID}:MimicMod": {
     "TEXT": ["", "?", "This monster is not what it seems."]
   },
   "${ModID}:HexaghostMod": {
-    "TEXT": ["", "aghost", "Reduces #yHP by #b20%. NL Has a powerful attack intent every 6 turns."]
+    "TEXT": ["", "aghost", "Reduces HP by #b20%. NL Has a powerful attack intent every 6 turns."]
   },
   "${ModID}:HexacurseMod": {
-    "TEXT": ["Hexa", "", "Reduces #yHP by #b20%. NL Has a powerful attack intent every 6 turns.", "TL Note: Hexa is added to last part of the monster name"]
+    "TEXT": ["Hexa", "", "Reduces HP by #b20%. NL Has a powerful attack intent every 6 turns.", "TL Note: Hexa is added to last part of the monster name"]
   },
   "${ModID}:ExplodingMod": {
     "TEXT": ["Exploding ", "", "Explodes after 3 turns, dealing #b[10/20/30] damage."],
@@ -104,7 +104,7 @@
     "TEXT": ["Shelled ", "", "Has #b[8/12] #yPlated #yArmor. Becomes #yStunned if all armor is removed."]
   },
   "${ModID}:SleepyMod": {
-    "TEXT": ["Sleepy ", "", "Intends to heal itself #b[8/16/24/36] #yHP every 3 turns."]
+    "TEXT": ["Sleepy ", "", "Intends to heal itself #b[8/16/24/36] HP every 3 turns."]
   },
   "${ModID}:ArmoredMod": {
     "TEXT": ["Armored ", "", "Starts with #yBarricade and #b[6/12/18/24] #yBlock."]
@@ -116,7 +116,7 @@
     "TEXT": ["Dilatant ", "", "Gains #yBlock equal to half unblocked attack damage taken."]
   },
   "${ModID}:IcyMod": {
-    "TEXT": ["Icy ", "", "Increases #yHP by #b50%. NL Applies #b[2/4/6/8] #yFrosty on unblocked attack damage dealt, but suffers #yCracked."],
+    "TEXT": ["Icy ", "", "Increases HP by #b50%. NL Applies #b[2/4/6/8] #yFrosty on unblocked attack damage dealt, but suffers #yCracked."],
     "EXTRA_TEXT": ["The Hyperboreans"]
   },
   "${ModID}:CloakedMod": {
@@ -135,13 +135,13 @@
   },
   "${ModID}:GiantMod": {
     "TEXT": [
-      "Giant ", "", "Increases base damage and #yHP by #b50%. NL Stunned every other turn.",
+      "Giant ", "", "Increases base damage and HP by #b50%. NL Stunned every other turn.",
       "Even More Giant", "TL Note: If name already contains Giant, replace it with this"
     ]
   },
   "${ModID}:TinyMod": {
     "TEXT": [
-      "Tiny ", "", "Reduces base damage and #yHP by #b50%. NL Takes two turns.",
+      "Tiny ", "", "Reduces base damage and HP by #b50%. NL Takes two turns.",
       "Giant", "TL Note: Removes this word if it exists in the name"
     ]
   },
@@ -161,7 +161,7 @@
     "EXTRA_TEXT": ["Cult of Personality"]
   },
   "${ModID}:HyperMod": {
-    "TEXT": ["Hyper", "", "Reduces #yHP by #b33%. NL Deals #b10% more damage per card played each turn.", "TL Note: Hyper is added to last part of the monster name"],
+    "TEXT": ["Hyper", "", "Reduces HP by #b33%. NL Deals #b10% more damage per card played each turn.", "TL Note: Hyper is added to last part of the monster name"],
     "EXTRA_TEXT": ["Caffeine Rush"]
   },
   "${ModID}:HarbingerMod": {
@@ -174,7 +174,7 @@
     "TEXT": ["Avenging ", "", "Intends to gain #yStrength whenever an ally dies."]
   },
   "${ModID}:WideMod": {
-    "TEXT": ["Wide ", "", "Increases #yHP by #b33%. NL Reduces base damage by #b25%."],
+    "TEXT": ["Wide ", "", "Increases HP by #b33%. NL Reduces base damage by #b25%."],
     "EXTRA_TEXT": ["B a t t l e   S t a r t"]
   }
 }
