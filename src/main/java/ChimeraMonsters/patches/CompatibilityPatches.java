@@ -1,16 +1,25 @@
 package ChimeraMonsters.patches;
 
 import ChimeraMonsters.ChimeraMonstersConfig;
+import ChimeraMonsters.powers.interfaces.SplitPointPower;
 import ChimeraMonsters.util.IntentManager;
 import ChimeraMonsters.util.IntentPayload;
 import ChimeraMonsters.util.MonsterOrbHelper;
+import ChimeraMonsters.util.compat.MintyCompat;
+import com.evacipated.cardcrawl.modthespire.Loader;
 import com.evacipated.cardcrawl.modthespire.lib.*;
-import com.megacrit.cardcrawl.core.Settings;
+import com.megacrit.cardcrawl.core.AbstractCreature;
+import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
+import com.megacrit.cardcrawl.powers.AbstractPower;
 import javassist.CannotCompileException;
 import javassist.CtBehavior;
 import javassist.expr.ExprEditor;
 import javassist.expr.FieldAccess;
+import javassist.expr.MethodCall;
+
+import java.util.Set;
+import java.util.TreeSet;
 
 public class CompatibilityPatches {
     @SpirePatch2(cls = "mintySpire.patches.ui.RenderIncomingDamagePatches$TIDHook", method = "hook", requiredModId = "mintyspire")
@@ -52,6 +61,55 @@ public class CompatibilityPatches {
                 return true;
             }
             return __result;
+        }
+    }
+
+    @SpirePatch2(cls = "mintySpire.patches.monsters.HalfwayHealthbarTextPatch$TextRender", method = "getHPTextAddition", requiredModId = "mintyspire")
+    public static class MintySplitPointText {
+        @SpirePostfixPatch
+        public static String plz(String __result, AbstractCreature c) {
+            if (c.powers.stream().anyMatch(p -> p instanceof SplitPointPower)) {
+                return "";
+            }
+            return __result;
+        }
+    }
+
+    @SpirePatch2(clz = AbstractCreature.class, method = "renderHealthText", requiredModId = "mintyspire")
+    public static class MintyRenderSplitPoint {
+        @SpireInstrumentPatch
+        public static ExprEditor plz() {
+            return new ExprEditor() {
+                @Override
+                public void edit(MethodCall m) throws CannotCompileException {
+                    if (m.getClassName().equals(FontHelper.class.getName()) && m.getMethodName().equals("renderFontCentered")) {
+                        m.replace(String.format("$3 = %s.modifyString(this, $3); $proceed($$);", MintyRenderSplitPoint.class.getName()));
+                    }
+                }
+            };
+        }
+
+        public static String modifyString(AbstractCreature c, String orig) {
+            if (c.isDead || c.isDying) {
+                return orig;
+            }
+            if (Loader.isModLoaded("mintyspire") && MintyCompat.mintyShowsHalfHealth(c) && c.powers.stream().anyMatch(p -> p instanceof SplitPointPower)) {
+                Set<Integer> toRender = new TreeSet<>(Integer::compareTo);
+                if (MintyCompat.mintyAlreadyRenders(c)) {
+                    toRender.add(c.maxHealth/2);
+                }
+                for (AbstractPower power : c.powers) {
+                    if (power instanceof SplitPointPower) {
+                        toRender.add(((SplitPointPower) power).splitPoint());
+                    }
+                }
+                StringBuilder origBuilder = new StringBuilder(orig);
+                for (Integer i : toRender) {
+                    origBuilder.append(" (").append(i).append(")");
+                }
+                orig = origBuilder.toString();
+            }
+            return orig;
         }
     }
 

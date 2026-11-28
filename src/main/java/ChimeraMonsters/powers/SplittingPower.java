@@ -4,6 +4,7 @@ import ChimeraMonsters.ChimeraMonstersMod;
 import ChimeraMonsters.actions.DoAction;
 import ChimeraMonsters.actions.SplitMonsterAction;
 import ChimeraMonsters.powers.interfaces.IntentInterceptingPower;
+import ChimeraMonsters.powers.interfaces.SplitPointPower;
 import com.megacrit.cardcrawl.cards.DamageInfo;
 import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
@@ -11,7 +12,7 @@ import com.megacrit.cardcrawl.localization.PowerStrings;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.EnemyMoveInfo;
 
-public class SplittingPower extends AbstractEasyPower implements IntentInterceptingPower {
+public class SplittingPower extends AbstractEasyPower implements IntentInterceptingPower, SplitPointPower {
     public static final String POWER_ID = ChimeraMonstersMod.makeID(SplittingPower.class.getSimpleName());
     private static final PowerStrings powerStrings = CardCrawlGame.languagePack.getPowerStrings(POWER_ID);
     public static final String NAME = powerStrings.NAME;
@@ -66,5 +67,10 @@ public class SplittingPower extends AbstractEasyPower implements IntentIntercept
     @Override
     public boolean setFollowupInterceptionIntent() {
         return false;
+    }
+
+    @Override
+    public int splitPoint() {
+        return owner.maxHealth/2;
     }
 }

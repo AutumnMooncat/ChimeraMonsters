@@ -5,6 +5,7 @@ import ChimeraMonsters.actions.DoAction;
 import ChimeraMonsters.patches.ActionCapturePatch;
 import ChimeraMonsters.patches.CustomIntentPatches;
 import ChimeraMonsters.powers.interfaces.IntentInterceptingPower;
+import ChimeraMonsters.powers.interfaces.SplitPointPower;
 import ChimeraMonsters.util.analysis.PowerAnalyzer;
 import ChimeraMonsters.util.Wiz;
 import basemod.ReflectionHacks;
@@ -26,7 +27,7 @@ import com.megacrit.cardcrawl.powers.StrengthPower;
 
 import java.util.ArrayList;
 
-public class BerserkerPower extends AbstractEasyPower implements IntentInterceptingPower {
+public class BerserkerPower extends AbstractEasyPower implements IntentInterceptingPower, SplitPointPower {
     public static final String POWER_ID = ChimeraMonstersMod.makeID(BerserkerPower.class.getSimpleName());
     private static final PowerStrings powerStrings = CardCrawlGame.languagePack.getPowerStrings(POWER_ID);
     public static final String NAME = powerStrings.NAME;
@@ -130,5 +131,10 @@ public class BerserkerPower extends AbstractEasyPower implements IntentIntercept
         } else {
             overrideMove(owner, new EnemyMoveInfo(replacedMove.nextMove, CustomIntentPatches.CHIMERA_MONSTERS_SWEEPING_ATTACK_BLOCK, replacedMove.baseDamage, replacedMove.multiplier, replacedMove.isMultiDamage), instant);
         }
+    }
+
+    @Override
+    public int splitPoint() {
+        return owner.maxHealth/2;
     }
 }
